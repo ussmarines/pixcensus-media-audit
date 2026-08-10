@@ -21,17 +21,17 @@ pixcensus-media-audit/
 │   ├── icon-256x256.png
 │   └── screenshot-N.png
 ├── tags/
-│   └── 3.0.1/
+│   └── 3.0.2/
 └── trunk/
 ```
 
-The WordPress.org directory graphics belong in the SVN root `/assets`. Runtime CSS and JavaScript remain inside the plugin package under `/trunk/assets` and `/tags/3.0.1/assets`.
+The WordPress.org directory graphics belong in the SVN root `/assets`. Runtime CSS and JavaScript remain inside the plugin package under `/trunk/assets` and `/tags/3.0.2/assets`.
 
 ## Final checks
 
 - plugin files are directly inside `/trunk`, not inside a second nested plugin directory;
-- plugin header version and `Stable tag` are both `3.0.1`;
-- `/tags/3.0.1` matches `/trunk` for the first publication;
+- plugin header version, `PIXCENSUS_VERSION`, requested SVN version, and `Stable tag` are all `3.0.2`;
+- `/tags/3.0.2` matches `/trunk` for the first publication;
 - no ZIP archives, test fixtures, repository metadata, or development dependencies are committed;
 - screenshots contain no private information;
 - every screenshot has a matching readme caption;
@@ -41,7 +41,7 @@ The WordPress.org directory graphics belong in the SVN root `/assets`. Runtime C
 Commit only after review:
 
 ```powershell
-svn commit -m "Publish PixCensus — Media Usage Audit 3.0.1" --username ussmarines
+svn commit -m "Publish PixCensus — Media Usage Audit 3.0.2" --username ussmarines
 ```
 
 After publication, install the plugin from WordPress.org on a clean test site and verify the displayed version, activation, scan flow, directory graphics, and screenshots.

@@ -11,6 +11,8 @@ class PIXCENSUS_Scanner {
 	private const OPTION_BATCH_SIZE     = 500;
 	private const POST_BATCH_SIZE       = 200;
 	private const TERM_BATCH_SIZE       = 200;
+	private const MAX_WALK_DEPTH        = 64;
+	private const MAX_WALK_NODES        = 10000;
 
 	/**
 	 * Provenance indexed by attachment ID.
@@ -716,39 +718,31 @@ class PIXCENSUS_Scanner {
 	 * @return void
 	 */
 	private function scan_builder_value_for_ids( $value, array &$used_map, string $context ): void {
-		if ( is_array( $value ) ) {
-			foreach ( $value as $pixcensus_key => $pixcensus_nested_value ) {
-				if ( 'id' === strtolower( (string) $pixcensus_key ) ) {
-					$pixcensus_attachment_id = (int) $pixcensus_nested_value;
+		foreach ( $this->walk_scan_values( $value ) as $pixcensus_entry ) {
+			$pixcensus_key          = $pixcensus_entry['key'];
+			$pixcensus_nested_value = $pixcensus_entry['value'];
 
-					if ( $pixcensus_attachment_id > 0 ) {
-						$used_map[ $pixcensus_attachment_id ] = true;
-						$this->add_provenance( $pixcensus_attachment_id, $context . ' array:id' );
-					}
-				}
-
-				$this->scan_builder_value_for_ids( $pixcensus_nested_value, $used_map, $context );
-			}
-
-			return;
-		}
-
-		if ( is_object( $value ) ) {
-			$this->scan_builder_value_for_ids( get_object_vars( $value ), $used_map, $context );
-			return;
-		}
-
-		if ( ! is_string( $value ) || '' === $value ) {
-			return;
-		}
-
-		if ( preg_match_all( '/"id"\s*:\s*(\d+)/', $value, $pixcensus_matches ) ) {
-			foreach ( $pixcensus_matches[1] as $pixcensus_match ) {
-				$pixcensus_attachment_id = (int) $pixcensus_match;
+			if ( null !== $pixcensus_key && 'id' === strtolower( (string) $pixcensus_key ) && is_scalar( $pixcensus_nested_value ) ) {
+				$pixcensus_attachment_id = (int) $pixcensus_nested_value;
 
 				if ( $pixcensus_attachment_id > 0 ) {
 					$used_map[ $pixcensus_attachment_id ] = true;
-					$this->add_provenance( $pixcensus_attachment_id, $context . ' json:id' );
+					$this->add_provenance( $pixcensus_attachment_id, $context . ' array:id' );
+				}
+			}
+
+			if ( ! is_string( $pixcensus_nested_value ) || '' === $pixcensus_nested_value ) {
+				continue;
+			}
+
+			if ( preg_match_all( '/"id"\s*:\s*(\d+)/', $pixcensus_nested_value, $pixcensus_matches ) ) {
+				foreach ( $pixcensus_matches[1] as $pixcensus_match ) {
+					$pixcensus_attachment_id = (int) $pixcensus_match;
+
+					if ( $pixcensus_attachment_id > 0 ) {
+						$used_map[ $pixcensus_attachment_id ] = true;
+						$this->add_provenance( $pixcensus_attachment_id, $context . ' json:id' );
+					}
 				}
 			}
 		}
@@ -761,29 +755,101 @@ class PIXCENSUS_Scanner {
 	 * @return array<int, string>
 	 */
 	private function flatten_scan_strings( $value ): array {
-		if ( is_string( $value ) ) {
-			return array( $value );
-		}
-
-		if ( is_scalar( $value ) ) {
-			return array( (string) $value );
-		}
-
-		if ( is_object( $value ) ) {
-			$value = get_object_vars( $value );
-		}
-
-		if ( ! is_array( $value ) ) {
-			return array();
-		}
-
 		$pixcensus_strings = array();
 
-		foreach ( $value as $pixcensus_nested_value ) {
-			$pixcensus_strings = array_merge( $pixcensus_strings, $this->flatten_scan_strings( $pixcensus_nested_value ) );
+		foreach ( $this->walk_scan_values( $value ) as $pixcensus_entry ) {
+			$pixcensus_nested_value = $pixcensus_entry['value'];
+
+			if ( is_string( $pixcensus_nested_value ) ) {
+				$pixcensus_strings[] = $pixcensus_nested_value;
+			} elseif ( is_scalar( $pixcensus_nested_value ) ) {
+				$pixcensus_strings[] = (string) $pixcensus_nested_value;
+			}
 		}
 
 		return $pixcensus_strings;
+	}
+
+	/**
+	 * Walk arbitrary scan values without recursive calls.
+	 *
+	 * The per-value limits retain ordinary builder payloads while bounding the
+	 * queue, traversal work, and nesting of hostile third-party metadata.
+	 *
+	 * @param mixed $value Value to walk.
+	 * @return Generator<int, array{key: int|string|null, value: mixed}>
+	 */
+	private function walk_scan_values( $value ): Generator {
+		$pixcensus_queue           = new SplQueue();
+		$pixcensus_seen_objects    = new SplObjectStorage();
+		$pixcensus_seen_array_refs = array();
+		$pixcensus_examined_nodes  = 1;
+		$pixcensus_queue->enqueue(
+			array(
+				'key'   => null,
+				'value' => $value,
+				'depth' => 0,
+			)
+		);
+
+		while ( ! $pixcensus_queue->isEmpty() ) {
+			$pixcensus_entry         = $pixcensus_queue->dequeue();
+			$pixcensus_current       = $pixcensus_entry['value'];
+			$pixcensus_current_key   = $pixcensus_entry['key'];
+			$pixcensus_current_depth = $pixcensus_entry['depth'];
+
+			if ( is_object( $pixcensus_current ) ) {
+				if ( $pixcensus_seen_objects->contains( $pixcensus_current ) ) {
+					continue;
+				}
+
+				$pixcensus_seen_objects->attach( $pixcensus_current );
+				$pixcensus_current = get_object_vars( $pixcensus_current );
+			}
+
+			if ( is_array( $pixcensus_current ) ) {
+				if ( $pixcensus_current_depth >= self::MAX_WALK_DEPTH ) {
+					continue;
+				}
+
+				foreach ( $pixcensus_current as $pixcensus_key => $pixcensus_nested_value ) {
+					if ( $pixcensus_examined_nodes >= self::MAX_WALK_NODES ) {
+						break;
+					}
+
+					++$pixcensus_examined_nodes;
+
+					if ( is_array( $pixcensus_nested_value ) ) {
+						$pixcensus_reference = ReflectionReference::fromArrayElement( $pixcensus_current, $pixcensus_key );
+
+						if ( $pixcensus_reference instanceof ReflectionReference ) {
+							$pixcensus_reference_id = $pixcensus_reference->getId();
+
+							if ( isset( $pixcensus_seen_array_refs[ $pixcensus_reference_id ] ) ) {
+								continue;
+							}
+
+							$pixcensus_seen_array_refs[ $pixcensus_reference_id ] = true;
+						}
+					}
+
+					$pixcensus_queue->enqueue(
+						array(
+							'key'   => $pixcensus_key,
+							'value' => $pixcensus_nested_value,
+							'depth' => $pixcensus_current_depth + 1,
+						)
+					);
+				}
+
+				continue;
+			}
+
+			yield array(
+				'key'   => $pixcensus_current_key,
+				'value' => $pixcensus_current,
+			);
+		}
 	}
 
 	/**

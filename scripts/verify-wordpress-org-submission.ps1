@@ -1,7 +1,9 @@
 param(
 	[Parameter(Mandatory = $true)]
 	[string] $ZipPath,
-	[string] $Version = '3.0.1',
+	[Parameter(Mandatory = $true)]
+	[ValidatePattern('^\d+\.\d+\.\d+$')]
+	[string] $Version,
 	[string] $ExpectedSha256 = '',
 	[string] $ChecksumPath = ''
 )
@@ -26,9 +28,10 @@ try {
 	$mainContent = Get-Content -LiteralPath $mainFile -Raw
 	$readmeContent = Get-Content -LiteralPath $readme -Raw
 	if ($mainContent -notmatch "(?m)^\s*\*\s*Version:\s*$escapedVersion\s*$") { throw "Plugin header version $Version not found." }
+	if ($mainContent -notmatch "define\(\s*'PIXCENSUS_VERSION'\s*,\s*'$escapedVersion'\s*\)") { throw "PIXCENSUS_VERSION $Version not found." }
 	if ($mainContent -notmatch "(?m)^\s*\*\s*Text Domain:\s*pixcensus-media-audit\s*$") { throw 'Text Domain not found.' }
 	if ($readmeContent -notmatch "(?m)^Stable tag:\s*$escapedVersion\s*$") { throw "Stable tag $Version not found." }
-	$forbiddenNames = @('.git','.github','.agents','.codex','node_modules','vendor','tests','scripts','docs','dist')
+	$forbiddenNames = @('.git','.github','.agents','.codex','.security','.wordpress-org','node_modules','vendor','tests','scripts','docs','dist')
 	foreach ($name in $forbiddenNames) {
 		if (Get-ChildItem -LiteralPath $root -Recurse -Force | Where-Object { $_.Name -eq $name }) { throw "Development-only entry: $name" }
 	}

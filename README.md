@@ -12,7 +12,7 @@ A non-destructive WordPress plugin that maps where media is referenced before yo
 
 ## Overview
 
-Version 3.0.1 introduces the complete PixCensus — Media Usage Audit visual identity across the project documentation, WordPress.org assets, and the plugin administration screen while preserving the same non-destructive audit behavior.
+Version 3.0.2 hardens nested metadata traversal, CDN validation, dependencies, release packaging, and admin accessibility for the first WordPress.org publication while preserving the same non-destructive audit behavior.
 
 PixCensus — Media Usage Audit scans a WordPress site and groups registered image attachments as used, used only in draft content, or potentially unused. It also records where matches were found, reports image files that are not registered attachments, and exports the latest results as CSV.
 
@@ -43,12 +43,9 @@ Always create and verify a full backup before deleting media manually.
 
 ## Installation
 
-1. Download `pixcensus-media-audit.zip` from the [latest GitHub release](https://github.com/ussmarines/WP_image_usage_audit/releases/latest).
-2. In WordPress, open **Plugins → Add New Plugin → Upload Plugin**.
-3. Select the ZIP, install it, and activate **PixCensus — Media Usage Audit**.
-4. Open **Media → PixCensus — Media Usage Audit**.
-
-The plugin is not currently published in the WordPress.org Plugin Directory. GitHub Releases are the canonical download source.
+1. Install **PixCensus — Media Usage Audit** from **Plugins → Add New Plugin**, or download `pixcensus-media-audit.zip` from the [latest GitHub release](https://github.com/ussmarines/WP_image_usage_audit/releases/latest) and use **Upload Plugin**.
+2. Activate **PixCensus — Media Usage Audit**.
+3. Open **Media → PixCensus — Media Usage Audit**.
 
 ## Quick start
 

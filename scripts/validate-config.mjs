@@ -45,10 +45,13 @@ const packageManifest = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 const approvedInstallScripts = packageManifest.allowScripts || {};
 
 if (
+	packageManifest.name !== 'pixcensus-media-audit' ||
+	packageManifest.private !== true ||
+	packageManifest.devDependencies?.yaml !== '2.9.0' ||
 	packageManifest.devDependencies?.['fast-check'] !== '4.9.0' ||
 	packageManifest.scripts?.['test:property'] !== 'node tests/property/security-inputs.property.js'
 ) {
-	throw new Error('The property-based security test must use the reviewed fast-check version and harness.');
+	throw new Error('The npm package identity and direct QA dependencies must remain exact and reviewed.');
 }
 
 if (

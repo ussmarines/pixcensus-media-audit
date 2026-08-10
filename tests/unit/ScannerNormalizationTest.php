@@ -21,6 +21,15 @@ final class ScannerNormalizationTest extends TestCase {
 		return $reflection->invokeArgs( $scanner, $arguments );
 	}
 
+	/**
+	 * @return int
+	 */
+	private function get_private_constant( string $name ): int {
+		$reflection = new ReflectionClassConstant( PIXCENSUS_Scanner::class, $name );
+
+		return (int) $reflection->getValue();
+	}
+
 	public function test_cdn_aliases_and_rewrites_normalize_upload_urls() : void {
 		$GLOBALS['pixcensus_test_options'] = array(
 			'pixcensus_cdn_aliases'  => 'cdn.example.test, media.example.test',
@@ -173,6 +182,84 @@ final class ScannerNormalizationTest extends TestCase {
 		$this->assertSame( 'post:8 meta:_elementor_data json:id', $provenance[27][0] );
 	}
 
+	public function test_bounded_walker_preserves_normal_strings_scalars_ids_and_upload_urls() : void {
+		$scanner  = new PIXCENSUS_Scanner();
+		$used     = array();
+		$path_map = array( '2026/normal.jpg' => 51 );
+		$value    = array(
+			'number' => 17,
+			'flag'   => false,
+			'url'    => '/wp-content/uploads/2026/normal.jpg',
+			'nested' => array( 'id' => 52 ),
+		);
+
+		$this->assertSame( array( '17', '', '/wp-content/uploads/2026/normal.jpg', '52' ), $this->call_private( $scanner, 'flatten_scan_strings', array( $value ) ) );
+		$this->call_private( $scanner, 'scan_value_for_uploads', array( $value, $path_map, &$used, 'normal' ) );
+		$this->call_private( $scanner, 'scan_builder_value_for_ids', array( $value, &$used, 'normal-builder' ) );
+
+		$this->assertSame( array( 51 => true, 52 => true ), $used );
+	}
+
+	public function test_bounded_walker_handles_a_self_referential_array() : void {
+		$scanner  = new PIXCENSUS_Scanner();
+		$used     = array();
+		$path_map = array( '2026/cycle.jpg' => 61 );
+		$value    = array(
+			'id'  => 62,
+			'url' => '/wp-content/uploads/2026/cycle.jpg',
+		);
+		$value['self'] =& $value;
+
+		$this->call_private( $scanner, 'scan_value_for_uploads', array( $value, $path_map, &$used, 'array-cycle' ) );
+		$this->call_private( $scanner, 'scan_builder_value_for_ids', array( $value, &$used, 'array-cycle' ) );
+
+		$this->assertSame( array( 61 => true, 62 => true ), $used );
+	}
+
+	public function test_bounded_walker_handles_cyclic_objects() : void {
+		$scanner = new PIXCENSUS_Scanner();
+		$used    = array();
+		$first   = (object) array( 'id' => 71 );
+		$second  = (object) array( 'id' => 72 );
+		$first->next = $second;
+		$second->next = $first;
+
+		$this->call_private( $scanner, 'scan_builder_value_for_ids', array( $first, &$used, 'object-cycle' ) );
+
+		$this->assertSame( array( 71 => true, 72 => true ), $used );
+	}
+
+	public function test_bounded_walker_abandons_values_beyond_the_depth_limit() : void {
+		$scanner   = new PIXCENSUS_Scanner();
+		$used      = array();
+		$path_map  = array(
+			'2026/visible.jpg' => 81,
+			'2026/deep.jpg'    => 82,
+		);
+		$deep_value = '/wp-content/uploads/2026/deep.jpg';
+
+		for ( $depth = 0; $depth <= $this->get_private_constant( 'MAX_WALK_DEPTH' ); ++$depth ) {
+			$deep_value = array( 'nested' => $deep_value );
+		}
+
+		$value = array(
+			'visible' => '/wp-content/uploads/2026/visible.jpg',
+			'deep'    => $deep_value,
+		);
+
+		$this->call_private( $scanner, 'scan_value_for_uploads', array( $value, $path_map, &$used, 'deep' ) );
+
+		$this->assertSame( array( 81 => true ), $used );
+	}
+
+	public function test_bounded_walker_caps_extremely_wide_values() : void {
+		$scanner = new PIXCENSUS_Scanner();
+		$limit   = $this->get_private_constant( 'MAX_WALK_NODES' );
+		$value   = array_fill( 0, $limit + 100, 'normal' );
+
+		$this->assertCount( $limit - 1, $this->call_private( $scanner, 'flatten_scan_strings', array( $value ) ) );
+	}
+
 	/**
 	 * @dataProvider dangerous_csv_values
 	 */
@@ -225,6 +312,7 @@ final class ScannerNormalizationTest extends TestCase {
 			'missing separator'       => array( '', 'https://cdn.example.test/media' ),
 			'non-http source'         => array( '', 'javascript:alert(1) => /wp-content/uploads' ),
 			'unrecognized target'     => array( '', '/media => /tmp' ),
+			'uploads prefix collision' => array( '', '/media => /wp-content/uploadswhatever' ),
 			'overly broad source'     => array( '', '/ => /wp-content/uploads' ),
 			'too many aliases'        => array( implode( ',', array_fill( 0, 21, 'cdn.example.test' ) ), '' ),
 			'too many rewrite rules'  => array( '', implode( "\n", array_fill( 0, 21, '/media => /wp-content/uploads' ) ) ),

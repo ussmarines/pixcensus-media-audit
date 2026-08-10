@@ -243,3 +243,8 @@
 }
 #pixcensus-admin .pixcensus-card { transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease; }
 #pixcensus-admin .pixcensus-card:hover { border-color: #a9c7d9; box-shadow: 0 9px 24px rgba(7, 22, 43, .08); transform: translateY(-1px); }
+
+@media (prefers-reduced-motion: reduce) {
+	#pixcensus-admin .pixcensus-card { transition: none; }
+	#pixcensus-admin .pixcensus-card:hover { transform: none; }
+}

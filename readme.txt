@@ -5,7 +5,7 @@ Tags: media, attachments, audit, images, csv
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 3.0.1
+Stable tag: 3.0.2
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -50,6 +50,12 @@ Typical cases include custom CSS, HTML widgets, theme files, rewritten CDN domai
 
 == Changelog ==
 
+= 3.0.2 =
+* Fixed the PixCensus density control binding and improved keyboard-visible, pressed-state, live-notice, and reduced-motion behavior.
+* Bounded nested metadata traversal by depth and element budget, with cycle-safe handling for arrays and objects while preserving normal URL and builder-ID detection.
+* Tightened CDN rewrite targets to the uploads directory boundary and hardened the WordPress.org SVN asset allow-list and version checks.
+* Updated the locked npm and Composer QA dependencies to resolve the current `js-yaml` and PHP_CodeSniffer security advisories.
+
 = 3.0.1 =
 * Renamed the plugin to PixCensus — Media Usage Audit with the distinctive `pixcensus-media-audit` slug.
 * Replaced all active PHP, WordPress, JavaScript, CSS, option, nonce, and AJAX prefixes with `pixcensus_` / `PIXCENSUS_`.
@@ -57,8 +63,8 @@ Typical cases include custom CSS, HTML widgets, theme files, rewritten CDN domai
 * Revalidated administrator capabilities, action-specific nonces, package metadata, multisite behavior, and the non-destructive scan workflow.
 
 = 3.0.0 =
-* Applied a complete PixCensus — Media Usage Audit visual identity to the administration screen and project documentation.
-* Added a bundled, self-contained brand mark with no remote resources or tracking.
+* Improved the administration layout and project documentation before the PixCensus rebranding introduced in 3.0.1.
+* Added bundled, self-contained artwork with no remote resources or tracking.
 * Added WordPress.org banner and icon sources, submission guidance, and safer release-preparation helpers.
 * Preserved the non-destructive scanner, existing security controls, and WordPress 5.9 / PHP 7.4 compatibility.
 
@@ -114,13 +120,17 @@ Typical cases include custom CSS, HTML widgets, theme files, rewritten CDN domai
 
 == Upgrade Notice ==
 
+= 3.0.2 =
+
+Hardens metadata scanning, CDN validation, release preparation, dependencies, and admin accessibility for the first WordPress.org publication.
+
 = 3.0.1 =
 
 Renames the plugin and its identifiers to PixCensus, adds the new directory artwork, and preserves the audited non-destructive workflow.
 
 = 3.0.0 =
 
-Introduces the complete visual identity and WordPress.org publication resources without changing the plugin's non-destructive audit behavior.
+Introduces administration and WordPress.org publication resources without changing the plugin's non-destructive audit behavior; the PixCensus rebranding followed in 3.0.1.
 
 = 2.2.9 =
 
