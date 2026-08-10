@@ -1,0 +1,132 @@
+name: WordPress.org screenshots 3.0.2
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.head.ref == 'wporg/screenshots-3.0.2-publish'
+    runs-on: ubuntu-latest
+    env:
+      EXPECTED_CONFIRMATION: '[WPORG-PUBLISH-SCREENSHOTS-3.0.2]'
+      SCREENSHOT_DIR: .wordpress-org/screenshots
+      SVN_URL: https://plugins.svn.wordpress.org/pixcensus-media-audit
+    steps:
+      - name: Checkout exact PR head
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: Validate screenshot payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib, struct
+
+          root = Path('.wordpress-org/screenshots')
+          expected = [f'screenshot-{i}.png' for i in range(1, 6)]
+          actual = sorted(p.name for p in root.glob('screenshot-*.png'))
+          if actual != expected:
+              raise SystemExit(f'Unexpected screenshot set: {actual}')
+
+          for name in expected:
+              data = (root / name).read_bytes()
+              if data[:8] != b'\x89PNG\r\n\x1a\n':
+                  raise SystemExit(f'{name}: invalid PNG signature')
+              width, height = struct.unpack('>II', data[16:24])
+              if width < 600 or height < 400:
+                  raise SystemExit(f'{name}: dimensions too small: {width}x{height}')
+              print(f'{name}: {width}x{height} sha256={hashlib.sha256(data).hexdigest()}')
+          PY
+
+      - name: Prepare SVN delta without committing
+        shell: bash
+        run: |
+          set -euo pipefail
+          svn checkout --quiet "$SVN_URL" svn-work
+
+          mkdir -p svn-work/assets
+          cp "$SCREENSHOT_DIR"/screenshot-*.png svn-work/assets/
+
+          cd svn-work
+          for f in assets/screenshot-{1..5}.png; do
+            svn add --force "$f" >/dev/null
+            svn propset svn:mime-type image/png "$f" >/dev/null
+          done
+
+          python3 - <<'PY'
+          from pathlib import Path
+
+          section = '''== Screenshots ==\n\n1. Overview of the PixCensus audit screen with scan controls, CDN settings, and media status tabs.\n2. Published media usage results with thumbnails, provenance, match counts, and density controls.\n3. Draft-only media results showing images referenced only by unpublished content.\n4. Potentially unused media results with review actions and file details.\n5. Published-use overview with filters, provenance, and compact result controls.\n\n'''
+
+          for rel in ('trunk/readme.txt', 'tags/3.0.2/readme.txt'):
+              path = Path(rel)
+              text = path.read_text(encoding='utf-8')
+              if '== Screenshots ==' in text:
+                  raise SystemExit(f'{rel}: Screenshots section already exists; refusing implicit replacement')
+              marker = '== Changelog =='
+              if marker not in text:
+                  raise SystemExit(f'{rel}: Changelog marker not found')
+              path.write_text(text.replace(marker, section + marker, 1), encoding='utf-8', newline='\n')
+          PY
+
+          python3 - <<'PY'
+          import subprocess
+
+          allowed = {
+              'assets/screenshot-1.png',
+              'assets/screenshot-2.png',
+              'assets/screenshot-3.png',
+              'assets/screenshot-4.png',
+              'assets/screenshot-5.png',
+              'trunk/readme.txt',
+              'tags/3.0.2/readme.txt',
+          }
+          out = subprocess.check_output(['svn', 'status'], text=True)
+          changed = set()
+          for line in out.splitlines():
+              if not line.strip():
+                  continue
+              changed.add(line[8:].strip().replace('\\', '/'))
+          unexpected = changed - allowed
+          missing = allowed - changed
+          if unexpected or missing:
+              raise SystemExit(f'SVN delta mismatch. unexpected={sorted(unexpected)} missing={sorted(missing)}')
+          print(out)
+          PY
+
+          echo '--- README DIFF ---'
+          svn diff trunk/readme.txt tags/3.0.2/readme.txt
+
+      - name: Commit approved SVN delta
+        if: contains(github.event.pull_request.title, '[WPORG-PUBLISH-SCREENSHOTS-3.0.2]')
+        env:
+          WPORG_SVN_PASSWORD: ${{ secrets.WPORG_SVN_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$WPORG_SVN_PASSWORD"
+          cd svn-work
+          svn commit \
+            --username ussmarines \
+            --password "$WPORG_SVN_PASSWORD" \
+            --non-interactive \
+            --no-auth-cache \
+            -m 'Add PixCensus 3.0.2 screenshots'
+
+      - name: Confirm dry-run gate
+        if: ${{ !contains(github.event.pull_request.title, '[WPORG-PUBLISH-SCREENSHOTS-3.0.2]') }}
+        shell: bash
+        run: |
+          echo 'Preflight only: SVN commit is gated until explicit publication authorization.'
