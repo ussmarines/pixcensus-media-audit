@@ -1,9 +1,9 @@
 ---
-name: iua-quality-gate
-description: "Use when verifying Image Usage Audit changes, selecting necessary tests, preparing a correction or pre-commit validation, checking WordPress metadata or translations, or building and inspecting the distribution ZIP."
+name: pixcensus-quality-gate
+description: "Use when verifying PixCensus changes, selecting necessary tests, preparing a correction or pre-commit validation, checking WordPress metadata or translations, or building and inspecting the distribution ZIP."
 ---
 
-# IUA quality gate
+# PixCensus quality gate
 
 1. Read `AGENTS.md`, `docs/codex/PROJECT_MAP.md`, and `.codex/test-ledger.json`.
 2. Inspect the current read-only Git diff and identify the changed surfaces.

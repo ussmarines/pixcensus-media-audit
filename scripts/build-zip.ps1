@@ -35,6 +35,19 @@ $runtimeDirectories = @(
 	'views'
 )
 
+foreach ($relativePath in @($runtimeFiles + $runtimeDirectories)) {
+	$sourcePath = Join-Path $repoRoot $relativePath
+	$sourceItems = if (Test-Path -LiteralPath $sourcePath -PathType Container) {
+		@(Get-Item -LiteralPath $sourcePath -Force) + @(Get-ChildItem -LiteralPath $sourcePath -Recurse -Force)
+	} else {
+		@(Get-Item -LiteralPath $sourcePath -Force)
+	}
+
+	if ($sourceItems | Where-Object { $_.Attributes -band [System.IO.FileAttributes]::ReparsePoint }) {
+		throw "Unexpected symlink or reparse point in runtime source: $relativePath"
+	}
+}
+
 try {
 	New-Item -ItemType Directory -Path $packageRoot -Force | Out-Null
 
@@ -73,13 +86,24 @@ try {
 			'pixcensus-media-audit/uninstall.php'
 		)
 
-		foreach ($entry in $entries) {
+		foreach ($archiveEntry in $archive.Entries) {
+			$entry = $archiveEntry.FullName.Replace('\', '/')
 			if (-not $entry.StartsWith('pixcensus-media-audit/', [System.StringComparison]::Ordinal)) {
 				throw "Unexpected ZIP root entry: $entry"
 			}
 
-			if ($entry -match '(^|/)(\.git|\.github|\.agents|\.codex|docs|tests|node_modules|vendor|scripts|dist)(/|$)') {
+			if ($entry -match '(^|/)(\.git|\.github|\.agents|\.codex|\.security|\.wordpress-org|docs|tests|node_modules|vendor|scripts|dist)(/|$)') {
 				throw "Development-only ZIP entry: $entry"
+			}
+
+			if ($entry -match '(^|/)(?:\.env(?:\..*)?|composer\.(?:json|lock)|package(?:-lock)?\.json|phpcs\.xml(?:\.dist)?|phpstan\.neon(?:\.dist)?|phpunit\.xml(?:\.dist)?|.*\.(?:zip|log|tmp|bak))$') {
+				throw "Forbidden release file: $entry"
+			}
+
+			$externalAttributes = [uint32] ( ([int64] $archiveEntry.ExternalAttributes) -band 0xFFFFFFFFL )
+			$unixFileType = (($externalAttributes -shr 16) -band 0xF000)
+			if (0xA000 -eq $unixFileType) {
+				throw "Unexpected symlink in ZIP: $entry"
 			}
 		}
 

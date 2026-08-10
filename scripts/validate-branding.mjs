@@ -18,12 +18,18 @@ const runtimePaths = [
 ];
 
 const forbidden = ['Image Usage Audit', 'image-usage-audit', 'IUA_', 'iua_', 'iua-'];
+const forbiddenCamelCase = /\biua[A-Z][A-Za-z0-9_]*\b/g;
 for (const relativePath of runtimePaths) {
   const fullPath = path.join(root, relativePath);
   if (!fs.existsSync(fullPath)) throw new Error(`Missing PixCensus runtime file: ${relativePath}`);
   const content = fs.readFileSync(fullPath, 'utf8');
   for (const token of forbidden) {
     if (content.includes(token)) throw new Error(`Legacy identifier ${token} remains in ${relativePath}`);
+  }
+
+  const camelCaseMatches = content.match(forbiddenCamelCase) || [];
+  if (camelCaseMatches.length > 0) {
+    throw new Error(`Legacy camelCase identifier ${camelCaseMatches[0]} remains in ${relativePath}`);
   }
 }
 
@@ -58,11 +64,13 @@ for (const relativePath of directoryAssets) {
 const main = fs.readFileSync(path.join(root, 'pixcensus-media-audit.php'), 'utf8');
 const readme = fs.readFileSync(path.join(root, 'readme.txt'), 'utf8');
 const githubReadme = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
+const adminScript = fs.readFileSync(path.join(root, 'assets/admin.js'), 'utf8');
+const adminView = fs.readFileSync(path.join(root, 'views/admin-page.php'), 'utf8');
 const requiredMain = [
   'Plugin Name: PixCensus — Media Usage Audit',
-  'Version: 3.0.1',
+  'Version: 3.0.2',
   'Text Domain: pixcensus-media-audit',
-  "define( 'PIXCENSUS_VERSION', '3.0.1' )",
+  "define( 'PIXCENSUS_VERSION', '3.0.2' )",
   "define( 'PIXCENSUS_SLUG', 'pixcensus-media-audit' )",
   "current_user_can( 'manage_options' )",
   'check_admin_referer(',
@@ -71,9 +79,15 @@ const requiredMain = [
 for (const token of requiredMain) {
   if (!main.includes(token)) throw new Error(`Required main-plugin control is missing: ${token}`);
 }
-if (!readme.includes('Stable tag: 3.0.1')) throw new Error('The WordPress.org stable tag is not 3.0.1.');
+if (!readme.includes('Stable tag: 3.0.2')) throw new Error('The WordPress.org stable tag is not 3.0.2.');
 if (!githubReadme.includes('.wordpress-org/banner-1544x500.png')) {
   throw new Error('The GitHub README does not use the PixCensus banner.');
+}
+if (
+	!adminView.includes('data-pixcensus-density=') ||
+	!adminScript.includes("$(this).attr('data-pixcensus-density')")
+) {
+	throw new Error('The PixCensus density attribute must stay synchronized between the admin view and script.');
 }
 
 const ajaxMethods = [
@@ -90,4 +104,4 @@ for (const method of ajaxMethods) {
   if (!excerpt.includes('verify_ajax_request(')) throw new Error(`${method} does not verify capability, action, method, and nonce.`);
 }
 
-console.log(JSON.stringify({ result: 'pass', name: 'PixCensus — Media Usage Audit', slug: 'pixcensus-media-audit', version: '3.0.1' }));
+console.log(JSON.stringify({ result: 'pass', name: 'PixCensus — Media Usage Audit', slug: 'pixcensus-media-audit', version: '3.0.2' }));

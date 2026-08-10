@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Only the latest released version of PixCensus — Media Usage Audit is intended to receive security fixes. The repository is not yet published in the WordPress.org Plugin Directory.
+Only the latest released version of PixCensus — Media Usage Audit is intended to receive security fixes. Official releases are distributed through the WordPress.org Plugin Directory and the project's GitHub Releases page.
 
 ## Reporting a vulnerability
 

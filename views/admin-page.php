@@ -279,8 +279,8 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 
 		<div class="pixcensus-right">
 			<div class="pixcensus-columns">
-				<button class="button" id="pixcensus-columns-toggle"><?php esc_html_e( 'Columns', 'pixcensus-media-audit' ); ?></button>
-				<div id="pixcensus-columns-panel" class="pixcensus-columns-panel" style="display:none;">
+				<button class="button" id="pixcensus-columns-toggle" aria-controls="pixcensus-columns-panel" aria-expanded="false"><?php esc_html_e( 'Columns', 'pixcensus-media-audit' ); ?></button>
+				<div id="pixcensus-columns-panel" class="pixcensus-columns-panel" role="group" style="display:none;">
 					<label><input type="checkbox" class="pixcensus-col-toggle" id="pixcensus-col-thumb" data-col="thumb" checked /> <?php esc_html_e( 'Thumb', 'pixcensus-media-audit' ); ?></label>
 					<label><input type="checkbox" class="pixcensus-col-toggle" id="pixcensus-col-id" data-col="id" checked /> <?php esc_html_e( 'ID', 'pixcensus-media-audit' ); ?></label>
 					<label><input type="checkbox" class="pixcensus-col-toggle" id="pixcensus-col-file" data-col="file" checked /> <?php esc_html_e( 'File', 'pixcensus-media-audit' ); ?></label>
@@ -300,8 +300,8 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 			</div>
 
 			<div class="pixcensus-density">
-				<button class="button button-primary" data-pixcensus-density="comfortable"><?php esc_html_e( 'Comfortable', 'pixcensus-media-audit' ); ?></button>
-				<button class="button" data-pixcensus-density="compact"><?php esc_html_e( 'Compact', 'pixcensus-media-audit' ); ?></button>
+				<button class="button button-primary" data-pixcensus-density="comfortable" aria-pressed="true"><?php esc_html_e( 'Comfortable', 'pixcensus-media-audit' ); ?></button>
+				<button class="button" data-pixcensus-density="compact" aria-pressed="false"><?php esc_html_e( 'Compact', 'pixcensus-media-audit' ); ?></button>
 			</div>
 
 			<?php if ( 'used' === $pixcensus_tab ) : ?>

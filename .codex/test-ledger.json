@@ -1392,6 +1392,97 @@
       "configuration": ["package.json", "package-lock.json", "scripts/validate-config.mjs", "scripts/build-zip.ps1", "assets/admin.css"],
       "environment_signature": "Windows|PowerShell-7.6.4|node-v24.18.0|npm-11.16.0|git-2.55.0.windows.3|ripgrep-15.1.0",
       "notes": "npm ci audited 393 packages with zero vulnerabilities. The ZIP build passed with 12 entries and SHA-256 88f06f237f8bf6956d83e5833dbe67135d52df3f87845025a32d737124166aa4. The targeted CSS guard found no fixed or maximum width applied to #iua-admin. No PHP file changed, so PHP syntax and static-analysis checks were not required."
+    },
+    {
+      "name": "3.0.2 scanner normalization and CDN regression validation",
+      "command": "php vendor/bin/phpunit --configuration=phpunit.xml.dist --filter ScannerNormalizationTest; php vendor/bin/phpcs --standard=phpcs.xml.dist includes/class-pixcensus-scanner.php includes/class-pixcensus-cdn-settings.php tests/unit/ScannerNormalizationTest.php",
+      "tool_version": "PHP 8.3.33; PHPUnit 9.6.35; PHPCS 3.13.6; WPCS 3.4.1",
+      "date": "2026-08-10",
+      "commit_tested": "1f86ca9e844d1602e22a09526415851d5824fd61+3.0.2-hardening-worktree",
+      "result": "pass",
+      "duration_ms": 436,
+      "coverage": ["40 scanner normalization tests and 66 assertions", "self-referential arrays", "cyclic objects", "depth and node limits", "builder IDs", "upload URLs", "CDN prefix boundary", "changed PHP coding standards"],
+      "configuration": ["phpunit.xml.dist", "phpcs.xml.dist"],
+      "environment_signature": "Windows|PowerShell-7.6.4|php-8.3.33|phpunit-9.6.35|phpcs-3.13.6",
+      "notes": "The bounded iterative walker preserved normal results and terminated safely for recursive and oversized values."
+    },
+    {
+      "name": "3.0.2 complete local PHP and Node QA",
+      "command": "composer validate --strict --no-interaction; composer audit --locked --no-interaction; composer qa; php -l <all 13 tracked PHP files>; npm ci; npm audit --audit-level=high; npm run test:property; npm run validate:metadata; npm run validate:config; npm run validate:branding; npm run actionlint",
+      "tool_version": "PHP 8.3.33; Composer 2.10.2; PHPStan 2.2.7; PHPUnit 9.6.35; PHPCS 3.13.6; Node.js v24.19.0; npm 11.17.0; fast-check 4.9.0; actionlint 1.7.12",
+      "date": "2026-08-10",
+      "commit_tested": "1f86ca9e844d1602e22a09526415851d5824fd61+3.0.2-hardening-worktree",
+      "result": "pass",
+      "duration_ms": 27679,
+      "coverage": ["strict Composer metadata and locked advisories", "all PHPStan paths", "50 PHPUnit tests and 239 assertions", "WPCS and PHPCompatibilityWP", "all tracked PHP syntax", "locked npm graph and all-severity audit", "500 property cases and 6500 assertions", "metadata", "configuration", "branding", "GitHub Actions syntax"],
+      "configuration": ["composer.json", "composer.lock", "phpstan.neon.dist", "phpunit.xml.dist", "phpcs.xml.dist", "package.json", "package-lock.json", "IUA_PROPERTY_SEED=20260801", "IUA_PROPERTY_RUNS=500"],
+      "environment_signature": "Windows|PowerShell-7.6.4|php-8.3.33|composer-2.10.2|node-v24.19.0|npm-11.17.0",
+      "notes": "All local application and dependency gates passed; npm and Composer reported zero known vulnerability."
+    },
+    {
+      "name": "3.0.2 pre-commit full security diagnostics",
+      "command": "pwsh -NoProfile -File tools/security/security-scan.ps1 -Profile Full -Enforce; pwsh -NoProfile -File tools/security/security-scan.ps1 -Profile Full",
+      "tool_version": "PowerShell 7.6.4; Gitleaks 8.30.1; Opengrep 1.22.0; Trivy 0.70.0; npm 11.17.0; Composer 2.10.2; Zizmor 1.26.1",
+      "date": "2026-08-10",
+      "commit_tested": "1f86ca9e844d1602e22a09526415851d5824fd61+3.0.2-hardening-worktree",
+      "result": "failed",
+      "duration_ms": 68831,
+      "coverage": ["tracked identity policy", "full-history secret scan", "six static-analysis rules over 16 files", "npm and Composer advisories", "Trivy filesystem vulnerabilities and misconfigurations", "CycloneDX SBOM", "GitHub Actions security"],
+      "configuration": ["tools/security/security-policy.json", "tools/security/opengrep-rules.yml", "tools/security/security-scan.ps1", "tools/security/run_security_suite.py"],
+      "environment_signature": "Windows|PowerShell-7.6.4|git-2.55.0.windows.3|gitleaks-8.30.1|opengrep-1.22.0|trivy-0.70.0|zizmor-1.26.1",
+      "notes": "Both pre-commit invocations reported four unreadable tracked paths because the Git index still referenced files renamed in the worktree. Gitleaks, Opengrep, npm audit, Composer audit, Trivy and Zizmor otherwise passed. After enabling Trivy development dependencies, it inspected both npm and Composer with zero vulnerability or misconfiguration, and the CycloneDX 1.6 SBOM contained 391 components. A post-commit enforcing rerun is required."
+    },
+    {
+      "name": "3.0.2 release artifact and WordPress.org preparation validation",
+      "command": "npm run build:zip; pwsh -NoProfile -File scripts/verify-wordpress-org-submission.ps1 -ZipPath dist/pixcensus-media-audit.zip -Version 3.0.2 -ChecksumPath dist/pixcensus-media-audit.zip.sha256; parse build, verify and SVN PowerShell scripts; python -m py_compile tools/security/run_security_suite.py; pwsh -NoProfile -File scripts/prepare-wordpress-org-svn.ps1 -PluginZip dist/pixcensus-media-audit.zip -WorkDir <fresh-nonexistent-temp-path> -AssetsDir .wordpress-org -Version 3.0.2 -ValidateOnly; repeat with -Version 3.0.1 and require exit 1",
+      "tool_version": "PowerShell 7.6.4; Python 3.14.6; .NET System.IO.Compression and System.Drawing.Common",
+      "date": "2026-08-10",
+      "commit_tested": "1f86ca9e844d1602e22a09526415851d5824fd61+3.0.2-hardening-worktree",
+      "result": "pass",
+      "duration_ms": 6340,
+      "coverage": ["single-root allow-listed ZIP", "runtime symlink and forbidden-path rejection", "version coherence", "public WordPress.org asset allowlist", "PNG dimensions and content format", "SVG structure", "MIME metadata", "version mismatch rejection", "PowerShell and Python syntax"],
+      "configuration": ["scripts/build-zip.ps1", "scripts/verify-wordpress-org-submission.ps1", "scripts/prepare-wordpress-org-svn.ps1", ".distignore", ".wordpress-org"],
+      "environment_signature": "Windows|PowerShell-7.6.4|python-3.14.6|dotnet-compression|system-drawing-common",
+      "notes": "The provisional 12-entry ZIP passed with SHA-256 f6645ce0184b8a8a60a4bd73e32af9ad714380d39522fe684c80cb2f822a9c18. All five required public assets were uniquely present with the expected format and dimensions. The 3.0.1 mismatch failed as required. SVN itself is unavailable and no checkout, tag or publication was attempted. An initial auxiliary invocation used two nonexistent historical Node paths and the unsupported -ZipPath parameter; the corrected repository paths and parameters passed."
+    },
+    {
+      "name": "3.0.2 admin accessibility and reduced-motion checks",
+      "command": "node --check assets/admin.js; calculate WCAG contrast ratios for primary, hover, muted, chip and hero text pairs; inspect ARIA state bindings and prefers-reduced-motion behavior",
+      "tool_version": "Node.js v24.19.0; PowerShell 7.6.4",
+      "date": "2026-08-10",
+      "commit_tested": "1f86ca9e844d1602e22a09526415851d5824fd61+3.0.2-hardening-worktree",
+      "result": "pass",
+      "duration_ms": 139,
+      "coverage": ["JavaScript syntax", "WCAG contrast", "density aria-pressed", "column chooser aria-expanded", "dynamic live notices", "reduced-motion transitions and removals"],
+      "configuration": ["assets/admin.js", "assets/admin.css", "views/admin-page.php"],
+      "environment_signature": "Windows|PowerShell-7.6.4|node-v24.19.0",
+      "notes": "All measured contrast ratios were at least 4.74:1; stateful controls and notices expose synchronized ARIA state, and reduced-motion users avoid fades and card transforms."
+    },
+    {
+      "name": "3.0.2 post-commit full security enforcement",
+      "command": "pwsh -NoProfile -File tools/security/security-scan.ps1 -Profile Full -Enforce",
+      "tool_version": "PowerShell 7.6.4; Gitleaks 8.30.1; Opengrep 1.22.0; Trivy 0.70.0; npm 11.17.0; Composer 2.10.2; Zizmor 1.26.1",
+      "date": "2026-08-10",
+      "commit_tested": "ce05e5338f0cd923cfd5af2f612a701ece785753",
+      "result": "pass",
+      "duration_ms": 19163,
+      "coverage": ["tracked identity policy and approved history", "57-commit full-history secret scan", "six static-analysis rules over 16 files", "npm and Composer advisories", "Trivy npm and Composer vulnerabilities plus misconfigurations", "CycloneDX 1.6 SBOM", "GitHub Actions security"],
+      "configuration": ["tools/security/security-policy.json", "tools/security/opengrep-rules.yml", "tools/security/security-scan.ps1", "tools/security/run_security_suite.py"],
+      "environment_signature": "Windows|PowerShell-7.6.4|git-2.55.0.windows.3|gitleaks-8.30.1|opengrep-1.22.0|trivy-0.70.0|zizmor-1.26.1",
+      "notes": "Blocking enforcement passed with zero failed check: identity guard had zero current finding and 13 approved historical findings, Gitleaks zero, Opengrep zero results and errors, Trivy zero vulnerability and misconfiguration across two dependency targets, npm audit zero, Composer audit zero, Zizmor zero, and the SBOM contained 391 components. Reports are sanitized and include no matched values."
+    },
+    {
+      "name": "3.0.2 cross-platform ZIP attribute correction",
+      "command": "gh run view 31387960079 --json jobs,conclusion,url,headSha; gh run view 31387960079 --log-failed; parse scripts/build-zip.ps1; normalize and assert signed ExternalAttributes value -2119958528; twice: npm run build:zip; compare SHA-256; pwsh -NoProfile -File scripts/verify-wordpress-org-submission.ps1 -ZipPath dist/pixcensus-media-audit.zip -Version 3.0.2 -ChecksumPath dist/pixcensus-media-audit.zip.sha256; pwsh -NoProfile -File tools/security/security-scan.ps1 -Profile Full -Enforce",
+      "tool_version": "GitHub Actions ubuntu-24.04; PowerShell 7.6.4; Gitleaks 8.30.1; Opengrep 1.22.0; Trivy 0.70.0; Zizmor 1.26.1",
+      "date": "2026-08-10",
+      "commit_tested": "67bd31110ecd42fcc3e68a9e0a278eed0bb416ae+portable-zip-worktree",
+      "result": "pass",
+      "duration_ms": 26777,
+      "coverage": ["real failed GitHub QA log", "signed ZIP ExternalAttributes conversion", "PowerShell syntax", "two reproducible release builds", "WordPress.org ZIP verification", "full blocking local security suite"],
+      "configuration": ["scripts/build-zip.ps1", "scripts/verify-wordpress-org-submission.ps1", "tools/security/security-scan.ps1"],
+      "environment_signature": "Windows|PowerShell-7.6.4|git-2.55.0.windows.3|GitHub-Actions-ubuntu-24.04",
+      "notes": "QA run 31387960079 exposed a Linux-only UInt32 conversion failure for negative ZipArchiveEntry.ExternalAttributes, blocking the PHP 7.4 and all WordPress lanes before runtime startup. Masking the signed Int32 through Int64 preserved the 32-bit pattern and produced regular-file type 0x8000. Both local builds retained SHA-256 f6645ce93c8aa9e411ab7b9f95092a5ec738255465c97544cf1992c8fda4cfc1, exact ZIP verification passed, and the full local security suite remained green."
     }
   ]
 }

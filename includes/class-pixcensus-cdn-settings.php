@@ -133,7 +133,7 @@ final class PIXCENSUS_CDN_Settings {
 	 */
 	private static function is_valid_target( string $target ): bool {
 		return strlen( $target ) <= 2048
-			&& 0 === strpos( $target, '/wp-content/uploads' )
+			&& 1 === preg_match( '#^/wp-content/uploads(?:/|$)#', $target )
 			&& ! preg_match( '/[\x00-\x1F\x7F]/', $target );
 	}
 }

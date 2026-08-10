@@ -6,12 +6,25 @@
 		return fallback;
 	}
 
+	function prefersReducedMotion() {
+		return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	}
+
 	function showNotice(type, text) {
 		var $notice = $('<div class="notice is-dismissible"></div>').addClass('notice-' + type);
+		$notice.attr({
+			role: 'error' === type ? 'alert' : 'status',
+			'aria-live': 'error' === type ? 'assertive' : 'polite'
+		});
 		$notice.append($('<p />').text(text));
 		$('#pixcensus-admin').prepend($notice);
 
 		window.setTimeout(function () {
+			if (prefersReducedMotion()) {
+				$notice.remove();
+				return;
+			}
+
 			$notice.fadeOut(200, function () {
 				$(this).remove();
 			});
@@ -40,6 +53,11 @@
 	}
 
 	function removeRow(id) {
+		if (prefersReducedMotion()) {
+			$('#pixcensus-row-' + id).remove();
+			return;
+		}
+
 		$('#pixcensus-row-' + id).fadeOut(120, function () {
 			$(this).remove();
 		});
@@ -308,7 +326,11 @@
 
 	$(document).on('click', '#pixcensus-columns-toggle', function (event) {
 		event.preventDefault();
-		$('#pixcensus-columns-panel').toggle();
+		var $panel = $('#pixcensus-columns-panel');
+		var expanded = !$panel.is(':visible');
+
+		$panel.toggle(expanded);
+		$(this).attr('aria-expanded', expanded ? 'true' : 'false');
 	});
 
 	$(document).on('click', function (event) {
@@ -320,6 +342,7 @@
 
 		if (!$(event.target).closest('#pixcensus-columns-panel, #pixcensus-columns-toggle').length) {
 			$panel.hide();
+			$('#pixcensus-columns-toggle').attr('aria-expanded', 'false');
 		}
 	});
 
@@ -359,18 +382,18 @@
 	$(document).on('click', '[data-pixcensus-density]', function (event) {
 		event.preventDefault();
 
-		var mode = $(this).data('iuaDensity');
+		var mode = $(this).attr('data-pixcensus-density');
 		var $root = $('#pixcensus-admin');
 
-		$('[data-pixcensus-density]').removeClass('button-primary');
+		$('[data-pixcensus-density]').removeClass('button-primary').attr('aria-pressed', 'false');
 
 		if ('compact' === mode) {
 			$root.addClass('pixcensus-compact');
-			$('[data-pixcensus-density="compact"]').addClass('button-primary');
+			$('[data-pixcensus-density="compact"]').addClass('button-primary').attr('aria-pressed', 'true');
 			return;
 		}
 
 		$root.removeClass('pixcensus-compact');
-		$('[data-pixcensus-density="comfortable"]').addClass('button-primary');
+		$('[data-pixcensus-density="comfortable"]').addClass('button-primary').attr('aria-pressed', 'true');
 	});
 })(jQuery);

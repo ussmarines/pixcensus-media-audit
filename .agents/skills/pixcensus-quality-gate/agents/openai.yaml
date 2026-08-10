@@ -1,0 +1,4 @@
+interface:
+  display_name: "PixCensus Quality Gate"
+  short_description: "Targeted plugin quality checks"
+  default_prompt: "Use $pixcensus-quality-gate to validate the current plugin changes."
