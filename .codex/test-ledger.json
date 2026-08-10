@@ -1470,6 +1470,19 @@
       "configuration": ["tools/security/security-policy.json", "tools/security/opengrep-rules.yml", "tools/security/security-scan.ps1", "tools/security/run_security_suite.py"],
       "environment_signature": "Windows|PowerShell-7.6.4|git-2.55.0.windows.3|gitleaks-8.30.1|opengrep-1.22.0|trivy-0.70.0|zizmor-1.26.1",
       "notes": "Blocking enforcement passed with zero failed check: identity guard had zero current finding and 13 approved historical findings, Gitleaks zero, Opengrep zero results and errors, Trivy zero vulnerability and misconfiguration across two dependency targets, npm audit zero, Composer audit zero, Zizmor zero, and the SBOM contained 391 components. Reports are sanitized and include no matched values."
+    },
+    {
+      "name": "3.0.2 cross-platform ZIP attribute correction",
+      "command": "gh run view 31387960079 --json jobs,conclusion,url,headSha; gh run view 31387960079 --log-failed; parse scripts/build-zip.ps1; normalize and assert signed ExternalAttributes value -2119958528; twice: npm run build:zip; compare SHA-256; pwsh -NoProfile -File scripts/verify-wordpress-org-submission.ps1 -ZipPath dist/pixcensus-media-audit.zip -Version 3.0.2 -ChecksumPath dist/pixcensus-media-audit.zip.sha256; pwsh -NoProfile -File tools/security/security-scan.ps1 -Profile Full -Enforce",
+      "tool_version": "GitHub Actions ubuntu-24.04; PowerShell 7.6.4; Gitleaks 8.30.1; Opengrep 1.22.0; Trivy 0.70.0; Zizmor 1.26.1",
+      "date": "2026-08-10",
+      "commit_tested": "67bd31110ecd42fcc3e68a9e0a278eed0bb416ae+portable-zip-worktree",
+      "result": "pass",
+      "duration_ms": 26777,
+      "coverage": ["real failed GitHub QA log", "signed ZIP ExternalAttributes conversion", "PowerShell syntax", "two reproducible release builds", "WordPress.org ZIP verification", "full blocking local security suite"],
+      "configuration": ["scripts/build-zip.ps1", "scripts/verify-wordpress-org-submission.ps1", "tools/security/security-scan.ps1"],
+      "environment_signature": "Windows|PowerShell-7.6.4|git-2.55.0.windows.3|GitHub-Actions-ubuntu-24.04",
+      "notes": "QA run 31387960079 exposed a Linux-only UInt32 conversion failure for negative ZipArchiveEntry.ExternalAttributes, blocking the PHP 7.4 and all WordPress lanes before runtime startup. Masking the signed Int32 through Int64 preserved the 32-bit pattern and produced regular-file type 0x8000. Both local builds retained SHA-256 f6645ce93c8aa9e411ab7b9f95092a5ec738255465c97544cf1992c8fda4cfc1, exact ZIP verification passed, and the full local security suite remained green."
     }
   ]
 }

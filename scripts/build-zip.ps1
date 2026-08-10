@@ -100,7 +100,8 @@ try {
 				throw "Forbidden release file: $entry"
 			}
 
-			$unixFileType = (([uint32] $archiveEntry.ExternalAttributes -shr 16) -band 0xF000)
+			$externalAttributes = [uint32] ( ([int64] $archiveEntry.ExternalAttributes) -band 0xFFFFFFFFL )
+			$unixFileType = (($externalAttributes -shr 16) -band 0xF000)
 			if (0xA000 -eq $unixFileType) {
 				throw "Unexpected symlink in ZIP: $entry"
 			}
