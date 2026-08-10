@@ -4,131 +4,138 @@
 
 # PixCensus — Media Usage Audit
 
-A non-destructive WordPress plugin that maps where media is referenced before you clean up the Media Library.
+A non-destructive WordPress plugin for finding where images are used before cleaning up the Media Library.
 
-[![QA](https://github.com/ussmarines/WP_image_usage_audit/actions/workflows/qa.yml/badge.svg)](https://github.com/ussmarines/WP_image_usage_audit/actions/workflows/qa.yml)
+[![WordPress.org](https://img.shields.io/badge/WordPress.org-PixCensus-21759B?logo=wordpress)](https://wordpress.org/plugins/pixcensus-media-audit/)
 [![Latest release](https://img.shields.io/github/v/release/ussmarines/WP_image_usage_audit)](https://github.com/ussmarines/WP_image_usage_audit/releases/latest)
+[![QA](https://github.com/ussmarines/WP_image_usage_audit/actions/workflows/qa.yml/badge.svg)](https://github.com/ussmarines/WP_image_usage_audit/actions/workflows/qa.yml)
 [![License](https://img.shields.io/badge/license-GPL--2.0--or--later-blue.svg)](LICENSE)
 
-## Overview
+## Official release
 
-Version 3.0.2 hardens nested metadata traversal, CDN validation, dependencies, release packaging, and admin accessibility for the first WordPress.org publication while preserving the same non-destructive audit behavior.
+**PixCensus — Media Usage Audit 3.0.2 is now available on the official WordPress.org Plugin Directory.**
 
-PixCensus — Media Usage Audit scans a WordPress site and groups registered image attachments as used, used only in draft content, or potentially unused. It also records where matches were found, reports image files that are not registered attachments, and exports the latest results as CSV.
+- **WordPress.org:** https://wordpress.org/plugins/pixcensus-media-audit/
+- **GitHub release:** https://github.com/ussmarines/WP_image_usage_audit/releases/tag/v3.0.2
+- **Current version:** `3.0.2`
+- **WordPress:** `5.9+`
+- **PHP:** `7.4+`
+- **License:** GPL-2.0-or-later
 
-The plugin is a review tool, not an automatic cleanup tool. Its findings are heuristic and should always be checked before you make changes to the Media Library.
+For normal WordPress installations, the WordPress.org package is the recommended distribution channel. GitHub remains the source repository and provides release artifacts, checksums, attestations, development history, and issue tracking.
 
-## Features
+## What PixCensus does
 
-- Scans published content and, optionally, draft, pending, and scheduled content.
-- Detects core image references, featured images, WooCommerce galleries, site icons, custom logos, upload URLs, and generated image sizes.
-- Searches post metadata, term descriptions, WordPress options, and common builder data.
-- Supports Elementor, Divi, Beaver Builder, Oxygen, Bricks, SiteOrigin, and WPBakery patterns.
-- Records provenance for each match and supports reversible manual “used” markings.
+PixCensus scans registered WordPress image attachments and helps classify them as:
+
+- **Used in published content**
+- **Used only in draft, pending, or scheduled content**
+- **Potentially unused**
+
+For each detected reference, PixCensus records provenance so you can review where the image was found before making a cleanup decision.
+
+It can also report image files found in the uploads directory that are not registered WordPress attachments and export scan results to CSV.
+
+## Key features
+
+- Scans published content and optionally draft, pending, and scheduled content.
+- Detects featured images, galleries, upload URLs, generated image sizes, site icons, custom logos, metadata, options, and term descriptions.
+- Handles common builder data from Elementor, Divi, Beaver Builder, Oxygen, Bricks, SiteOrigin, and WPBakery.
+- Records provenance and match counts for detected references.
+- Supports reversible manual **used** markings for reviewed false negatives.
 - Supports CDN host aliases and read-only path rewrite rules.
-- Exports used, draft-only, and unused results to CSV.
-- Reports orphan image files under the WordPress uploads directory.
+- Exports used, draft-only, and potentially unused results to CSV.
+- Reports orphan image files in the WordPress uploads directory.
 
 ## Non-destructive by design
 
-PixCensus — Media Usage Audit never deletes, moves, edits, or rewrites media, posts, metadata, terms, or upload files. It writes only its own WordPress options for settings, scan results, manual decisions, and a temporary scan lock. Uninstalling the plugin removes only those plugin-owned options.
+PixCensus is an **audit and review tool**, not an automatic cleanup tool.
 
-Always create and verify a full backup before deleting media manually.
+It does **not** delete, move, rename, rewrite, or otherwise modify media files, posts, metadata, terms, or Media Library entries. It stores only its own settings, scan snapshots, manual review decisions, and temporary scan state.
 
-## Requirements
+Uninstalling PixCensus removes only plugin-owned data.
 
-- WordPress 5.9 or later
-- PHP 7.4 or later
-- An administrator account with the `manage_options` capability
+**Always verify results and keep a tested backup before manually deleting media.**
 
 ## Installation
 
-1. Install **PixCensus — Media Usage Audit** from **Plugins → Add New Plugin**, or download `pixcensus-media-audit.zip` from the [latest GitHub release](https://github.com/ussmarines/WP_image_usage_audit/releases/latest) and use **Upload Plugin**.
-2. Activate **PixCensus — Media Usage Audit**.
-3. Open **Media → PixCensus — Media Usage Audit**.
+### Recommended — WordPress.org
+
+1. In WordPress, open **Plugins → Add New Plugin**.
+2. Search for **PixCensus — Media Usage Audit**.
+3. Install and activate the plugin.
+4. Open **Media → PixCensus — Media Usage Audit**.
+
+Official directory page:
+
+https://wordpress.org/plugins/pixcensus-media-audit/
+
+### GitHub release
+
+You can also download the signed release ZIP from:
+
+https://github.com/ussmarines/WP_image_usage_audit/releases/latest
+
+Upload `pixcensus-media-audit.zip` from **Plugins → Add New Plugin → Upload Plugin**.
 
 ## Quick start
 
-1. Review the scan settings and decide whether draft content should be included.
-2. Select **Run scan**.
-3. Review the **Unused**, **Draft-only**, and **Used (published)** tabs.
-4. Inspect each result’s provenance before taking action.
-5. Use manual markings for reviewed false negatives, or export a tab to CSV.
+1. Open **Media → PixCensus — Media Usage Audit**.
+2. Review the scan settings and choose whether draft content should be included.
+3. Run a scan.
+4. Review **Unused**, **Draft-only**, and **Used (published)** results.
+5. Inspect provenance before acting on any image.
+6. Mark reviewed false negatives manually when necessary or export results to CSV.
 
-Results are stored snapshots. Run another scan after content or settings change.
+Scan results are snapshots. Run a new scan after meaningful content, media, builder, CDN, or configuration changes.
 
-## Important detection limits
+## Important limitations
 
-The scanner cannot prove that an image is safe to delete. It may miss references in theme or plugin files, custom CSS, dynamically generated URLs, external services, unsupported builders, unusual metadata, non-standard upload paths, or unconfigured CDN transformations. Generic builder IDs can also create false positives.
+PixCensus cannot prove that an image is safe to delete. WordPress sites can reference media in ways that are impossible to discover reliably from the database alone.
 
-Orphan detection covers `jpg`, `jpeg`, `png`, `gif`, `webp`, `svg`, and `avif` files in the current uploads directory. Scans run in one authenticated request, so very large sites may reach server time or memory limits. Provenance is limited to 12 labels per attachment.
+Manual review may still be required for references stored in:
 
-## CDN configuration
+- theme or plugin files;
+- custom CSS or JavaScript;
+- dynamically generated markup or URLs;
+- external services;
+- unsupported page builders or unusual metadata;
+- custom or unconfigured CDN transformations.
 
-Add comma-separated CDN host aliases when media URLs use alternate domains:
+Large sites may also reach PHP execution-time or memory limits during a synchronous scan.
 
-```text
-cdn.example.com, media.example.net
-```
+## What changed in 3.0.2
 
-Advanced rewrites use one `FROM => TO` mapping per line:
+Version 3.0.2 is the first PixCensus release published on WordPress.org and focuses on hardening and release quality:
 
-```text
-https://cdn.example.com/assets => /wp-content/uploads
-/media => /wp-content/uploads
-```
+- fixed the administration density control and improved keyboard, live-notice, pressed-state, and reduced-motion accessibility;
+- bounded nested metadata traversal by depth and element budget with cycle-safe handling;
+- tightened CDN rewrite validation to the WordPress uploads boundary;
+- hardened WordPress.org release preparation and public asset validation;
+- updated locked npm and Composer QA dependencies to address current security advisories;
+- preserved the existing non-destructive audit workflow.
 
-Rewrites are applied only to text in memory while scanning. Use the narrowest stable prefixes to reduce false matches.
+See the complete GitHub release:
+
+https://github.com/ussmarines/WP_image_usage_audit/releases/tag/v3.0.2
 
 ## Privacy and security
 
-Scanning happens locally inside WordPress. The plugin makes no remote requests, loads no remote executable code, and does not collect or transmit personal data.
+Scanning runs locally inside WordPress. PixCensus makes no remote requests, loads no remote executable code, and does not collect or transmit personal data.
 
-All plugin screens and actions require `manage_options`. State-changing requests use server-verified nonces, request values are validated and sanitized, and output is escaped. CSV formula-leading values are neutralized.
+Administrative screens and state-changing actions require the `manage_options` capability and protected requests. CSV formula-leading values are neutralized before export.
 
-Stored results and CSV exports can reveal filenames, paths, option names, and other site structure. Restrict access to trusted administrators and treat exported files as sensitive, untrusted input. Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md).
+Scan results and CSV files may reveal filenames, paths, option names, and other site structure. Restrict them to trusted administrators.
 
-## Local development
+Security reports should be submitted privately as described in [SECURITY.md](SECURITY.md).
 
-Runtime code has no third-party dependencies. Development and QA tools are locked in `composer.lock` and `package-lock.json`.
+## Development
 
-```bash
-npm ci
-composer install
-composer qa
-npm run test:property
-npm run validate:metadata
-npm run validate:config
-npm run build:zip
-```
+Runtime code has no third-party dependencies. Development and QA dependencies are locked in `composer.lock` and `package-lock.json`.
 
-The GitHub Actions matrix also tests WordPress 5.9, current WordPress, multisite, authenticated AJAX behavior, Plugin Check, translation catalog reproducibility, and the exact installation ZIP.
+The project CI covers supported PHP versions, WordPress 5.9 and current WordPress, multisite, authenticated AJAX behavior, Plugin Check, static analysis, security checks, reproducible packaging, and installation of the exact release ZIP.
 
-## Verify a release
-
-Each GitHub release includes the plugin ZIP, a SHA-256 checksum, and a GitHub artifact attestation. Download both files, then run:
-
-```bash
-sha256sum --check pixcensus-media-audit.zip.sha256
-gh attestation verify pixcensus-media-audit.zip --repo ussmarines/WP_image_usage_audit
-gh release verify-asset TAG pixcensus-media-audit.zip --repo ussmarines/WP_image_usage_audit
-```
-
-Replace `TAG` with the release tag you downloaded.
-
-## Support the project
-
-If PixCensus — Media Usage Audit has been useful to you, you can support its continued development with an optional donation:
-
-[Support the project via PayPal](https://paypal.me/ussmarinesdot)
-
-Thank you for helping maintain and improve the plugin.
-
-## Contributing
-
-Open a topic branch and a focused pull request. Keep changes compatible with WordPress 5.9+ and PHP 7.4+, follow the WordPress Coding Standards, preserve the plugin’s non-destructive behavior, and add focused tests for changed behavior.
-
-Security reports belong in GitHub’s private vulnerability reporting flow, not in public issues. See [SECURITY.md](SECURITY.md).
+Contributions should use a focused topic branch and preserve WordPress 5.9+, PHP 7.4+, WordPress Coding Standards, and the plugin's non-destructive behavior.
 
 ## License
 
