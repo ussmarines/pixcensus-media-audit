@@ -5,7 +5,7 @@ Tags: media, attachments, audit, images, csv
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 3.0.2
+Stable tag: 3.0.3
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,6 +49,12 @@ No. Run a new scan to refresh the results.
 Typical cases include custom CSS, HTML widgets, theme files, rewritten CDN domains, or third-party integrations. Use the manual mark feature when needed.
 
 == Changelog ==
+
+= 3.0.3 =
+* Confined attachment and orphan-file filesystem resolution to the canonical WordPress uploads directory, rejecting traversal and symlink escapes outside that boundary.
+* Expanded authorization regression coverage across unauthenticated, Subscriber, Contributor, Author, Editor, and Administrator access for AJAX actions, settings, and CSV export.
+* Hardened CSV formula neutralization against Unicode whitespace, byte-order marks, zero-width characters, and bidi/formatting controls that can hide formula prefixes.
+* Removed a repeated HTML URL unescaping pattern flagged by CodeQL from the integration test helper while preserving the same export authorization coverage.
 
 = 3.0.2 =
 * Fixed the PixCensus density control binding and improved keyboard-visible, pressed-state, live-notice, and reduced-motion behavior.
@@ -119,6 +125,10 @@ Typical cases include custom CSS, HTML widgets, theme files, rewritten CDN domai
 * First public release based on the internal stable branch.
 
 == Upgrade Notice ==
+
+= 3.0.3 =
+
+Adds defense-in-depth confinement for uploads paths, stronger role-based authorization regression coverage, and broader CSV formula-injection protection for Unicode-obscured prefixes.
 
 = 3.0.2 =
 
