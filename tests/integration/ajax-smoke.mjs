@@ -9,13 +9,6 @@ function assert(condition, message) {
 	assertionCount += 1;
 }
 
-function decodeHtmlUrl(value) {
-	return value
-		.replaceAll('&amp;', '&')
-		.replaceAll('&#038;', '&')
-		.replaceAll('&#38;', '&');
-}
-
 async function login(username, password) {
 	const body = new URLSearchParams({
 		log: username,
@@ -49,19 +42,19 @@ async function fetchAdminState(cookie) {
 	const configMatch = html.match(/var PixCensusAdmin = (\{.*?\});/s);
 	const idMatch = html.match(/class="button button-secondary pixcensus-mark-used" data-id="(\d+)"/);
 	const settingsNonceMatch = html.match(/name="pixcensus_settings_nonce" value="([^"]+)"/);
-	const exportMatch = html.match(/href="([^"]*admin-post\.php[^\"]*action=pixcensus_export_csv[^\"]*)"/);
+	const exportNonceMatch = html.match(/href="[^"]*admin-post\.php[^"]*action=pixcensus_export_csv[^"]*_wpnonce=([^&"]+)/);
 
 	assert(response.status === 200, `Plugin admin page returned ${response.status}.`);
 	assert(configMatch, 'Localized AJAX configuration was not found.');
 	assert(idMatch, 'AJAX attachment fixture was not rendered.');
 	assert(settingsNonceMatch, 'Scan settings nonce was not found.');
-	assert(exportMatch, 'CSV export URL was not found.');
+	assert(exportNonceMatch, 'CSV export nonce was not found.');
 
 	return {
 		config: JSON.parse(configMatch[1]),
 		attachmentId: Number.parseInt(idMatch[1], 10),
 		settingsNonce: settingsNonceMatch[1],
-		exportUrl: decodeHtmlUrl(exportMatch[1])
+		exportNonce: exportNonceMatch[1]
 	};
 }
 
@@ -119,7 +112,11 @@ for (const role of restrictedRoles) {
 	);
 }
 
-const { config, attachmentId, settingsNonce, exportUrl } = await fetchAdminState(adminCookie);
+const { config, attachmentId, settingsNonce, exportNonce } = await fetchAdminState(adminCookie);
+const exportUrl = new URL('/wp-admin/admin-post.php', baseUrl);
+exportUrl.searchParams.set('action', 'pixcensus_export_csv');
+exportUrl.searchParams.set('_wpnonce', exportNonce);
+
 const ajaxEndpoints = [
 	{
 		name: 'scan',
@@ -242,16 +239,16 @@ result = await adminPost(adminCookie, {
 });
 assert(result.response.status === 302, `Administrator settings request returned ${result.response.status} instead of redirecting.`);
 
-result = await adminPost('', {}, 'GET', exportUrl);
+result = await adminPost('', {}, 'GET', exportUrl.toString());
 assert(result.response.status >= 400, 'Unauthenticated CSV export unexpectedly succeeded.');
 
 for (const role of restrictedRoles) {
-	result = await adminPost(restrictedCookies.get(role), {}, 'GET', exportUrl);
+	result = await adminPost(restrictedCookies.get(role), {}, 'GET', exportUrl.toString());
 	assert(result.response.status >= 400, `${role} CSV export unexpectedly succeeded.`);
 	assert(result.text.includes('Permission denied.'), `${role} export denial did not reach the PixCensus capability guard.`);
 }
 
-result = await adminPost(adminCookie, {}, 'GET', exportUrl);
+result = await adminPost(adminCookie, {}, 'GET', exportUrl.toString());
 assert(result.response.status === 200, `Administrator CSV export returned ${result.response.status}.`);
 assert(
 	(result.response.headers.get('content-type') || '').includes('text/csv'),
