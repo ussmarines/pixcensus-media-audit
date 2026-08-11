@@ -13,11 +13,11 @@ A non-destructive WordPress plugin for finding where images are used before clea
 
 ## Official release
 
-**PixCensus — Media Usage Audit 3.0.2 is now available on the official WordPress.org Plugin Directory.**
+**PixCensus — Media Usage Audit 3.0.3 is the current source release.**
 
 - **WordPress.org:** https://wordpress.org/plugins/pixcensus-media-audit/
-- **GitHub release:** https://github.com/ussmarines/WP_image_usage_audit/releases/tag/v3.0.2
-- **Current version:** `3.0.2`
+- **GitHub release:** https://github.com/ussmarines/WP_image_usage_audit/releases/tag/v3.0.3
+- **Current version:** `3.0.3`
 - **WordPress:** `5.9+`
 - **PHP:** `7.4+`
 - **License:** GPL-2.0-or-later
@@ -136,20 +136,19 @@ Manual review may still be required for references stored in:
 
 Large sites may also reach PHP execution-time or memory limits during a synchronous scan.
 
-## What changed in 3.0.2
+## What changed in 3.0.3
 
-Version 3.0.2 is the first PixCensus release published on WordPress.org and focuses on hardening and release quality:
+Version 3.0.3 adds focused defense-in-depth hardening without changing PixCensus's non-destructive workflow:
 
-- fixed the administration density control and improved keyboard, live-notice, pressed-state, and reduced-motion accessibility;
-- bounded nested metadata traversal by depth and element budget with cycle-safe handling;
-- tightened CDN rewrite validation to the WordPress uploads boundary;
-- hardened WordPress.org release preparation and public asset validation;
-- updated locked npm and Composer QA dependencies to address current security advisories;
-- preserved the existing non-destructive audit workflow.
+- confines attachment and orphan-file filesystem resolution to the canonical WordPress uploads directory, including traversal and symlink escape rejection;
+- expands authorization regression coverage for unauthenticated users and every standard WordPress role through Administrator across AJAX, settings, and CSV export paths;
+- strengthens CSV formula neutralization against Unicode whitespace, byte-order marks, zero-width characters, and bidi/formatting controls;
+- removes the repeated HTML URL unescaping pattern flagged by CodeQL from the integration test helper;
+- preserves WordPress 5.9+, PHP 7.4+, multisite support, and the existing administrator-only security model.
 
 See the complete GitHub release:
 
-https://github.com/ussmarines/WP_image_usage_audit/releases/tag/v3.0.2
+https://github.com/ussmarines/WP_image_usage_audit/releases/tag/v3.0.3
 
 ## Privacy and security
 
