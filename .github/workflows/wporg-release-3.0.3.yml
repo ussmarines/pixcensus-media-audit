@@ -9,6 +9,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: wporg-release-3.0.3-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
 jobs:
   publish:
     if: >-
@@ -16,6 +20,7 @@ jobs:
       github.event.pull_request.head.ref == 'publish/wporg-3.0.3' &&
       github.event.pull_request.title == 'release: publish PixCensus 3.0.3 to WordPress.org [WPORG-PUBLISH-3.0.3]'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       RELEASE_VERSION: '3.0.3'
       RELEASE_SHA256: '94c15f3a4c1e0443dfd463618b5eef2b7346a29bae944196da159eb6e3645907'
