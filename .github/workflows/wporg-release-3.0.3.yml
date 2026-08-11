@@ -1,0 +1,349 @@
+name: WordPress.org release 3.0.3
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.head.ref == 'publish/wporg-3.0.3' &&
+      github.event.pull_request.title == 'release: publish PixCensus 3.0.3 to WordPress.org [WPORG-PUBLISH-3.0.3]'
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_VERSION: '3.0.3'
+      RELEASE_SHA256: '94c15f3a4c1e0443dfd463618b5eef2b7346a29bae944196da159eb6e3645907'
+      RELEASE_ZIP_URL: 'https://github.com/ussmarines/WP_image_usage_audit/releases/download/v3.0.3/pixcensus-media-audit.zip'
+      SVN_URL: 'https://plugins.svn.wordpress.org/pixcensus-media-audit'
+      SVN_USERNAME: 'ussmarines'
+    steps:
+      - name: Checkout exact pull request head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: Install publication clients
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install --yes subversion expect
+          svn --version --quiet
+          expect -v
+
+      - name: Verify immutable GitHub release and prepare WordPress.org tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --silent --show-error --proto '=https' --tlsv1.2 \
+            "$RELEASE_ZIP_URL" \
+            --output pixcensus-media-audit.zip
+          curl --fail --location --silent --show-error --proto '=https' --tlsv1.2 \
+            "$RELEASE_ZIP_URL.sha256" \
+            --output pixcensus-media-audit.zip.sha256
+
+          actual_sha="$(sha256sum pixcensus-media-audit.zip | awk '{print $1}')"
+          published_sha="$(awk 'NR == 1 {print $1}' pixcensus-media-audit.zip.sha256)"
+          test "$actual_sha" = "$RELEASE_SHA256"
+          test "$published_sha" = "$RELEASE_SHA256"
+
+          python3 - <<'PY'
+          from pathlib import Path, PurePosixPath
+          from zipfile import ZipFile
+          import re
+          import shutil
+
+          release_version = '3.0.3'
+          archive_path = Path('pixcensus-media-audit.zip')
+          unpack_root = Path('release-unpack')
+          package_root = unpack_root / 'pixcensus-media-audit'
+          wporg_root = Path('wporg-package')
+
+          screenshot_section = '''== Screenshots ==
+
+          1. Overview of the PixCensus audit screen with scan controls, CDN settings, and media status tabs.
+          2. Published media usage results with thumbnails, provenance, match counts, and density controls.
+          3. Draft-only media results showing images referenced only by unpublished content.
+          4. Potentially unused media results with review actions and file details.
+          5. Published-use overview with filters, provenance, and compact result controls.
+
+          '''
+          screenshot_section = '\n'.join(
+              line[10:] if line.startswith('          ') else line
+              for line in screenshot_section.splitlines()
+          ) + '\n'
+
+          with ZipFile(archive_path) as archive:
+              infos = archive.infolist()
+              if not infos:
+                  raise SystemExit('Release ZIP is empty.')
+              for info in infos:
+                  name = info.filename.replace('\\', '/')
+                  path = PurePosixPath(name)
+                  if path.is_absolute() or '..' in path.parts:
+                      raise SystemExit(f'Unsafe ZIP path: {name}')
+                  if not path.parts or path.parts[0] != 'pixcensus-media-audit':
+                      raise SystemExit(f'Unexpected ZIP root: {name}')
+                  unix_type = (info.external_attr >> 16) & 0xF000
+                  if unix_type == 0xA000:
+                      raise SystemExit(f'Symlink rejected in release ZIP: {name}')
+              archive.extractall(unpack_root)
+
+          if not package_root.is_dir():
+              raise SystemExit('Expected pixcensus-media-audit/ release root is missing.')
+          if any(path.is_symlink() for path in package_root.rglob('*')):
+              raise SystemExit('Extracted release tree contains a symlink.')
+
+          php = (package_root / 'pixcensus-media-audit.php').read_text(encoding='utf-8')
+          readme = (package_root / 'readme.txt').read_text(encoding='utf-8')
+          version_match = re.search(r'(?m)^\s*\*\s*Version:\s*(\d+\.\d+\.\d+)\s*$', php)
+          if not version_match or version_match.group(1) != release_version:
+              raise SystemExit('Release ZIP plugin header is not 3.0.3.')
+          if f"define( 'PIXCENSUS_VERSION', '{release_version}' );" not in php:
+              raise SystemExit('PIXCENSUS_VERSION is not 3.0.3 in the release ZIP.')
+          if not re.search(r'(?m)^Stable tag:\s*3\.0\.3\s*$', readme):
+              raise SystemExit('Release ZIP Stable tag is not 3.0.3.')
+          if '== Screenshots ==' in readme:
+              raise SystemExit('GitHub release readme unexpectedly already contains a Screenshots section.')
+          if '== Changelog ==' not in readme:
+              raise SystemExit('Release ZIP readme has no Changelog marker.')
+
+          if wporg_root.exists():
+              shutil.rmtree(wporg_root)
+          shutil.copytree(package_root, wporg_root)
+          wporg_readme = wporg_root / 'readme.txt'
+          text = wporg_readme.read_text(encoding='utf-8')
+          wporg_readme.write_text(
+              text.replace('== Changelog ==', screenshot_section + '== Changelog ==', 1),
+              encoding='utf-8',
+              newline='\n',
+          )
+          print('Immutable GitHub release verified; WordPress.org readme augmentation prepared.')
+          PY
+
+      - name: Prepare strictly confined SVN release delta
+        id: prepare
+        shell: bash
+        run: |
+          set -euo pipefail
+          svn checkout --quiet "$SVN_URL" svn-work
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          import os
+
+          expected = Path('wporg-package')
+          trunk = Path('svn-work/trunk')
+          tag = Path('svn-work/tags/3.0.3')
+
+          screenshot_section = '''== Screenshots ==
+
+          1. Overview of the PixCensus audit screen with scan controls, CDN settings, and media status tabs.
+          2. Published media usage results with thumbnails, provenance, match counts, and density controls.
+          3. Draft-only media results showing images referenced only by unpublished content.
+          4. Potentially unused media results with review actions and file details.
+          5. Published-use overview with filters, provenance, and compact result controls.
+
+          '''
+          screenshot_section = '\n'.join(
+              line[10:] if line.startswith('          ') else line
+              for line in screenshot_section.splitlines()
+          ) + '\n'
+
+          def files(root: Path):
+              if not root.is_dir():
+                  raise SystemExit(f'Missing directory: {root}')
+              result = {}
+              for path in root.rglob('*'):
+                  if path.is_symlink():
+                      raise SystemExit(f'Symlink rejected: {path}')
+                  if path.is_file():
+                      relative = path.relative_to(root).as_posix()
+                      result[relative] = hashlib.sha256(path.read_bytes()).hexdigest()
+              return result
+
+          def screenshot_block(text: str):
+              start = text.find('== Screenshots ==')
+              end = text.find('== Changelog ==', start if start >= 0 else 0)
+              if start < 0 or end < 0:
+                  return None
+              return text[start:end]
+
+          expected_files = files(expected)
+          trunk_readme = (trunk / 'readme.txt').read_text(encoding='utf-8')
+          if tag.exists():
+              if files(trunk) != expected_files or files(tag) != expected_files:
+                  raise SystemExit('tags/3.0.3 already exists but trunk/tag do not exactly match the approved WordPress.org tree.')
+              with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
+                  output.write('changed=false\n')
+              print('WordPress.org SVN already exactly matches PixCensus 3.0.3.')
+              raise SystemExit(0)
+
+          if files(trunk) != expected_files:
+              if 'Stable tag: 3.0.2' not in trunk_readme:
+                  raise SystemExit('Unexpected current SVN trunk stable tag; expected 3.0.2 before publication.')
+              if screenshot_block(trunk_readme) != screenshot_section:
+                  raise SystemExit('Current SVN trunk Screenshots section differs from the previously approved section.')
+          PY
+
+          if [ -d svn-work/tags/3.0.3 ]; then
+            exit 0
+          fi
+
+          cd svn-work
+          svn copy trunk tags/3.0.3 >/dev/null
+          cd ..
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+
+          source = Path('wporg-package')
+          for destination in (Path('svn-work/trunk'), Path('svn-work/tags/3.0.3')):
+              for child in list(destination.iterdir()):
+                  if child.is_dir() and not child.is_symlink():
+                      shutil.rmtree(child)
+                  else:
+                      child.unlink()
+              for child in source.iterdir():
+                  target = destination / child.name
+                  if child.is_dir():
+                      shutil.copytree(child, target)
+                  else:
+                      shutil.copy2(child, target)
+          PY
+
+          cd svn-work
+          python3 - <<'PY'
+          import subprocess
+          import xml.etree.ElementTree as ElementTree
+
+          status = subprocess.check_output(['svn', 'status', '--xml', 'trunk', 'tags/3.0.3'], text=True)
+          root = ElementTree.fromstring(status)
+          missing = []
+          for entry in root.findall('.//entry'):
+              wc = entry.find('wc-status')
+              if wc is not None and wc.attrib.get('item') == 'missing':
+                  missing.append(entry.attrib['path'])
+          for path in missing:
+              subprocess.check_call(['svn', 'delete', '--force', path], stdout=subprocess.DEVNULL)
+          PY
+          svn add --force trunk tags/3.0.3 >/dev/null
+
+          python3 - <<'PY'
+          from pathlib import Path, PurePosixPath
+          import hashlib
+          import os
+          import subprocess
+          import xml.etree.ElementTree as ElementTree
+
+          def files(root: Path):
+              result = {}
+              for path in root.rglob('*'):
+                  if path.is_symlink():
+                      raise SystemExit(f'Symlink rejected: {path}')
+                  if path.is_file():
+                      result[path.relative_to(root).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+              return result
+
+          expected = files(Path('../wporg-package'))
+          if files(Path('trunk')) != expected:
+              raise SystemExit('Prepared SVN trunk does not exactly match the approved WordPress.org tree.')
+          if files(Path('tags/3.0.3')) != expected:
+              raise SystemExit('Prepared SVN tag 3.0.3 does not exactly match the approved WordPress.org tree.')
+
+          status_xml = subprocess.check_output(['svn', 'status', '--xml'], text=True)
+          root = ElementTree.fromstring(status_xml)
+          changed = set()
+          for entry in root.findall('.//entry'):
+              wc = entry.find('wc-status')
+              if wc is None:
+                  continue
+              item = wc.attrib.get('item', 'normal')
+              props = wc.attrib.get('props', 'none')
+              if item != 'normal' or props not in ('none', 'normal'):
+                  changed.add(str(PurePosixPath(entry.attrib['path'].replace('\\', '/'))))
+
+          unexpected = {
+              path for path in changed
+              if not (
+                  path == 'trunk' or path.startswith('trunk/') or
+                  path == 'tags/3.0.3' or path.startswith('tags/3.0.3/')
+              )
+          }
+          if unexpected:
+              raise SystemExit(f'Unexpected SVN paths changed: {sorted(unexpected)}')
+          if not changed:
+              raise SystemExit('Expected an SVN delta for 3.0.3, but none was prepared.')
+
+          print('Approved SVN paths changed:')
+          for path in sorted(changed):
+              print(f'  {path}')
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
+              output.write('changed=true\n')
+          PY
+
+      - name: Commit approved SVN delta
+        if: steps.prepare.outputs.changed == 'true'
+        env:
+          WPORG_SVN_PASSWORD: ${{ secrets.WPORG_SVN_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$WPORG_SVN_PASSWORD"
+          cd svn-work
+          expect <<'EXP'
+          log_user 1
+          set timeout 120
+          set password $env(WPORG_SVN_PASSWORD)
+          spawn svn commit --username ussmarines --no-auth-cache -m {Release PixCensus 3.0.3}
+          expect {
+            -re {Password for 'ussmarines':} {
+              send -- "$password\r"
+              exp_continue
+            }
+            eof
+            timeout {
+              exit 124
+            }
+          }
+          set status [wait]
+          exit [lindex $status 3]
+          EXP
+
+      - name: Verify public SVN state
+        shell: bash
+        run: |
+          set -euo pipefail
+          svn checkout --quiet "$SVN_URL" svn-verify
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+
+          def files(root: Path):
+              result = {}
+              for path in root.rglob('*'):
+                  if path.is_symlink():
+                      raise SystemExit(f'Symlink rejected: {path}')
+                  if path.is_file():
+                      result[path.relative_to(root).as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+              return result
+
+          expected = files(Path('wporg-package'))
+          trunk = files(Path('svn-verify/trunk'))
+          tag = files(Path('svn-verify/tags/3.0.3'))
+          if trunk != expected:
+              raise SystemExit('Public SVN trunk does not exactly match the approved 3.0.3 WordPress.org tree.')
+          if tag != expected:
+              raise SystemExit('Public SVN tag 3.0.3 does not exactly match the approved 3.0.3 WordPress.org tree.')
+          print('Public SVN trunk and tags/3.0.3 exactly match the approved release tree.')
+          PY
+          test "$(svn info --show-item revision svn-verify)" -gt 0
