@@ -330,7 +330,7 @@ class PIXCENSUS_Scanner {
 					array_map(
 						'intval',
 						explode( ',', (string) get_post_meta( $pixcensus_post_id, '_product_image_gallery', true ) )
-					)
+				)
 				);
 
 				foreach ( $pixcensus_gallery_ids as $pixcensus_gallery_id ) {
@@ -396,7 +396,7 @@ class PIXCENSUS_Scanner {
 					foreach ( $pixcensus_values as $pixcensus_value ) {
 						$pixcensus_context = 'post:' . $pixcensus_post_id . ' meta:' . $pixcensus_meta_key;
 
-						$this->scan_value_for_uploads( $pixcensus_value, $pixcensus_map = $path_map, $used_map, $pixcensus_context );
+						$this->scan_value_for_uploads( $pixcensus_value, $path_map, $used_map, $pixcensus_context );
 						$this->scan_builder_value_for_ids( $pixcensus_value, $used_map, $pixcensus_context );
 					}
 				}
@@ -660,10 +660,10 @@ class PIXCENSUS_Scanner {
 	/**
 	 * Scan arbitrary text for uploads references.
 	 *
-	 * @param string             $text Text content.
+	 * @param string            $text Text content.
 	 * @param array<string, int> $path_map Attachment path map.
-	 * @param array<int, bool>   $used_map Usage map.
-	 * @param string             $context Provenance label.
+	 * @param array<int, bool>  $used_map Usage map.
+	 * @param string            $context Provenance label.
 	 * @return void
 	 */
 	private function scan_text_for_uploads( string $text, array $path_map, array &$used_map, string $context = '' ): void {
