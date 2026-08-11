@@ -979,13 +979,20 @@ class PIXCENSUS_Scanner {
 	 * @return array<int, string>
 	 */
 	private function find_orphans( array $attachment_ids, string $basedir ): array {
-		$pixcensus_all_files   = $this->find_upload_images( $basedir );
-		$pixcensus_attached    = $this->collect_all_attachment_files( $attachment_ids, $basedir );
-		$pixcensus_base_prefix = trailingslashit( wp_normalize_path( $basedir ) );
-		$pixcensus_orphans     = array();
+		$pixcensus_real_basedir = realpath( $basedir );
+
+		if ( false === $pixcensus_real_basedir || ! is_dir( $pixcensus_real_basedir ) ) {
+			return array();
+		}
+
+		$pixcensus_real_basedir = wp_normalize_path( $pixcensus_real_basedir );
+		$pixcensus_all_files    = $this->find_upload_images( $pixcensus_real_basedir );
+		$pixcensus_attached     = $this->collect_all_attachment_files( $attachment_ids, $pixcensus_real_basedir );
+		$pixcensus_base_prefix  = trailingslashit( $pixcensus_real_basedir );
+		$pixcensus_orphans      = array();
 
 		foreach ( array_diff( $pixcensus_all_files, $pixcensus_attached ) as $pixcensus_orphan_file ) {
-			if ( 0 !== strpos( $pixcensus_orphan_file, $pixcensus_base_prefix ) ) {
+			if ( ! $this->path_is_within_uploads( $pixcensus_orphan_file, $pixcensus_real_basedir ) ) {
 				continue;
 			}
 
@@ -1008,30 +1015,47 @@ class PIXCENSUS_Scanner {
 	private function find_upload_images( string $basedir ): array {
 		$pixcensus_files      = array();
 		$pixcensus_extensions = array( 'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'avif' );
+		$pixcensus_real_base  = realpath( $basedir );
 
-		if ( ! is_dir( $basedir ) ) {
+		if ( false === $pixcensus_real_base || ! is_dir( $pixcensus_real_base ) ) {
 			return $pixcensus_files;
 		}
 
+		$pixcensus_real_base = wp_normalize_path( $pixcensus_real_base );
+
 		try {
 			$pixcensus_iterator = new RecursiveIteratorIterator(
-				new RecursiveDirectoryIterator( $basedir, FilesystemIterator::SKIP_DOTS )
+				new RecursiveDirectoryIterator( $pixcensus_real_base, FilesystemIterator::SKIP_DOTS )
 			);
 
 			foreach ( $pixcensus_iterator as $pixcensus_file ) {
-				if ( $pixcensus_file->isFile() ) {
-					$pixcensus_extension = strtolower( pathinfo( $pixcensus_file->getFilename(), PATHINFO_EXTENSION ) );
+				if ( ! $pixcensus_file->isFile() ) {
+					continue;
+				}
 
-					if ( in_array( $pixcensus_extension, $pixcensus_extensions, true ) ) {
-						$pixcensus_files[] = wp_normalize_path( $pixcensus_file->getPathname() );
-					}
+				$pixcensus_extension = strtolower( pathinfo( $pixcensus_file->getFilename(), PATHINFO_EXTENSION ) );
+
+				if ( ! in_array( $pixcensus_extension, $pixcensus_extensions, true ) ) {
+					continue;
+				}
+
+				$pixcensus_real_file = realpath( $pixcensus_file->getPathname() );
+
+				if ( false === $pixcensus_real_file ) {
+					continue;
+				}
+
+				$pixcensus_real_file = wp_normalize_path( $pixcensus_real_file );
+
+				if ( $this->path_is_within_uploads( $pixcensus_real_file, $pixcensus_real_base ) ) {
+					$pixcensus_files[] = $pixcensus_real_file;
 				}
 			}
 		} catch ( UnexpectedValueException $pixcensus_exception ) {
 			return $pixcensus_files;
 		}
 
-		return $pixcensus_files;
+		return array_values( array_unique( $pixcensus_files ) );
 	}
 
 	/**
@@ -1047,34 +1071,100 @@ class PIXCENSUS_Scanner {
 		foreach ( $attachment_ids as $pixcensus_attachment_id ) {
 			$pixcensus_relative_file = get_post_meta( $pixcensus_attachment_id, '_wp_attached_file', true );
 
-			if ( empty( $pixcensus_relative_file ) ) {
+			if ( ! is_scalar( $pixcensus_relative_file ) || '' === (string) $pixcensus_relative_file ) {
 				continue;
 			}
 
-			$pixcensus_original_file = wp_normalize_path( trailingslashit( $basedir ) . ltrim( (string) $pixcensus_relative_file, '/\\' ) );
+			$pixcensus_relative_file = ltrim( wp_normalize_path( (string) $pixcensus_relative_file ), '/\\' );
+			$pixcensus_original_file = $this->resolve_existing_upload_file( $basedir, $pixcensus_relative_file );
 
-			if ( file_exists( $pixcensus_original_file ) ) {
+			if ( '' !== $pixcensus_original_file ) {
 				$pixcensus_files[] = $pixcensus_original_file;
 			}
 
 			$pixcensus_metadata = wp_get_attachment_metadata( $pixcensus_attachment_id );
 
-			if ( ! empty( $pixcensus_metadata['sizes'] ) && is_array( $pixcensus_metadata['sizes'] ) ) {
-				$pixcensus_directory = trailingslashit( wp_normalize_path( dirname( $pixcensus_original_file ) ) );
+			if ( empty( $pixcensus_metadata['sizes'] ) || ! is_array( $pixcensus_metadata['sizes'] ) ) {
+				continue;
+			}
 
-				foreach ( $pixcensus_metadata['sizes'] as $pixcensus_size ) {
-					if ( ! empty( $pixcensus_size['file'] ) ) {
-						$pixcensus_resized_file = $pixcensus_directory . $pixcensus_size['file'];
+			$pixcensus_directory = dirname( $pixcensus_relative_file );
+			$pixcensus_directory = ( '.' === $pixcensus_directory ) ? '' : trailingslashit( $pixcensus_directory );
 
-						if ( file_exists( $pixcensus_resized_file ) ) {
-							$pixcensus_files[] = $pixcensus_resized_file;
-						}
-					}
+			foreach ( $pixcensus_metadata['sizes'] as $pixcensus_size ) {
+				if ( ! is_array( $pixcensus_size ) || ! isset( $pixcensus_size['file'] ) || ! is_scalar( $pixcensus_size['file'] ) ) {
+					continue;
+				}
+
+				$pixcensus_size_file = ltrim( wp_normalize_path( (string) $pixcensus_size['file'] ), '/\\' );
+
+				if ( '' === $pixcensus_size_file ) {
+					continue;
+				}
+
+				$pixcensus_resized_file = $this->resolve_existing_upload_file( $basedir, $pixcensus_directory . $pixcensus_size_file );
+
+				if ( '' !== $pixcensus_resized_file ) {
+					$pixcensus_files[] = $pixcensus_resized_file;
 				}
 			}
 		}
 
 		return array_values( array_unique( $pixcensus_files ) );
+	}
+
+	/**
+	 * Resolve an existing attachment-relative file and confine it to uploads.
+	 *
+	 * realpath() collapses traversal segments and follows symlinks. The resolved
+	 * candidate must remain strictly below the resolved uploads directory before
+	 * PixCensus performs any subsequent filesystem operation on it.
+	 *
+	 * @param string $basedir Uploads base dir.
+	 * @param string $relative_file Attachment-relative file path.
+	 * @return string Normalized resolved path, or an empty string when rejected.
+	 */
+	private function resolve_existing_upload_file( string $basedir, string $relative_file ): string {
+		if ( '' === $basedir || '' === $relative_file || false !== strpos( $relative_file, "\0" ) ) {
+			return '';
+		}
+
+		$pixcensus_real_base = realpath( $basedir );
+
+		if ( false === $pixcensus_real_base || ! is_dir( $pixcensus_real_base ) ) {
+			return '';
+		}
+
+		$pixcensus_real_base = wp_normalize_path( $pixcensus_real_base );
+		$pixcensus_candidate = trailingslashit( $pixcensus_real_base ) . ltrim( wp_normalize_path( $relative_file ), '/\\' );
+		$pixcensus_real_file = realpath( $pixcensus_candidate );
+
+		if ( false === $pixcensus_real_file || ! is_file( $pixcensus_real_file ) ) {
+			return '';
+		}
+
+		$pixcensus_real_file = wp_normalize_path( $pixcensus_real_file );
+
+		return $this->path_is_within_uploads( $pixcensus_real_file, $pixcensus_real_base ) ? $pixcensus_real_file : '';
+	}
+
+	/**
+	 * Check whether a resolved filesystem path is strictly inside uploads.
+	 *
+	 * @param string $path Resolved candidate path.
+	 * @param string $basedir Resolved uploads base directory.
+	 * @return bool
+	 */
+	private function path_is_within_uploads( string $path, string $basedir ): bool {
+		$pixcensus_path        = wp_normalize_path( $path );
+		$pixcensus_base_prefix = trailingslashit( wp_normalize_path( $basedir ) );
+
+		if ( '\\' === DIRECTORY_SEPARATOR ) {
+			$pixcensus_path        = strtolower( $pixcensus_path );
+			$pixcensus_base_prefix = strtolower( $pixcensus_base_prefix );
+		}
+
+		return 0 === strpos( $pixcensus_path, $pixcensus_base_prefix );
 	}
 
 	/**
