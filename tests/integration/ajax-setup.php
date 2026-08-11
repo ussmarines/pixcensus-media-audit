@@ -7,20 +7,28 @@ if ( ! defined( 'ABSPATH' ) || ! class_exists( 'PIXCENSUS_Plugin' ) ) {
 	throw new RuntimeException( 'PixCensus — Media Usage Audit is not active.' );
 }
 
-$pixcensus_editor = get_user_by( 'login', 'pixcensus-ajax-editor' );
+$pixcensus_restricted_roles = array( 'subscriber', 'contributor', 'author', 'editor' );
 
-if ( ! $pixcensus_editor ) {
-	$pixcensus_editor_id = wp_insert_user(
+foreach ( $pixcensus_restricted_roles as $pixcensus_role ) {
+	$pixcensus_login = 'pixcensus-ajax-' . $pixcensus_role;
+	$pixcensus_user  = get_user_by( 'login', $pixcensus_login );
+
+	if ( $pixcensus_user ) {
+		$pixcensus_user->set_role( $pixcensus_role );
+		continue;
+	}
+
+	$pixcensus_user_id = wp_insert_user(
 		array(
-			'user_login' => 'pixcensus-ajax-editor',
-			'user_pass'  => 'pixcensus-ajax-editor-password',
-			'user_email' => 'pixcensus-ajax-editor@example.test',
-			'role'       => 'editor',
+			'user_login' => $pixcensus_login,
+			'user_pass'  => $pixcensus_login . '-password',
+			'user_email' => $pixcensus_login . '@example.test',
+			'role'       => $pixcensus_role,
 		)
 	);
 
-	if ( is_wp_error( $pixcensus_editor_id ) ) {
-		throw new RuntimeException( 'Could not create the AJAX editor fixture.' );
+	if ( is_wp_error( $pixcensus_user_id ) ) {
+		throw new RuntimeException( 'Could not create the AJAX ' . $pixcensus_role . ' fixture.' );
 	}
 }
 
@@ -39,7 +47,7 @@ if ( ! empty( $pixcensus_upload['error'] ) ) {
 $pixcensus_attachment_id = wp_insert_attachment(
 	array(
 		'post_mime_type' => 'image/png',
-		'post_title'     => 'IUA AJAX fixture',
+		'post_title'     => 'PixCensus AJAX fixture',
 		'post_status'    => 'inherit',
 	),
 	$pixcensus_upload['file']
