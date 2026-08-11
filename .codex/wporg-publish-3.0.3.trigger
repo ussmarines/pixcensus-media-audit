@@ -1,0 +1,5 @@
+PixCensus WordPress.org publication trigger
+version=3.0.3
+source_commit=776bbc4e16b1920c80a7a537780759dc5da7d5f7
+source_release=v3.0.3
+source_sha256=94c15f3a4c1e0443dfd463618b5eef2b7346a29bae944196da159eb6e3645907
