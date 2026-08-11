@@ -47,7 +47,7 @@ if ( ! empty( $pixcensus_upload['error'] ) ) {
 $pixcensus_attachment_id = wp_insert_attachment(
 	array(
 		'post_mime_type' => 'image/png',
-		'post_title'     => 'PixCensus AJAX fixture',
+		'post_title'     => 'IUA AJAX fixture',
 		'post_status'    => 'inherit',
 	),
 	$pixcensus_upload['file']
