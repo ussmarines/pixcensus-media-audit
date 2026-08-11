@@ -330,7 +330,7 @@ class PIXCENSUS_Scanner {
 					array_map(
 						'intval',
 						explode( ',', (string) get_post_meta( $pixcensus_post_id, '_product_image_gallery', true ) )
-				)
+					)
 				);
 
 				foreach ( $pixcensus_gallery_ids as $pixcensus_gallery_id ) {
