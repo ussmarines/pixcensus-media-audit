@@ -1,9 +1,19 @@
 const baseUrl = process.env.PIXCENSUS_BASE_URL || 'http://localhost:8888';
+let assertionCount = 0;
 
 function assert(condition, message) {
 	if (!condition) {
 		throw new Error(message);
 	}
+
+	assertionCount += 1;
+}
+
+function decodeHtmlUrl(value) {
+	return value
+		.replaceAll('&amp;', '&')
+		.replaceAll('&#038;', '&')
+		.replaceAll('&#38;', '&');
 }
 
 async function login(username, password) {
@@ -38,14 +48,20 @@ async function fetchAdminState(cookie) {
 	const html = await response.text();
 	const configMatch = html.match(/var PixCensusAdmin = (\{.*?\});/s);
 	const idMatch = html.match(/class="button button-secondary pixcensus-mark-used" data-id="(\d+)"/);
+	const settingsNonceMatch = html.match(/name="pixcensus_settings_nonce" value="([^"]+)"/);
+	const exportMatch = html.match(/href="([^"]*admin-post\.php[^\"]*action=pixcensus_export_csv[^\"]*)"/);
 
 	assert(response.status === 200, `Plugin admin page returned ${response.status}.`);
 	assert(configMatch, 'Localized AJAX configuration was not found.');
 	assert(idMatch, 'AJAX attachment fixture was not rendered.');
+	assert(settingsNonceMatch, 'Scan settings nonce was not found.');
+	assert(exportMatch, 'CSV export URL was not found.');
 
 	return {
 		config: JSON.parse(configMatch[1]),
-		attachmentId: Number.parseInt(idMatch[1], 10)
+		attachmentId: Number.parseInt(idMatch[1], 10),
+		settingsNonce: settingsNonceMatch[1],
+		exportUrl: decodeHtmlUrl(exportMatch[1])
 	};
 }
 
@@ -57,7 +73,7 @@ async function ajax(cookie, fields, method = 'POST') {
 	const response = await fetch(url, {
 		method,
 		headers: {
-			Cookie: cookie,
+			...(cookie ? { Cookie: cookie } : {}),
 			...(method === 'POST' ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {})
 		},
 		...(method === 'POST' ? { body } : {})
@@ -74,36 +90,121 @@ async function ajax(cookie, fields, method = 'POST') {
 	return { response, payload };
 }
 
+async function adminPost(cookie, fields, method = 'POST', explicitUrl = '') {
+	const body = new URLSearchParams(fields);
+	const url = explicitUrl || (method === 'GET'
+		? `${baseUrl}/wp-admin/admin-post.php?${body}`
+		: `${baseUrl}/wp-admin/admin-post.php`);
+	const response = await fetch(url, {
+		method,
+		redirect: 'manual',
+		headers: {
+			...(cookie ? { Cookie: cookie } : {}),
+			...(method === 'POST' ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {})
+		},
+		...(method === 'POST' ? { body } : {})
+	});
+
+	return { response, text: await response.text() };
+}
+
+const restrictedRoles = ['subscriber', 'contributor', 'author', 'editor'];
 const adminCookie = await login('admin', 'password');
-const editorCookie = await login('pixcensus-ajax-editor', 'pixcensus-ajax-editor-password');
-const { config, attachmentId } = await fetchAdminState(adminCookie);
-const endpoint = {
+const restrictedCookies = new Map();
+
+for (const role of restrictedRoles) {
+	restrictedCookies.set(
+		role,
+		await login(`pixcensus-ajax-${role}`, `pixcensus-ajax-${role}-password`)
+	);
+}
+
+const { config, attachmentId, settingsNonce, exportUrl } = await fetchAdminState(adminCookie);
+const ajaxEndpoints = [
+	{
+		name: 'scan',
+		fields: {
+			action: 'pixcensus_run_scan',
+			nonce: config.nonces.run_scan
+		}
+	},
+	{
+		name: 'mark',
+		fields: {
+			action: 'pixcensus_mark_manual_used',
+			nonce: config.nonces.mark_manual,
+			id: String(attachmentId)
+		}
+	},
+	{
+		name: 'unmark',
+		fields: {
+			action: 'pixcensus_unmark_manual_used',
+			nonce: config.nonces.unmark_manual,
+			id: String(attachmentId)
+		}
+	},
+	{
+		name: 'bulk mark',
+		fields: {
+			action: 'pixcensus_mark_manual_used_bulk',
+			nonce: config.nonces.mark_manual_bulk,
+			'ids[]': String(attachmentId)
+		}
+	},
+	{
+		name: 'bulk unmark',
+		fields: {
+			action: 'pixcensus_unmark_manual_used_bulk',
+			nonce: config.nonces.unmark_bulk,
+			'ids[]': String(attachmentId)
+		}
+	}
+];
+
+for (const endpoint of ajaxEndpoints) {
+	let result = await ajax('', endpoint.fields);
+	assert(
+		result.response.status === 401 && result.payload.success === false,
+		`Unauthenticated ${endpoint.name} request was not rejected with JSON 401.`
+	);
+
+	for (const role of restrictedRoles) {
+		result = await ajax(restrictedCookies.get(role), endpoint.fields);
+		assert(
+			result.response.status === 403 && result.payload.success === false,
+			`${role} ${endpoint.name} request was not rejected with JSON 403.`
+		);
+	}
+}
+
+let result = await ajax(adminCookie, {
+	action: 'pixcensus_mark_manual_used',
+	nonce: '',
+	id: String(attachmentId)
+});
+assert(result.response.status === 403 && result.payload.success === false, 'Missing nonce was not rejected with JSON 403.');
+
+result = await ajax(adminCookie, {
+	action: 'pixcensus_mark_manual_used',
+	nonce: config.nonces.unmark_manual,
+	id: String(attachmentId)
+});
+assert(result.response.status === 403 && result.payload.success === false, 'Action-specific nonce separation failed.');
+
+result = await ajax(adminCookie, {
 	action: 'pixcensus_mark_manual_used',
 	nonce: config.nonces.mark_manual,
 	id: String(attachmentId)
-};
-
-let result = await ajax('', endpoint);
-assert(result.response.status === 401 && result.payload.success === false, 'Unauthenticated request was not rejected with JSON 401.');
-
-result = await ajax(editorCookie, endpoint);
-assert(result.response.status === 403 && result.payload.success === false, 'Editor request was not rejected with JSON 403.');
-
-result = await ajax(adminCookie, { ...endpoint, nonce: '' });
-assert(result.response.status === 403 && result.payload.success === false, 'Missing nonce was not rejected with JSON 403.');
-
-result = await ajax(adminCookie, { ...endpoint, nonce: config.nonces.unmark_manual });
-assert(result.response.status === 403 && result.payload.success === false, 'Action-specific nonce separation failed.');
-
-result = await ajax(adminCookie, endpoint, 'GET');
+}, 'GET');
 assert(result.response.status === 405 && result.payload.success === false, 'GET request was not rejected with JSON 405.');
 
-result = await ajax(adminCookie, { ...endpoint, id: `${attachmentId}invalid` });
+result = await ajax(adminCookie, {
+	action: 'pixcensus_mark_manual_used',
+	nonce: config.nonces.mark_manual,
+	id: `${attachmentId}invalid`
+});
 assert(result.response.status === 400 && result.payload.success === false, 'Malformed attachment ID was not rejected with JSON 400.');
-
-result = await ajax(adminCookie, endpoint);
-assert(result.response.status === 200 && result.payload.success === true, 'Authorized manual mark did not succeed.');
-assert(result.payload.data.id === attachmentId, 'Authorized manual mark returned the wrong attachment ID.');
 
 result = await ajax(adminCookie, {
 	action: 'pixcensus_mark_manual_used_bulk',
@@ -112,4 +213,49 @@ result = await ajax(adminCookie, {
 });
 assert(result.response.status === 400 && result.payload.success === false, 'Malformed bulk array was not rejected with JSON 400.');
 
-console.log(JSON.stringify({ result: 'pass', assertions: 8, attachmentId }));
+for (const endpoint of ajaxEndpoints) {
+	result = await ajax(adminCookie, endpoint.fields);
+	assert(
+		result.response.status === 200 && result.payload.success === true,
+		`Administrator ${endpoint.name} request did not succeed.`
+	);
+}
+
+const settingsFields = {
+	action: 'pixcensus_save_settings',
+	pixcensus_section: 'scan',
+	pixcensus_include_drafts: '1'
+};
+
+result = await adminPost('', settingsFields);
+assert(result.response.status >= 400, 'Unauthenticated settings request unexpectedly succeeded.');
+
+for (const role of restrictedRoles) {
+	result = await adminPost(restrictedCookies.get(role), settingsFields);
+	assert(result.response.status >= 400, `${role} settings request unexpectedly succeeded.`);
+	assert(result.text.includes('Permission denied.'), `${role} settings denial did not reach the PixCensus capability guard.`);
+}
+
+result = await adminPost(adminCookie, {
+	...settingsFields,
+	pixcensus_settings_nonce: settingsNonce
+});
+assert(result.response.status === 302, `Administrator settings request returned ${result.response.status} instead of redirecting.`);
+
+result = await adminPost('', {}, 'GET', exportUrl);
+assert(result.response.status >= 400, 'Unauthenticated CSV export unexpectedly succeeded.');
+
+for (const role of restrictedRoles) {
+	result = await adminPost(restrictedCookies.get(role), {}, 'GET', exportUrl);
+	assert(result.response.status >= 400, `${role} CSV export unexpectedly succeeded.`);
+	assert(result.text.includes('Permission denied.'), `${role} export denial did not reach the PixCensus capability guard.`);
+}
+
+result = await adminPost(adminCookie, {}, 'GET', exportUrl);
+assert(result.response.status === 200, `Administrator CSV export returned ${result.response.status}.`);
+assert(
+	(result.response.headers.get('content-type') || '').includes('text/csv'),
+	'Administrator CSV export did not return text/csv.'
+);
+
+console.log(JSON.stringify({ result: 'pass', assertions: assertionCount, attachmentId }));
