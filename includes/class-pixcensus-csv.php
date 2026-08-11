@@ -20,7 +20,7 @@ final class PIXCENSUS_CSV {
 	 * @return string
 	 */
 	public static function neutralize_formula( $value ): string {
-		$pixcensus_value = (string) $value;
+		$pixcensus_value           = (string) $value;
 		$pixcensus_formula_pattern = '/^[\x00-\x20\x7F\x{0085}\x{00A0}\x{1680}\x{2000}-\x{200F}\x{2028}-\x{202F}\x{205F}\x{2060}-\x{206F}\x{3000}\x{FEFF}]*[=+\-@]/u';
 
 		if ( preg_match( $pixcensus_formula_pattern, $pixcensus_value ) || preg_match( '/^[\t\r\n]/', $pixcensus_value ) ) {
