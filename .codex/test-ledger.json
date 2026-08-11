@@ -1483,6 +1483,19 @@
       "configuration": ["scripts/build-zip.ps1", "scripts/verify-wordpress-org-submission.ps1", "tools/security/security-scan.ps1"],
       "environment_signature": "Windows|PowerShell-7.6.4|git-2.55.0.windows.3|GitHub-Actions-ubuntu-24.04",
       "notes": "QA run 31387960079 exposed a Linux-only UInt32 conversion failure for negative ZipArchiveEntry.ExternalAttributes, blocking the PHP 7.4 and all WordPress lanes before runtime startup. Masking the signed Int32 through Int64 preserved the 32-bit pattern and produced regular-file type 0x8000. Both local builds retained SHA-256 f6645ce93c8aa9e411ab7b9f95092a5ec738255465c97544cf1992c8fda4cfc1, exact ZIP verification passed, and the full local security suite remained green."
+    },
+    {
+      "name": "3.0.2 official screenshot publication preflight",
+      "command": "embedded Python standard-library verifier for docs/screenshots (signature, chunk bounds, CRC, IDAT decompression, dimensions, SHA-256); npm run actionlint; git diff --check",
+      "tool_version": "Python 3.14.6; Node.js v24.19.0; actionlint via repository script; Git 2.55.0.windows.3",
+      "date": "2026-08-11",
+      "commit_tested": "957079b2760ffbb98d2aeb359d1d04b97a886979+screenshots-worktree",
+      "result": "pass",
+      "duration_ms": 3500,
+      "coverage": ["five supplied screenshot copies", "PNG structural integrity", "exact source SHA-256 values", "GitHub Actions workflow syntax", "working-tree whitespace"],
+      "configuration": ["docs/screenshots", ".github/workflows/wporg-screenshots-3.0.2.yml", "README.md"],
+      "environment_signature": "Windows|PowerShell-7.6.4|Python-3.14.6|node-v24.19.0|git-2.55.0.windows.3",
+      "notes": "All five copied PNGs retained their supplied bytes and passed structural validation. The workflow gates SVN publication to the dedicated same-repository PR and title, checks exact hashes, constrains the SVN delta, and uses the existing secret only at commit time."
     }
   ]
 }

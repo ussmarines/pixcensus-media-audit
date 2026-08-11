@@ -1,0 +1,181 @@
+name: WordPress.org screenshots 3.0.2
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.head.ref == 'docs/pixcensus-screenshots-3.0.2' &&
+      github.event.pull_request.title == 'docs: publish PixCensus 3.0.2 screenshots [WPORG-PUBLISH-SCREENSHOTS-3.0.2]'
+    runs-on: ubuntu-latest
+    env:
+      SCREENSHOT_DIR: docs/screenshots
+      SVN_URL: https://plugins.svn.wordpress.org/pixcensus-media-audit
+    steps:
+      - name: Checkout exact pull request head
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: Verify official screenshot sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          import struct
+          import zlib
+
+          expected = {
+              'screenshot-1.png': '76f63e9ef9af2d9f047e4a2db56204d11635f178fbe5892d12dc53de6a4982a2',
+              'screenshot-2.png': 'c5404517a819fc5ebcc9fda26533f7f13205711117f06899ce6475fbe8b012aa',
+              'screenshot-3.png': '941424a8675aad4b42c886a73d6335515af05349b68df31b3a1c5f19e1075edd',
+              'screenshot-4.png': '0720da825317b4a1ceaa8d7d4bc5766addbdaf931963e499e1bdd2052ae6ae97',
+              'screenshot-5.png': '274272293232a391037cda7822deb0b1fafd7d36d8bfd898140ef23bf15e5ef9',
+          }
+          root = Path('docs/screenshots')
+          if not root.is_dir() or {path.name for path in root.iterdir()} != set(expected):
+              raise SystemExit('docs/screenshots must contain exactly screenshot-1.png through screenshot-5.png')
+
+          for name, expected_hash in expected.items():
+              data = (root / name).read_bytes()
+              if not data or data[:8] != b'\x89PNG\r\n\x1a\n':
+                  raise SystemExit(f'{name}: invalid PNG signature or empty file')
+              offset = 8
+              chunks = []
+              idat = []
+              while offset < len(data):
+                  if offset + 12 > len(data):
+                      raise SystemExit(f'{name}: truncated PNG chunk')
+                  length = struct.unpack('>I', data[offset:offset + 4])[0]
+                  chunk_end = offset + 12 + length
+                  if chunk_end > len(data):
+                      raise SystemExit(f'{name}: invalid PNG chunk length')
+                  chunk_type = data[offset + 4:offset + 8]
+                  payload = data[offset + 8:offset + 8 + length]
+                  stored_crc = struct.unpack('>I', data[offset + 8 + length:chunk_end])[0]
+                  if zlib.crc32(chunk_type + payload) & 0xffffffff != stored_crc:
+                      raise SystemExit(f'{name}: PNG CRC mismatch in {chunk_type.decode("ascii", "replace")}')
+                  chunks.append((chunk_type, payload))
+                  if chunk_type == b'IDAT':
+                      idat.append(payload)
+                  offset = chunk_end
+              if offset != len(data) or not chunks or chunks[0][0] != b'IHDR' or chunks[-1][0] != b'IEND':
+                  raise SystemExit(f'{name}: invalid PNG chunk order')
+              if len(chunks[0][1]) != 13 or chunks[-1][1]:
+                  raise SystemExit(f'{name}: invalid IHDR or IEND chunk')
+              width, height = struct.unpack('>II', chunks[0][1][:8])
+              if width < 600 or height < 400:
+                  raise SystemExit(f'{name}: dimensions too small: {width}x{height}')
+              try:
+                  zlib.decompress(b''.join(idat))
+              except zlib.error as error:
+                  raise SystemExit(f'{name}: corrupt IDAT stream: {error}') from error
+              actual_hash = hashlib.sha256(data).hexdigest()
+              if actual_hash != expected_hash:
+                  raise SystemExit(f'{name}: unexpected SHA-256')
+              print(f'{name}: {width}x{height} sha256={actual_hash}')
+          PY
+
+      - name: Prepare the strictly allow-listed SVN delta
+        id: prepare
+        shell: bash
+        run: |
+          set -euo pipefail
+          svn checkout --quiet "$SVN_URL" svn-work
+          cp "$SCREENSHOT_DIR"/screenshot-{1,2,3,4,5}.png svn-work/assets/
+
+          cd svn-work
+          for file in assets/screenshot-{1,2,3,4,5}.png; do
+            svn add --force "$file" >/dev/null
+            svn propset svn:mime-type image/png "$file" >/dev/null
+          done
+
+          python3 - <<'PY'
+          from pathlib import Path
+
+          section = '''== Screenshots ==
+
+          1. Overview of the PixCensus audit screen with scan controls, CDN settings, and media status tabs.
+          2. Published media usage results with thumbnails, provenance, match counts, and density controls.
+          3. Draft-only media results showing images referenced only by unpublished content.
+          4. Potentially unused media results with review actions and file details.
+          5. Published-use overview with filters, provenance, and compact result controls.
+
+          '''
+          section = '\n'.join(line[10:] if line.startswith('          ') else line for line in section.splitlines()) + '\n'
+          marker = '== Changelog =='
+          for relative_path in ('trunk/readme.txt', 'tags/3.0.2/readme.txt'):
+              path = Path(relative_path)
+              text = path.read_text(encoding='utf-8')
+              if 'Stable tag: 3.0.2' not in text:
+                  raise SystemExit(f'{relative_path}: expected stable tag 3.0.2')
+              if '== Screenshots ==' in text:
+                  start = text.index('== Screenshots ==')
+                  end = text.find(marker, start)
+                  if end < 0 or text[start:end] != section:
+                      raise SystemExit(f'{relative_path}: unexpected existing Screenshots section')
+                  continue
+              if marker not in text:
+                  raise SystemExit(f'{relative_path}: Changelog marker not found')
+              path.write_text(text.replace(marker, section + marker, 1), encoding='utf-8', newline='\n')
+          PY
+
+          python3 - <<'PY'
+          import os
+          from pathlib import PurePosixPath
+          import xml.etree.ElementTree as ElementTree
+          import subprocess
+
+          allowed = {
+              'assets/screenshot-1.png',
+              'assets/screenshot-2.png',
+              'assets/screenshot-3.png',
+              'assets/screenshot-4.png',
+              'assets/screenshot-5.png',
+              'trunk/readme.txt',
+              'tags/3.0.2/readme.txt',
+          }
+          status = subprocess.check_output(['svn', 'status', '--xml'], text=True)
+          root = ElementTree.fromstring(status)
+          changed = {
+              str(PurePosixPath(entry.attrib['path'].replace('\\', '/')))
+              for entry in root.findall('.//entry')
+              if entry.find('wc-status').attrib['item'] != 'normal'
+          }
+          unexpected = changed - allowed
+          if unexpected:
+              raise SystemExit(f'Unexpected SVN changes: {sorted(unexpected)}')
+          if not changed:
+              print('SVN already matches the requested screenshot and readme state.')
+          else:
+              print('Allowed SVN changes: ' + ', '.join(sorted(changed)))
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
+              output.write(f'changed={str(bool(changed)).lower()}\n')
+          PY
+
+      - name: Commit approved SVN delta
+        if: steps.prepare.outputs.changed == 'true'
+        env:
+          WPORG_SVN_PASSWORD: ${{ secrets.WPORG_SVN_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$WPORG_SVN_PASSWORD"
+          cd svn-work
+          svn commit \
+            --username ussmarines \
+            --password "$WPORG_SVN_PASSWORD" \
+            --non-interactive \
+            --no-auth-cache \
+            -m 'Add PixCensus 3.0.2 screenshots'

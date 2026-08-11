@@ -89,6 +89,38 @@ Upload `pixcensus-media-audit.zip` from **Plugins → Add New Plugin → Upload 
 
 Scan results are snapshots. Run a new scan after meaningful content, media, builder, CDN, or configuration changes.
 
+## Screenshots
+
+### 1. Audit overview
+
+![PixCensus audit overview](docs/screenshots/screenshot-1.png)
+
+PixCensus audit overview with scan controls, media status tabs, and CDN settings.
+
+### 2. Published media usage
+
+![Published media usage results](docs/screenshots/screenshot-2.png)
+
+Published media usage results with thumbnails, provenance, and match counts.
+
+### 3. Draft-only references
+
+![Draft-only media references](docs/screenshots/screenshot-3.png)
+
+Draft-only media references, clearly separated from published usage.
+
+### 4. Unused-media review
+
+![Potentially unused media review](docs/screenshots/screenshot-4.png)
+
+Potentially unused media review with thumbnails and direct Media Library access.
+
+### 5. Published-use controls
+
+![Published-use overview](docs/screenshots/screenshot-5.png)
+
+Published-use overview with provenance filters and result density controls.
+
 ## Important limitations
 
 PixCensus cannot prove that an image is safe to delete. WordPress sites can reference media in ways that are impossible to discover reliably from the database alone.
