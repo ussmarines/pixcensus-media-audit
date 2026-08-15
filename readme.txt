@@ -160,4 +160,4 @@ Option names, filenames, paths, and provenance may reveal private site structure
 
 == Development ==
 
-Human-readable source, development instructions, tests, and the reproducible ZIP command are available at https://github.com/ussmarines/WP_image_usage_audit.
+Human-readable source, development instructions, tests, and the reproducible ZIP command are available at https://github.com/ussmarines/pixcensus-media-audit.

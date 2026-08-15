@@ -108,20 +108,19 @@ jobs:
       - run: npm run validate:config
       - run: npm run validate:branding
       - run: npm run build:zip
-      - run: npx wp-env start
-      - run: npx wp-env run cli wp plugin deactivate WP_image_usage_audit
-      - run: npx wp-env run cli wp plugin install /var/www/html/wp-content/plugins/WP_image_usage_audit/dist/pixcensus-media-audit.zip --activate
-      - run: npx wp-env run cli wp plugin is-active pixcensus-media-audit
-      - run: npx wp-env run cli wp eval-file /var/www/html/wp-content/plugins/WP_image_usage_audit/tests/integration/ajax-setup.php
+      - run: npx wp-env start --config .wp-env.package.json
+      - run: npx wp-env run cli --config .wp-env.package.json wp plugin install /var/www/html/pixcensus-ci-source/dist/pixcensus-media-audit.zip --activate
+      - run: npx wp-env run cli --config .wp-env.package.json wp plugin is-active pixcensus-media-audit
+      - run: npx wp-env run cli --config .wp-env.package.json wp eval-file /var/www/html/pixcensus-ci-source/tests/integration/ajax-setup.php
       - run: npm run test:ajax
-      - run: npx wp-env run cli wp eval-file /var/www/html/wp-content/plugins/WP_image_usage_audit/tests/integration/smoke.php
-      - run: npx wp-env run cli wp plugin install plugin-check --version=2.0.0 --activate
-      - run: npx wp-env run cli wp plugin check pixcensus-media-audit
-      - run: npx wp-env run cli wp i18n make-pot /var/www/html/wp-content/plugins/WP_image_usage_audit /var/www/html/wp-content/plugins/WP_image_usage_audit/languages/pixcensus-media-audit.pot --domain=pixcensus-media-audit --exclude=.agents,docs,tests,vendor,node_modules,scripts,dist --headers='{"POT-Creation-Date":"2026-08-05T17:30:00+00:00","Report-Msgid-Bugs-To":"https://github.com/ussmarines/WP_image_usage_audit/issues"}'
+      - run: npx wp-env run cli --config .wp-env.package.json wp eval-file /var/www/html/pixcensus-ci-source/tests/integration/smoke.php
+      - run: npx wp-env run cli --config .wp-env.package.json wp plugin install plugin-check --version=2.0.0 --activate
+      - run: npx wp-env run cli --config .wp-env.package.json wp plugin check pixcensus-media-audit
+      - run: npx wp-env run cli --config .wp-env.package.json wp i18n make-pot /var/www/html/wp-content/plugins/pixcensus-media-audit /var/www/html/pixcensus-ci-source/languages/pixcensus-media-audit.pot --domain=pixcensus-media-audit --exclude=.agents,docs,tests,vendor,node_modules,scripts,dist --headers='{"POT-Creation-Date":"2026-08-05T17:30:00+00:00","Report-Msgid-Bugs-To":"https://github.com/ussmarines/pixcensus-media-audit/issues"}'
       - run: git diff --exit-code -- languages/pixcensus-media-audit.pot
       - if: always()
         continue-on-error: true
-        run: npx wp-env stop
+        run: npx wp-env stop --config .wp-env.package.json
 
   wordpress-59:
     runs-on: ubuntu-latest
@@ -135,15 +134,14 @@ jobs:
           node-version: 24
       - run: npm ci
       - run: npm run build:zip
-      - run: npx wp-env start --config .wp-env.wp59.json
-      - run: npx wp-env run cli --config .wp-env.wp59.json wp plugin deactivate WP_image_usage_audit
-      - run: npx wp-env run cli --config .wp-env.wp59.json wp plugin install /var/www/html/wp-content/plugins/WP_image_usage_audit/dist/pixcensus-media-audit.zip --activate
-      - run: npx wp-env run cli --config .wp-env.wp59.json wp core version
-      - run: npx wp-env run cli --config .wp-env.wp59.json wp plugin is-active pixcensus-media-audit
-      - run: npx wp-env run cli --config .wp-env.wp59.json wp eval-file /var/www/html/wp-content/plugins/WP_image_usage_audit/tests/integration/smoke.php
+      - run: npx wp-env start --config .wp-env.wp59-package.json
+      - run: npx wp-env run cli --config .wp-env.wp59-package.json wp plugin install /var/www/html/pixcensus-ci-source/dist/pixcensus-media-audit.zip --activate
+      - run: npx wp-env run cli --config .wp-env.wp59-package.json wp core version
+      - run: npx wp-env run cli --config .wp-env.wp59-package.json wp plugin is-active pixcensus-media-audit
+      - run: npx wp-env run cli --config .wp-env.wp59-package.json wp eval-file /var/www/html/pixcensus-ci-source/tests/integration/smoke.php
       - if: always()
         continue-on-error: true
-        run: npx wp-env stop --config .wp-env.wp59.json
+        run: npx wp-env stop --config .wp-env.wp59-package.json
 
   wordpress-multisite:
     runs-on: ubuntu-latest
@@ -157,13 +155,12 @@ jobs:
           node-version: 24
       - run: npm ci
       - run: npm run build:zip
-      - run: npx wp-env start --config .wp-env.multisite.json
-      - run: npx wp-env run cli --config .wp-env.multisite.json wp plugin deactivate WP_image_usage_audit
-      - run: npx wp-env run cli --config .wp-env.multisite.json wp core multisite-convert --title='PixCensus Network'
-      - run: npx wp-env run cli --config .wp-env.multisite.json wp site create --slug=secondary --title='Secondary site' --email=secondary@example.test
-      - run: npx wp-env run cli --config .wp-env.multisite.json wp plugin install /var/www/html/wp-content/plugins/WP_image_usage_audit/dist/pixcensus-media-audit.zip --activate-network
-      - run: npx wp-env run cli --config .wp-env.multisite.json wp plugin is-active pixcensus-media-audit --network
-      - run: npx wp-env run cli --config .wp-env.multisite.json wp eval-file /var/www/html/wp-content/plugins/WP_image_usage_audit/tests/integration/multisite-smoke.php
+      - run: npx wp-env start --config .wp-env.multisite-package.json
+      - run: npx wp-env run cli --config .wp-env.multisite-package.json wp core multisite-convert --title='PixCensus Network'
+      - run: npx wp-env run cli --config .wp-env.multisite-package.json wp site create --slug=secondary --title='Secondary site' --email=secondary@example.test
+      - run: npx wp-env run cli --config .wp-env.multisite-package.json wp plugin install /var/www/html/pixcensus-ci-source/dist/pixcensus-media-audit.zip --activate-network
+      - run: npx wp-env run cli --config .wp-env.multisite-package.json wp plugin is-active pixcensus-media-audit --network
+      - run: npx wp-env run cli --config .wp-env.multisite-package.json wp eval-file /var/www/html/pixcensus-ci-source/tests/integration/multisite-smoke.php
       - if: always()
         continue-on-error: true
-        run: npx wp-env stop --config .wp-env.multisite.json
+        run: npx wp-env stop --config .wp-env.multisite-package.json

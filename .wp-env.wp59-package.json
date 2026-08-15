@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/wp-env.json",
+  "core": "WordPress/WordPress#5.9.13",
+  "phpVersion": "7.4",
+  "plugins": [],
+  "mappings": {
+    "pixcensus-ci-source": "."
+  },
+  "testsEnvironment": false,
+  "port": 8891,
+  "testsPort": 8892
+}

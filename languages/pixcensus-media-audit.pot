@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PixCensus — Media Usage Audit 3.0.3\n"
-"Report-Msgid-Bugs-To: https://github.com/ussmarines/WP_image_usage_audit/issues\n"
+"Report-Msgid-Bugs-To: https://github.com/ussmarines/pixcensus-media-audit/issues\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgid "PixCensus — Media Usage Audit"
 msgstr ""
 
 #. Plugin URI of the plugin
-msgid "https://github.com/ussmarines/WP_image_usage_audit"
+msgid "https://github.com/ussmarines/pixcensus-media-audit"
 msgstr ""
 
 #. Description of the plugin

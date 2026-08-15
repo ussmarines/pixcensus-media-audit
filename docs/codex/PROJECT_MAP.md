@@ -8,7 +8,7 @@
 - Declared compatibility: WordPress 5.9+, PHP 7.4+, tested through WordPress 7.0.2.
 - Entry point: `pixcensus-media-audit.php`.
 - Text domain: `pixcensus-media-audit`; translations live under `languages/`.
-- Canonical project URL: `https://github.com/ussmarines/WP_image_usage_audit`; WordPress.org slug: `pixcensus-media-audit`.
+- Canonical project URL: `https://github.com/ussmarines/pixcensus-media-audit`; WordPress.org slug: `pixcensus-media-audit`.
 
 ## Architecture and responsibilities
 
