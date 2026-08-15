@@ -4,7 +4,7 @@
   "phpVersion": "7.4",
   "plugins": [],
   "mappings": {
-    "wp-content/uploads/pixcensus-ci-source": "."
+    "pixcensus-ci-source": "."
   },
   "testsEnvironment": false,
   "port": 8891,
