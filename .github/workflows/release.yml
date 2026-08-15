@@ -43,11 +43,11 @@ jobs:
       - run: npm run validate:branding
       - run: npm run build:zip
       - run: npx wp-env start --config .wp-env.package.json
-      - run: npx wp-env run cli --config .wp-env.package.json wp plugin install /var/www/html/wp-content/uploads/pixcensus-ci-source/dist/pixcensus-media-audit.zip --activate
+      - run: npx wp-env run cli --config .wp-env.package.json wp plugin install /var/www/html/pixcensus-ci-source/dist/pixcensus-media-audit.zip --activate
       - run: npx wp-env run cli --config .wp-env.package.json wp plugin is-active pixcensus-media-audit
-      - run: npx wp-env run cli --config .wp-env.package.json wp eval-file /var/www/html/wp-content/uploads/pixcensus-ci-source/tests/integration/ajax-setup.php
+      - run: npx wp-env run cli --config .wp-env.package.json wp eval-file /var/www/html/pixcensus-ci-source/tests/integration/ajax-setup.php
       - run: npm run test:ajax
-      - run: npx wp-env run cli --config .wp-env.package.json wp eval-file /var/www/html/wp-content/uploads/pixcensus-ci-source/tests/integration/smoke.php
+      - run: npx wp-env run cli --config .wp-env.package.json wp eval-file /var/www/html/pixcensus-ci-source/tests/integration/smoke.php
       - run: npx wp-env run cli --config .wp-env.package.json wp plugin install plugin-check --version=2.0.0 --activate
       - run: npx wp-env run cli --config .wp-env.package.json wp plugin check pixcensus-media-audit
       - name: Stop WordPress
