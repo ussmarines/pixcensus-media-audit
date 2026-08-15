@@ -1,0 +1,15 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/wp-env.json",
+  "core": "WordPress/WordPress#7.0.2",
+  "phpVersion": "7.4",
+  "plugins": [],
+  "mappings": {
+    "wp-content/uploads/pixcensus-ci-source": "."
+  },
+  "config": {
+    "WP_ALLOW_MULTISITE": true
+  },
+  "testsEnvironment": false,
+  "port": 8893,
+  "testsPort": 8894
+}
