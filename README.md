@@ -7,8 +7,8 @@
 A non-destructive WordPress plugin for finding where images are used before cleaning up the Media Library.
 
 [![WordPress.org](https://img.shields.io/badge/WordPress.org-PixCensus-21759B?logo=wordpress)](https://wordpress.org/plugins/pixcensus-media-audit/)
-[![Latest release](https://img.shields.io/github/v/release/ussmarines/WP_image_usage_audit)](https://github.com/ussmarines/WP_image_usage_audit/releases/latest)
-[![QA](https://github.com/ussmarines/WP_image_usage_audit/actions/workflows/qa.yml/badge.svg)](https://github.com/ussmarines/WP_image_usage_audit/actions/workflows/qa.yml)
+[![Latest release](https://img.shields.io/github/v/release/ussmarines/pixcensus-media-audit)](https://github.com/ussmarines/pixcensus-media-audit/releases/latest)
+[![QA](https://github.com/ussmarines/pixcensus-media-audit/actions/workflows/qa.yml/badge.svg)](https://github.com/ussmarines/pixcensus-media-audit/actions/workflows/qa.yml)
 [![License](https://img.shields.io/badge/license-GPL--2.0--or--later-blue.svg)](LICENSE)
 
 ## Official release
@@ -16,7 +16,7 @@ A non-destructive WordPress plugin for finding where images are used before clea
 **PixCensus — Media Usage Audit 3.0.3 is the current source release.**
 
 - **WordPress.org:** https://wordpress.org/plugins/pixcensus-media-audit/
-- **GitHub release:** https://github.com/ussmarines/WP_image_usage_audit/releases/tag/v3.0.3
+- **GitHub release:** https://github.com/ussmarines/pixcensus-media-audit/releases/tag/v3.0.3
 - **Current version:** `3.0.3`
 - **WordPress:** `5.9+`
 - **PHP:** `7.4+`
@@ -74,7 +74,7 @@ https://wordpress.org/plugins/pixcensus-media-audit/
 
 You can also download the signed release ZIP from:
 
-https://github.com/ussmarines/WP_image_usage_audit/releases/latest
+https://github.com/ussmarines/pixcensus-media-audit/releases/latest
 
 Upload `pixcensus-media-audit.zip` from **Plugins → Add New Plugin → Upload Plugin**.
 
@@ -148,7 +148,7 @@ Version 3.0.3 adds focused defense-in-depth hardening without changing PixCensus
 
 See the complete GitHub release:
 
-https://github.com/ussmarines/WP_image_usage_audit/releases/tag/v3.0.3
+https://github.com/ussmarines/pixcensus-media-audit/releases/tag/v3.0.3
 
 ## Privacy and security
 

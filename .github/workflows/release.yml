@@ -43,12 +43,12 @@ jobs:
       - run: npm run validate:branding
       - run: npm run build:zip
       - run: npx wp-env start
-      - run: npx wp-env run cli wp plugin deactivate WP_image_usage_audit
-      - run: npx wp-env run cli wp plugin install /var/www/html/wp-content/plugins/WP_image_usage_audit/dist/pixcensus-media-audit.zip --activate
+      - run: npx wp-env run cli wp plugin deactivate pixcensus-media-audit
+      - run: npx wp-env run cli wp plugin install /var/www/html/wp-content/plugins/pixcensus-media-audit/dist/pixcensus-media-audit.zip --activate
       - run: npx wp-env run cli wp plugin is-active pixcensus-media-audit
-      - run: npx wp-env run cli wp eval-file /var/www/html/wp-content/plugins/WP_image_usage_audit/tests/integration/ajax-setup.php
+      - run: npx wp-env run cli wp eval-file /var/www/html/wp-content/plugins/pixcensus-media-audit/tests/integration/ajax-setup.php
       - run: npm run test:ajax
-      - run: npx wp-env run cli wp eval-file /var/www/html/wp-content/plugins/WP_image_usage_audit/tests/integration/smoke.php
+      - run: npx wp-env run cli wp eval-file /var/www/html/wp-content/plugins/pixcensus-media-audit/tests/integration/smoke.php
       - run: npx wp-env run cli wp plugin install plugin-check --version=2.0.0 --activate
       - run: npx wp-env run cli wp plugin check pixcensus-media-audit
       - name: Stop WordPress
