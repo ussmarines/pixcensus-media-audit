@@ -42,17 +42,18 @@ jobs:
       - run: npm run validate:config
       - run: npm run validate:branding
       - run: npm run build:zip
-      - run: npx wp-env start --config .wp-env.package.json
-      - run: npx wp-env run cli --config .wp-env.package.json wp plugin install /var/www/html/pixcensus-ci-source/dist/pixcensus-media-audit.zip --activate
-      - run: npx wp-env run cli --config .wp-env.package.json wp plugin is-active pixcensus-media-audit
-      - run: npx wp-env run cli --config .wp-env.package.json wp eval-file /var/www/html/pixcensus-ci-source/tests/integration/ajax-setup.php
+      - run: npx wp-env start --config .wp-env.wp71-package.json
+      - run: npx wp-env run cli --config .wp-env.wp71-package.json wp core version
+      - run: npx wp-env run cli --config .wp-env.wp71-package.json wp plugin install /var/www/html/pixcensus-ci-source/dist/pixcensus-media-audit.zip --activate
+      - run: npx wp-env run cli --config .wp-env.wp71-package.json wp plugin is-active pixcensus-media-audit
+      - run: npx wp-env run cli --config .wp-env.wp71-package.json wp eval-file /var/www/html/pixcensus-ci-source/tests/integration/ajax-setup.php
       - run: npm run test:ajax
-      - run: npx wp-env run cli --config .wp-env.package.json wp eval-file /var/www/html/pixcensus-ci-source/tests/integration/smoke.php
-      - run: npx wp-env run cli --config .wp-env.package.json wp plugin install plugin-check --version=2.0.0 --activate
-      - run: npx wp-env run cli --config .wp-env.package.json wp plugin check pixcensus-media-audit
+      - run: npx wp-env run cli --config .wp-env.wp71-package.json wp eval-file /var/www/html/pixcensus-ci-source/tests/integration/smoke.php
+      - run: npx wp-env run cli --config .wp-env.wp71-package.json wp plugin install plugin-check --version=2.0.0 --activate
+      - run: npx wp-env run cli --config .wp-env.wp71-package.json wp plugin check pixcensus-media-audit
       - name: Stop WordPress
         if: always()
-        run: npx wp-env stop --config .wp-env.package.json || true
+        run: npx wp-env stop --config .wp-env.wp71-package.json || true
       - name: Attest tested ZIP
         uses: actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d # v4.2.1
         with:
@@ -68,8 +69,148 @@ jobs:
           compression-level: 0
           retention-days: 14
 
-  publish:
+  wordpress-org:
     needs: build-test-attest
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      SVN_URL: https://plugins.svn.wordpress.org/pixcensus-media-audit
+      RELEASE_TAG: ${{ github.ref_name }}
+    steps:
+      - name: Checkout exact release commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Download tested release files
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: release-files
+          path: release
+      - name: Verify tested package
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd release
+          sha256sum --check --strict pixcensus-media-audit.zip.sha256
+          cd ..
+          python3 - <<'PY'
+          from pathlib import Path
+          import os
+          import re
+          import zipfile
+
+          tag = os.environ['RELEASE_TAG']
+          if not re.fullmatch(r'v\d+\.\d+\.\d+', tag):
+              raise SystemExit(f'Invalid release tag: {tag}')
+          version = tag[1:]
+          target = Path('release/extracted')
+          with zipfile.ZipFile('release/pixcensus-media-audit.zip') as archive:
+              names = archive.namelist()
+              if not names or any(not name.startswith('pixcensus-media-audit/') for name in names):
+                  raise SystemExit('Release ZIP has an unexpected root.')
+              archive.extractall(target)
+          root = target / 'pixcensus-media-audit'
+          main = (root / 'pixcensus-media-audit.php').read_text(encoding='utf-8')
+          readme = (root / 'readme.txt').read_text(encoding='utf-8')
+          if not re.search(rf'^\s*\*\s*Version:\s*{re.escape(version)}\s*$', main, re.M):
+              raise SystemExit('Plugin header version does not match the tag.')
+          if not re.search(rf'^Stable tag:\s*{re.escape(version)}\s*$', readme, re.M):
+              raise SystemExit('Stable tag does not match the release tag.')
+          if not re.search(r'^Tested up to:\s*7\.1\s*$', readme, re.M):
+              raise SystemExit('WordPress.org Tested up to is not 7.1.')
+          PY
+      - name: Install Subversion client
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install --yes subversion
+          svn --version --quiet
+      - name: Prepare strict WordPress.org SVN delta
+        id: svn_prepare
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${RELEASE_TAG#v}"
+          svn checkout --quiet "$SVN_URL" svn-work
+
+          if [ -d "svn-work/tags/$VERSION" ]; then
+            if ! diff -qr --exclude='.svn' release/extracted/pixcensus-media-audit "svn-work/tags/$VERSION"; then
+              echo "Existing WordPress.org tag $VERSION differs from the tested ZIP; refusing to continue." >&2
+              exit 1
+            fi
+            echo "WordPress.org tag $VERSION already contains the exact tested package; treating this as an idempotent rerun."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          mkdir -p svn-work/trunk svn-work/tags
+          rsync -a --delete --exclude='.svn' release/extracted/pixcensus-media-audit/ svn-work/trunk/
+          cd svn-work
+          python3 - <<'PY'
+          import subprocess
+          import xml.etree.ElementTree as ET
+
+          xml = subprocess.check_output(['svn', 'status', '--xml'], text=True)
+          root = ET.fromstring(xml)
+          missing = []
+          for entry in root.findall('.//entry'):
+              status = entry.find('wc-status')
+              if status is not None and status.attrib.get('item') == 'missing':
+                  missing.append(entry.attrib['path'])
+          for path in missing:
+              subprocess.check_call(['svn', 'delete', '--force', path])
+          PY
+          svn add trunk --force >/dev/null
+          svn copy trunk "tags/$VERSION" >/dev/null
+          python3 - <<'PY'
+          from pathlib import PurePosixPath
+          import os
+          import subprocess
+          import xml.etree.ElementTree as ET
+
+          version = os.environ['RELEASE_TAG'][1:]
+          xml = subprocess.check_output(['svn', 'status', '--xml'], text=True)
+          root = ET.fromstring(xml)
+          changed = []
+          for entry in root.findall('.//entry'):
+              status = entry.find('wc-status')
+              if status is None or status.attrib.get('item') == 'normal':
+                  continue
+              changed.append(str(PurePosixPath(entry.attrib['path'].replace('\\', '/'))))
+          unexpected = [path for path in changed if not (path == 'trunk' or path.startswith('trunk/') or path == f'tags/{version}' or path.startswith(f'tags/{version}/'))]
+          if unexpected:
+              raise SystemExit(f'Unexpected SVN changes: {unexpected}')
+          if not changed:
+              raise SystemExit('No SVN changes prepared for the release.')
+          print('Approved SVN paths:')
+          for path in changed:
+              print(path)
+          PY
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+      - name: Publish tested ZIP contents to WordPress.org
+        if: steps.svn_prepare.outputs.changed == 'true'
+        env:
+          WPORG_SVN_PASSWORD: ${{ secrets.WPORG_SVN_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$WPORG_SVN_PASSWORD"
+          VERSION="${RELEASE_TAG#v}"
+          cd svn-work
+          svn commit \
+            --username ussmarines \
+            --password "$WPORG_SVN_PASSWORD" \
+            --non-interactive \
+            --no-auth-cache \
+            -m "Publish PixCensus — Media Usage Audit $VERSION"
+
+  publish:
+    needs:
+      - build-test-attest
+      - wordpress-org
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

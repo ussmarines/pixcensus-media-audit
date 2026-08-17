@@ -3,9 +3,9 @@ Contributors: ussmarines
 Donate link: https://paypal.me/ussmarinesdot
 Tags: media, attachments, audit, images, csv
 Requires at least: 5.9
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.0.3
+Stable tag: 3.0.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,6 +49,12 @@ No. Run a new scan to refresh the results.
 Typical cases include custom CSS, HTML widgets, theme files, rewritten CDN domains, or third-party integrations. Use the manual mark feature when needed.
 
 == Changelog ==
+
+= 3.0.4 =
+* Declared compatibility with WordPress 7.1 after validating the distributable ZIP against WordPress 7.1 RC2.
+* Added dedicated WordPress 7.1 coverage for activation, authenticated AJAX behavior, scanner smoke tests, Plugin Check, and debug-log regressions.
+* Confirmed that WordPress 7.1 client-side media processing does not require runtime changes because PixCensus reads resulting Media Library records rather than participating in image processing.
+* Preserved WordPress 5.9+, PHP 7.4+, multisite support, and the plugin's non-destructive audit behavior.
 
 = 3.0.3 =
 * Confined attachment and orphan-file filesystem resolution to the canonical WordPress uploads directory, rejecting traversal and symlink escapes outside that boundary.
@@ -125,6 +131,10 @@ Typical cases include custom CSS, HTML widgets, theme files, rewritten CDN domai
 * First public release based on the internal stable branch.
 
 == Upgrade Notice ==
+
+= 3.0.4 =
+
+Adds validated WordPress 7.1 compatibility while preserving the existing non-destructive scanner, security controls, and minimum-version support.
 
 = 3.0.3 =
 

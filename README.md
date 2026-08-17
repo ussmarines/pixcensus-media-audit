@@ -13,12 +13,12 @@ A non-destructive WordPress plugin for finding where images are used before clea
 
 ## Official release
 
-**PixCensus — Media Usage Audit 3.0.3 is the current source release.**
+**PixCensus — Media Usage Audit 3.0.4 is the current source release.**
 
 - **WordPress.org:** https://wordpress.org/plugins/pixcensus-media-audit/
-- **GitHub release:** https://github.com/ussmarines/pixcensus-media-audit/releases/tag/v3.0.3
-- **Current version:** `3.0.3`
-- **WordPress:** `5.9+`
+- **GitHub release:** https://github.com/ussmarines/pixcensus-media-audit/releases/tag/v3.0.4
+- **Current version:** `3.0.4`
+- **WordPress:** `5.9+`, tested through `7.1`
 - **PHP:** `7.4+`
 - **License:** GPL-2.0-or-later
 
@@ -136,19 +136,18 @@ Manual review may still be required for references stored in:
 
 Large sites may also reach PHP execution-time or memory limits during a synchronous scan.
 
-## What changed in 3.0.3
+## What changed in 3.0.4
 
-Version 3.0.3 adds focused defense-in-depth hardening without changing PixCensus's non-destructive workflow:
+Version 3.0.4 is a focused WordPress 7.1 compatibility release:
 
-- confines attachment and orphan-file filesystem resolution to the canonical WordPress uploads directory, including traversal and symlink escape rejection;
-- expands authorization regression coverage for unauthenticated users and every standard WordPress role through Administrator across AJAX, settings, and CSV export paths;
-- strengthens CSV formula neutralization against Unicode whitespace, byte-order marks, zero-width characters, and bidi/formatting controls;
-- removes the repeated HTML URL unescaping pattern flagged by CodeQL from the integration test helper;
-- preserves WordPress 5.9+, PHP 7.4+, multisite support, and the existing administrator-only security model.
+- declares compatibility through WordPress 7.1 after validating the actual distributable ZIP on WordPress 7.1 RC2;
+- adds dedicated 7.1 regression coverage for activation, authenticated AJAX behavior, scanner smoke tests, Plugin Check, and WordPress debug logs;
+- confirms no PixCensus runtime migration is required for WordPress 7.1 client-side media processing because the plugin reads resulting Media Library records rather than participating in image processing;
+- preserves WordPress 5.9+, PHP 7.4+, multisite support, and the existing non-destructive, administrator-only workflow.
 
 See the complete GitHub release:
 
-https://github.com/ussmarines/pixcensus-media-audit/releases/tag/v3.0.3
+https://github.com/ussmarines/pixcensus-media-audit/releases/tag/v3.0.4
 
 ## Privacy and security
 
@@ -164,7 +163,7 @@ Security reports should be submitted privately as described in [SECURITY.md](SEC
 
 Runtime code has no third-party dependencies. Development and QA dependencies are locked in `composer.lock` and `package-lock.json`.
 
-The project CI covers supported PHP versions, WordPress 5.9 and current WordPress, multisite, authenticated AJAX behavior, Plugin Check, static analysis, security checks, reproducible packaging, and installation of the exact release ZIP.
+The project CI covers supported PHP versions, WordPress 5.9 and current WordPress, WordPress 7.1 compatibility, multisite, authenticated AJAX behavior, Plugin Check, static analysis, security checks, reproducible packaging, and installation of the exact release ZIP.
 
 Contributions should use a focused topic branch and preserve WordPress 5.9+, PHP 7.4+, WordPress Coding Standards, and the plugin's non-destructive behavior.
 

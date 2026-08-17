@@ -68,9 +68,9 @@ const adminScript = fs.readFileSync(path.join(root, 'assets/admin.js'), 'utf8');
 const adminView = fs.readFileSync(path.join(root, 'views/admin-page.php'), 'utf8');
 const requiredMain = [
   'Plugin Name: PixCensus — Media Usage Audit',
-  'Version: 3.0.3',
+  'Version: 3.0.4',
   'Text Domain: pixcensus-media-audit',
-  "define( 'PIXCENSUS_VERSION', '3.0.3' )",
+  "define( 'PIXCENSUS_VERSION', '3.0.4' )",
   "define( 'PIXCENSUS_SLUG', 'pixcensus-media-audit' )",
   "current_user_can( 'manage_options' )",
   'check_admin_referer(',
@@ -79,7 +79,8 @@ const requiredMain = [
 for (const token of requiredMain) {
   if (!main.includes(token)) throw new Error(`Required main-plugin control is missing: ${token}`);
 }
-if (!readme.includes('Stable tag: 3.0.3')) throw new Error('The WordPress.org stable tag is not 3.0.3.');
+if (!readme.includes('Stable tag: 3.0.4')) throw new Error('The WordPress.org stable tag is not 3.0.4.');
+if (!readme.includes('Tested up to: 7.1')) throw new Error('The WordPress.org tested-up-to value is not 7.1.');
 if (!githubReadme.includes('.wordpress-org/banner-1544x500.png')) {
   throw new Error('The GitHub README does not use the PixCensus banner.');
 }
@@ -104,4 +105,4 @@ for (const method of ajaxMethods) {
   if (!excerpt.includes('verify_ajax_request(')) throw new Error(`${method} does not verify capability, action, method, and nonce.`);
 }
 
-console.log(JSON.stringify({ result: 'pass', name: 'PixCensus — Media Usage Audit', slug: 'pixcensus-media-audit', version: '3.0.3' }));
+console.log(JSON.stringify({ result: 'pass', name: 'PixCensus — Media Usage Audit', slug: 'pixcensus-media-audit', version: '3.0.4' }));
