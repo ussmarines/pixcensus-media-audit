@@ -17,7 +17,7 @@ Finding totals: **0 critical, 2 high, 4 medium, and 4 low**. All critical/high f
 
 ## Threat model
 
-The repository-specific model is maintained in [`docs/codex/WP_image_usage_audit-threat-model.md`](WP_image_usage_audit-threat-model.md). It covers anonymous users, subscribers, contributors, authors, editors, administrators, multisite super administrators, admin pages, AJAX/admin-post actions, GET/POST input, options, posts/drafts, metadata, terms, CDN settings, stored results, CSV, activation/uninstall, multisite, dependencies, CI, and the ZIP.
+The repository-specific model is maintained in [`docs/codex/pixcensus-media-audit-threat-model.md`](pixcensus-media-audit-threat-model.md). It covers anonymous users, subscribers, contributors, authors, editors, administrators, multisite super administrators, admin pages, AJAX/admin-post actions, GET/POST input, options, posts/drafts, metadata, terms, CDN settings, stored results, CSV, activation/uninstall, multisite, dependencies, CI, and the ZIP.
 
 Trust boundaries are:
 

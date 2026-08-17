@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "project": "ussmarines/WP_image_usage_audit",
+  "project": "ussmarines/pixcensus-media-audit",
   "policy": "See AGENTS.md test reuse protocol.",
   "baseline_commit": "41122772915682dc631aeff7c02001c014a13dbe",
   "tested_state": "b6cd6f9 plus the post-merge Scorecard evidence documentation worktree",
@@ -1509,6 +1509,19 @@
       "configuration": [".github/workflows/wporg-screenshots-3.0.2.yml", "docs/screenshots", "README.md", "WordPress.org SVN assets and readmes"],
       "environment_signature": "GitHub-Actions-ubuntu-24.04|PowerShell-7.6.4|node-v24.19.0",
       "notes": "The first remote run failed before checkout because the runner did not include svn (exit 127; no SVN changes). After the targeted ephemeral client-install step, run 31477093481 passed and committed WordPress.org SVN revision 3641574. Public verification returned five ordered rev=3641574 screenshot URLs, matching captions, stable tag 3.0.2 in trunk and tags/3.0.2, and five image/png asset responses with source byte lengths."
+    },
+    {
+      "name": "Repository rename completion validation",
+      "command": "git diff --check; parse package.json and .codex/test-ledger.json with Node JSON.parse; npm run validate:config; npm run validate:metadata; npm run validate:branding; npm run actionlint; php -l pixcensus-media-audit.php; npm run build:zip; compare renamed threat-model blob hash; verify active repository references and Markdown link target; strict UTF-8, BOM and mojibake scan of changed files",
+      "tool_version": "Node.js v24.19.0; npm 11.17.0; PHP 8.3.33; PowerShell 7.6.4; Git 2.55.0.windows.3; @wordpress/env 11.12.0; actionlint via repository script",
+      "date": "2026-08-17",
+      "commit_tested": "78ef4fa334ba1345e76a6bcdb2c0222c62fcadd0+repository-rename-worktree",
+      "result": "pass",
+      "duration_ms": 16424,
+      "coverage": ["active repository identity", "package and test-ledger JSON", "repository JSON and YAML configuration", "plugin metadata", "PixCensus branding", "GitHub Actions syntax", "main plugin PHP syntax", "allow-listed release ZIP", "threat-model rename and Markdown link", "UTF-8 without BOM and mojibake"],
+      "configuration": [".codex/test-ledger.json", "package.json", ".wp-env.json", ".wp-env.package.json", ".wp-env.wp59-package.json", ".wp-env.multisite-package.json", ".github/workflows/qa.yml", ".github/workflows/release.yml", "scripts/validate-config.mjs", "scripts/validate-metadata.mjs", "scripts/validate-branding.mjs", "scripts/run-actionlint.ps1", "scripts/build-zip.ps1"],
+      "environment_signature": "Windows|PowerShell-7.6.4|node-v24.19.0|npm-11.17.0|php-8.3.33|git-2.55.0.windows.3|wp-env-11.12.0|docker-unavailable",
+      "notes": "All requested local rename checks passed. The ZIP contains 12 entries under pixcensus-media-audit/ with SHA-256 4ca39d881bce435feebf0bb4c562b0ad681c885aaa3a5fde3e548cf09e874649. The renamed threat model is byte-identical to the original blob. Historical commands, runs, URLs and audit evidence retaining the legacy repository name were intentionally preserved. wp-env path behavior was verified from the installed 11.12.0 implementation and configuration, but runtime startup was not attempted because Docker is unavailable on PATH."
     }
   ]
 }
