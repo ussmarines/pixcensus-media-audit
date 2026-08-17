@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 
-const version = '3.0.3';
+const version = '3.0.4';
+const testedUpTo = '7.1';
 const donationUrl = 'https://paypal.me/ussmarinesdot';
 const main = fs.readFileSync('pixcensus-media-audit.php', 'utf8');
 const readme = fs.readFileSync('readme.txt', 'utf8');
@@ -14,7 +15,9 @@ const expectedFunding = `custom:\n  - "${donationUrl}"`;
 const checks = [
 	[main.includes(`Version: ${version}`), 'plugin header version'],
 	[main.includes(`define( 'PIXCENSUS_VERSION', '${version}' )`), 'PIXCENSUS_VERSION'],
+	[main.includes(`Tested up to: ${testedUpTo}`), 'plugin tested-up-to'],
 	[readme.includes(`Stable tag: ${version}`), 'readme stable tag'],
+	[readme.includes(`Tested up to: ${testedUpTo}`), 'readme tested-up-to'],
 	[donateLinkMatch !== null && donateLinkMatch[1] === donationUrl, 'WordPress.org donate link'],
 	[
 		funding.replace(/\r\n/g, '\n').trim() === expectedFunding,
@@ -52,4 +55,4 @@ if (/^== Screenshots ==$/m.test(readme)) {
 	throw new Error('readme.txt lists screenshots, but no WordPress.org screenshot assets are distributed.');
 }
 
-console.log(JSON.stringify({ result: 'pass', version, tags: tags.length, shortDescription: shortDescription.length }));
+console.log(JSON.stringify({ result: 'pass', version, testedUpTo, tags: tags.length, shortDescription: shortDescription.length }));
