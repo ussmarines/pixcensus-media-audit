@@ -7,6 +7,6 @@
     "pixcensus-ci-source": "."
   },
   "testsEnvironment": false,
-  "port": 8894,
-  "testsPort": 8895
+  "port": 8888,
+  "testsPort": 8889
 }
