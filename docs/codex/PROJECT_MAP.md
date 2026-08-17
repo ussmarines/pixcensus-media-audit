@@ -3,9 +3,9 @@
 ## Audit baseline
 
 - Audited source commit: `bb043eb2ef67914272af7c20fa3ae78bf4da0d38` (`main`, defense-in-depth hardening integrated and post-merge QA, CodeQL, and OpenSSF checks verified on 2026-08-11).
-- Release preparation: `3.0.3` on `release/3.0.3`.
-- Plugin version: `3.0.3`.
-- Declared compatibility: WordPress 5.9+, PHP 7.4+, tested through WordPress 7.0.2.
+- Release preparation: `3.0.4` on `release/3.0.4-wordpress-7.1`.
+- Plugin version: `3.0.4`.
+- Declared compatibility: WordPress 5.9+, PHP 7.4+, tested through WordPress 7.1; dedicated compatibility validation uses WordPress 7.1 RC2.
 - Entry point: `pixcensus-media-audit.php`.
 - Text domain: `pixcensus-media-audit`; translations live under `languages/`.
 - Canonical project URL: `https://github.com/ussmarines/pixcensus-media-audit`; WordPress.org slug: `pixcensus-media-audit`.
@@ -23,7 +23,7 @@
 | `assets/admin.css` | Admin-only layout and responsive presentation. |
 | `uninstall.php` | Deletes only plugin-owned options for the current site and every multisite site. |
 | `scripts/build-zip.ps1` | Builds and inspects an allow-listed, deterministic `pixcensus-media-audit/` distribution ZIP and writes its SHA-256 checksum. |
-| `scripts/validate-metadata.mjs` | Checks version, text-domain, GPL, tags, short-description, and screenshot metadata invariants. |
+| `scripts/validate-metadata.mjs` | Checks version, text-domain, GPL, tags, short-description, tested-up-to, and screenshot metadata invariants. |
 | `scripts/validate-release-tag.mjs` | Rejects a release tag that does not exactly match the semantic plugin version. |
 | `readme.txt` | WordPress plugin metadata, end-user description, changelog, and privacy statement. |
 | `languages/pixcensus-media-audit.pot` | Reproducible translation template generated from the PHP and JavaScript source with the `pixcensus-media-audit` text domain. |
@@ -86,11 +86,12 @@ Runtime code remains dependency-free. Composer/npm are development-only, WordPre
 
 ## Commands and decisions
 
-- QA configuration: `composer.json`/`composer.lock`, `phpcs.xml.dist`, `phpstan.neon.dist`, `phpunit.xml.dist`, `package.json`/`package-lock.json`, `.wp-env.json`, and `.github/workflows/qa.yml`.
-- Workflow configuration also includes Dependency Review, JavaScript CodeQL, OpenSSF Scorecard, immutable release publication, and `.github/dependabot.yml`; run `npm run actionlint` and `npm run validate:config` for persistent workflow invariants.
+- QA configuration: `composer.json`/`composer.lock`, `phpcs.xml.dist`, `phpstan.neon.dist`, `phpunit.xml.dist`, `package.json`/`package-lock.json`, `.wp-env.json`, `.wp-env.wp71-package.json`, and `.github/workflows/qa.yml`.
+- Workflow configuration also includes Dependency Review, JavaScript CodeQL, OpenSSF Scorecard, immutable GitHub/WordPress.org release publication, and `.github/dependabot.yml`; run `npm run actionlint` and `npm run validate:config` for persistent workflow invariants.
 - Composer development tools: PHPCS 3.13.6 + WPCS + PHPCompatibilityWP, PHPStan with WordPress stubs, PHPUnit 9.6.35, and PHPUnit polyfills. `composer qa` runs lint, analysis, and isolated scanner tests; PHPStan uses a 1G limit for the WordPress stubs under PHP 7.4.
-- Reproducible runtime: `@wordpress/env` 11.12.0 with WordPress 7.0.2/PHP 7.4. Dedicated configs exercise WordPress 5.9.13 and a WordPress 7.0.2 multisite network; CI also runs a PHP 8.3 static/test lane.
+- Reproducible runtime: `@wordpress/env` 11.12.0 with a stable WordPress 7.0.2/PHP 7.4 baseline plus a dedicated WordPress 7.1 RC2/PHP 7.4 compatibility target. Dedicated configs also exercise WordPress 5.9.13 and a WordPress 7.0.2 multisite network; CI runs a PHP 8.3 static/test lane.
 - Tests: `tests/unit` has 60 cases / 258 assertions after the 3.0.3 hardening work, covering AJAX envelopes, capabilities, action-specific nonces, bounded IDs, lock ownership, network activation, URL/block/shortcode normalization, batching, bounded cycle-safe metadata walking, CDN validation, Unicode-aware CSV neutralization, builder IDs, provenance, and uploads-confined orphan paths. Integration scripts exercise the full standard-role authorization matrix, authenticated HTTP AJAX, settings and CSV export, more than one post/options batch, draft behavior, non-autoloaded results, stale locks, exact-ZIP activation, multisite isolation/uninstall, Plugin Check, and media/content preservation.
+- WordPress 7.1 compatibility is validated by `.github/workflows/wordpress-71-compat.yml` against the exact distributable ZIP on WordPress 7.1 RC2, including activation, AJAX, scanner smoke assertions, Plugin Check, and debug-log checks.
 - GitHub Actions run `31481424863` passed the complete post-hardening QA on `main` at `bb043eb2ef67914272af7c20fa3ae78bf4da0d38`. It covered actionlint, PHP 7.4/8.3 analysis/tests/syntax, dependency audits, metadata/config validation, ZIP construction, exact-ZIP installation and activation, role-based AJAX/settings/export behavior, functional smoke assertions, Plugin Check, deterministic POT regeneration, WordPress 5.9/current, multisite, security guard, and environment shutdown. CodeQL run `31481424922` and OpenSSF Scorecard run `31481424850` also passed on the same commit.
 - Read `.codex/test-ledger.json` before testing and reuse valid passing baselines according to `AGENTS.md`.
 - Keep runtime dependency-free and the admin UI on WordPress/jQuery primitives.
