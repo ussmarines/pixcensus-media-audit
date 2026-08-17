@@ -79,10 +79,9 @@ jobs:
       SVN_URL: https://plugins.svn.wordpress.org/pixcensus-media-audit
       RELEASE_TAG: ${{ github.ref_name }}
     steps:
-      - name: Checkout exact release tag
+      - name: Checkout exact release commit
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ github.ref }}
           persist-credentials: false
       - name: Download tested release files
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
@@ -130,15 +129,23 @@ jobs:
           sudo apt-get install --yes subversion
           svn --version --quiet
       - name: Prepare strict WordPress.org SVN delta
+        id: svn_prepare
         shell: bash
         run: |
           set -euo pipefail
           VERSION="${RELEASE_TAG#v}"
           svn checkout --quiet "$SVN_URL" svn-work
-          if svn ls "$SVN_URL/tags/$VERSION" >/dev/null 2>&1; then
-            echo "WordPress.org tag $VERSION already exists; refusing to overwrite it." >&2
-            exit 1
+
+          if [ -d "svn-work/tags/$VERSION" ]; then
+            if ! diff -qr --exclude='.svn' release/extracted/pixcensus-media-audit "svn-work/tags/$VERSION"; then
+              echo "Existing WordPress.org tag $VERSION differs from the tested ZIP; refusing to continue." >&2
+              exit 1
+            fi
+            echo "WordPress.org tag $VERSION already contains the exact tested package; treating this as an idempotent rerun."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
+
           mkdir -p svn-work/trunk svn-work/tags
           rsync -a --delete --exclude='.svn' release/extracted/pixcensus-media-audit/ svn-work/trunk/
           cd svn-work
@@ -182,7 +189,9 @@ jobs:
           for path in changed:
               print(path)
           PY
+          echo "changed=true" >> "$GITHUB_OUTPUT"
       - name: Publish tested ZIP contents to WordPress.org
+        if: steps.svn_prepare.outputs.changed == 'true'
         env:
           WPORG_SVN_PASSWORD: ${{ secrets.WPORG_SVN_PASSWORD }}
         shell: bash
