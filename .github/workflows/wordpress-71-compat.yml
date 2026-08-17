@@ -1,0 +1,50 @@
+name: WordPress 7.1 Compatibility
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wordpress-71-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  wordpress-71:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm run validate:config
+      - run: npm run validate:metadata
+      - run: npm run validate:branding
+      - run: npm run build:zip
+      - run: npx wp-env start --config .wp-env.wp71-package.json
+      - run: npx wp-env run cli --config .wp-env.wp71-package.json wp core version
+      - run: npx wp-env run cli --config .wp-env.wp71-package.json wp plugin install /var/www/html/pixcensus-ci-source/dist/pixcensus-media-audit.zip --activate
+      - run: npx wp-env run cli --config .wp-env.wp71-package.json wp plugin is-active pixcensus-media-audit
+      - run: npx wp-env run cli --config .wp-env.wp71-package.json wp eval-file /var/www/html/pixcensus-ci-source/tests/integration/ajax-setup.php
+      - run: npm run test:ajax
+      - run: npx wp-env run cli --config .wp-env.wp71-package.json wp eval-file /var/www/html/pixcensus-ci-source/tests/integration/smoke.php
+      - run: npx wp-env run cli --config .wp-env.wp71-package.json wp plugin install plugin-check --version=2.0.0 --activate
+      - run: npx wp-env run cli --config .wp-env.wp71-package.json wp plugin check pixcensus-media-audit
+      - name: Check WordPress debug log
+        shell: bash
+        run: |
+          log="$(npx wp-env run cli --config .wp-env.wp71-package.json wp eval 'echo WP_CONTENT_DIR . "/debug.log";' 2>/dev/null | tail -n 1)"
+          if [ -n "$log" ]; then
+            npx wp-env run cli --config .wp-env.wp71-package.json sh -lc 'test ! -f /var/www/html/wp-content/debug.log || { cat /var/www/html/wp-content/debug.log; ! grep -E "PHP (Warning|Notice|Deprecated|Fatal error)|_doing_it_wrong" /var/www/html/wp-content/debug.log; }'
+          fi
+      - if: always()
+        continue-on-error: true
+        run: npx wp-env stop --config .wp-env.wp71-package.json
