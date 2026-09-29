@@ -62,6 +62,13 @@ if (
 	throw new Error('The reviewed npm install script must remain approved at its exact version.');
 }
 
+if (
+	packageManifest.overrides?.['adm-zip'] !== '0.6.1' ||
+	packageManifest.overrides?.qs !== '6.16.0'
+) {
+	throw new Error('Reviewed npm security overrides must remain pinned to patched versions.');
+}
+
 const npmConfig = fs.readFileSync('.npmrc', 'utf8');
 
 if (!/^strict-allow-scripts=true$/m.test(npmConfig)) {
