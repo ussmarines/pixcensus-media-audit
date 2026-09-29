@@ -66,6 +66,13 @@ if (
 	packageManifest.overrides?.['adm-zip'] !== '0.6.1' ||
 	packageManifest.overrides?.qs !== '6.16.0'
 ) {
+	throw new Error('The reviewed npm security overrides must remain pinned to patched versions.');
+}
+
+if (
+	packageManifest.overrides?.['adm-zip'] !== '0.6.1' ||
+	packageManifest.overrides?.qs !== '6.16.0'
+) {
 	throw new Error('Reviewed npm security overrides must remain pinned to patched versions.');
 }
 
