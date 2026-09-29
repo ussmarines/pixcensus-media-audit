@@ -30,6 +30,7 @@
     "fs-ext-extra-prebuilt@2.2.7": true
   },
   "overrides": {
-    "adm-zip": "0.6.0"
+    "adm-zip": "0.6.1",
+    "qs": "6.16.0"
   }
 }
