@@ -19,10 +19,11 @@
     "validate:config": "node scripts/validate-config.mjs",
     "build:zip": "pwsh -NoProfile -File scripts/build-zip.ps1",
     "actionlint": "pwsh -NoProfile -File scripts/run-actionlint.ps1",
-    "validate:branding": "node scripts/validate-branding.mjs"
+    "validate:branding": "node scripts/validate-branding.mjs",
+    "audit:npm": "node scripts/audit-npm.mjs"
   },
   "devDependencies": {
-    "@wordpress/env": "11.15.0",
+    "@wordpress/env": "11.16.0",
     "fast-check": "4.10.2",
     "yaml": "2.9.1"
   },
@@ -31,6 +32,7 @@
   },
   "overrides": {
     "adm-zip": "0.6.1",
-    "qs": "6.16.0"
+    "qs": "6.16.0",
+    "brace-expansion": "2.1.7"
   }
 }
