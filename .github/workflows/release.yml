@@ -37,7 +37,7 @@ jobs:
           git fetch --no-tags origin main:refs/remotes/origin/main
           git merge-base --is-ancestor "$GITHUB_SHA" origin/main
       - run: npm ci
-      - run: npm audit --audit-level=high
+      - run: npm run audit:npm -- --level=high
       - run: npm run validate:metadata
       - run: npm run validate:config
       - run: npm run validate:branding
