@@ -47,10 +47,11 @@ const approvedInstallScripts = packageManifest.allowScripts || {};
 if (
 	packageManifest.name !== 'pixcensus-media-audit' ||
 	packageManifest.private !== true ||
-	packageManifest.devDependencies?.['@wordpress/env'] !== '11.15.0' ||
+	packageManifest.devDependencies?.['@wordpress/env'] !== '11.16.0' ||
 	packageManifest.devDependencies?.yaml !== '2.9.1' ||
 	packageManifest.devDependencies?.['fast-check'] !== '4.10.2' ||
-	packageManifest.scripts?.['test:property'] !== 'node tests/property/security-inputs.property.js'
+	packageManifest.scripts?.['test:property'] !== 'node tests/property/security-inputs.property.js' ||
+	packageManifest.scripts?.['audit:npm'] !== 'node scripts/audit-npm.mjs'
 ) {
 	throw new Error('The npm package identity and direct QA dependencies must remain exact and reviewed.');
 }
@@ -64,16 +65,10 @@ if (
 
 if (
 	packageManifest.overrides?.['adm-zip'] !== '0.6.1' ||
-	packageManifest.overrides?.qs !== '6.16.0'
+	packageManifest.overrides?.qs !== '6.16.0' ||
+	packageManifest.overrides?.['brace-expansion'] !== '2.1.7'
 ) {
 	throw new Error('The reviewed npm security overrides must remain pinned to patched versions.');
-}
-
-if (
-	packageManifest.overrides?.['adm-zip'] !== '0.6.1' ||
-	packageManifest.overrides?.qs !== '6.16.0'
-) {
-	throw new Error('Reviewed npm security overrides must remain pinned to patched versions.');
 }
 
 const npmConfig = fs.readFileSync('.npmrc', 'utf8');
