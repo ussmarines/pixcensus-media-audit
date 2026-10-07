@@ -33,6 +33,7 @@
   "overrides": {
     "adm-zip": "0.6.1",
     "qs": "6.16.0",
-    "brace-expansion": "2.1.7"
+    "brace-expansion": "2.1.7",
+    "proxy-addr": "2.0.8"
   }
 }
