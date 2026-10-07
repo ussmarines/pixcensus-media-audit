@@ -66,7 +66,8 @@ if (
 if (
 	packageManifest.overrides?.['adm-zip'] !== '0.6.1' ||
 	packageManifest.overrides?.qs !== '6.16.0' ||
-	packageManifest.overrides?.['brace-expansion'] !== '2.1.7'
+	packageManifest.overrides?.['brace-expansion'] !== '2.1.7' ||
+	packageManifest.overrides?.['proxy-addr'] !== '2.0.8'
 ) {
 	throw new Error('The reviewed npm security overrides must remain pinned to patched versions.');
 }
