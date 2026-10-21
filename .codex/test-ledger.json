@@ -1545,6 +1545,150 @@
       ],
       "environment_signature": "Linux|node-v24.19.0|npm-11.17.0",
       "notes": "Installation completed (393 packages); validate:config passed with 20 JSON and 10 YAML files. Exact elapsed duration was not recorded. The strict version equality was updated from 11.16.0 to the reviewed Dependabot version 11.17.0 without removing the guard. No local WordPress runtime was started. CI on the original PR passed WordPress 5.9 and multisite but failed the stale version invariant; updated-head CI remains required."
+    },
+    {
+      "tool_version": "Node.js v24.20.0; npm 11.19.0; Git",
+      "date": "2026-10-21",
+      "commit_tested": "65ded6efc88832828a5533552dc8f8c3b50b8641+main-50f9213e2f2e+reviewed-pr77-worktree",
+      "configuration": [
+        "package.json",
+        "package-lock.json",
+        ".npmrc",
+        "scripts/validate-config.mjs"
+      ],
+      "environment_signature": "Linux-x64-glibc|node-v24.20.0|npm-11.19.0|git-local-fixtures|Docker-PHP-PowerShell-unavailable",
+      "name": "Dependabot PR 77 initial review and blocked baseline",
+      "command": "npm ci --ignore-scripts; npm audit --json; inspect GitHub Actions runs 39635313005 and 39635312974",
+      "result": "fail",
+      "duration_ms": null,
+      "coverage": [
+        "lock installation without lifecycle execution",
+        "official npm advisories",
+        "six failed exact-head CI jobs"
+      ],
+      "notes": "Inspection install passed; no native hook was executed at this stage. Raw audit reported 1 high and 4 moderate entries. All six PHP/WordPress CI jobs failed npm ci with ESTRICTALLOWSCRIPTS for fs-ext-extra-prebuilt@2.2.16; their runtime steps were skipped. Main was later merged normally in the local review worktree, preserving PR 74/75 composer and ledger changes."
+    },
+    {
+      "tool_version": "Node.js v24.20.0; npm 11.19.0; Git",
+      "date": "2026-10-21",
+      "commit_tested": "65ded6efc88832828a5533552dc8f8c3b50b8641+main-50f9213e2f2e+reviewed-pr77-worktree",
+      "configuration": [
+        "package.json",
+        "package-lock.json",
+        ".npmrc",
+        "scripts/validate-config.mjs"
+      ],
+      "environment_signature": "Linux-x64-glibc|node-v24.20.0|npm-11.19.0|git-local-fixtures|Docker-PHP-PowerShell-unavailable",
+      "name": "Dependabot PR 77 initial tooling compatibility with uncached WordPress metadata",
+      "command": "node --test --test-isolation=none ../pix77-compatibility-smoke.cjs",
+      "result": "fail",
+      "duration_ms": 664,
+      "coverage": [
+        "wp-env CLI",
+        "real Git clone and refresh",
+        "PHPUnit ref selection",
+        "configuration loading"
+      ],
+      "notes": "Two tests passed. Config comparison stopped because the wp-env DNS probe could not resolve WordPress.org and no cache existed. This was an environment precondition, not a claimed WordPress runtime pass. The final check populated only the documented scratch WP_ENV_HOME cache from https://api.wordpress.org/core/stable-check/1.0/ (latest 7.1.3). No repository guard or runtime setting was bypassed."
+    },
+    {
+      "tool_version": "Node.js v24.20.0; npm 11.19.0; Git",
+      "date": "2026-10-21",
+      "commit_tested": "65ded6efc88832828a5533552dc8f8c3b50b8641+main-50f9213e2f2e+reviewed-pr77-worktree",
+      "configuration": [
+        "package.json",
+        "package-lock.json",
+        ".npmrc",
+        "scripts/validate-config.mjs"
+      ],
+      "environment_signature": "Linux-x64-glibc|node-v24.20.0|npm-11.19.0|git-local-fixtures|Docker-PHP-PowerShell-unavailable",
+      "name": "Dependabot PR 77 exact approved native script and corrected lock installation",
+      "command": "npm ci --foreground-scripts",
+      "result": "pass",
+      "duration_ms": 4530,
+      "coverage": [
+        "393 locked dev packages",
+        "strict single exact allowScripts pin",
+        "Linux Node 24 ABI137 native prebuild load",
+        "http-cache-semantics 4.3.0 compatible security update"
+      ],
+      "notes": "fs-ext-extra-prebuilt@2.2.16 tarball integrity, npm signatures, GitHub OIDC publication and 48 shipped binaries were reviewed against upstream. The only allowed install hook loaded fs-ext-linux-x64-glibc-node-abi137.node and skipped compilation. Strict mode and one-entry invariant remain intact. Upstream fallback NAN patch can exit early when NAN is hoisted, so unsupported ABI/musl source compilation is not validated. npm update http-cache-semantics --package-lock-only --ignore-scripts --no-audit --no-fund changed only that package from 4.2.0 to 4.3.0."
+    },
+    {
+      "tool_version": "Node.js v24.20.0; npm 11.19.0; Git",
+      "date": "2026-10-21",
+      "commit_tested": "65ded6efc88832828a5533552dc8f8c3b50b8641+main-50f9213e2f2e+reviewed-pr77-worktree",
+      "configuration": [
+        "package.json",
+        "package-lock.json",
+        ".npmrc",
+        "scripts/validate-config.mjs"
+      ],
+      "environment_signature": "Linux-x64-glibc|node-v24.20.0|npm-11.19.0|git-local-fixtures|Docker-PHP-PowerShell-unavailable",
+      "name": "Dependabot PR 77 wp-env 12 and simple-git 4 compatibility",
+      "command": "node --test --test-isolation=none ../pix77-compatibility-smoke.cjs",
+      "result": "pass",
+      "duration_ms": 6719,
+      "coverage": [
+        "all seven existing configs identical to wp-env 11.17",
+        "PHP 7.4 config compatibility",
+        "CLI config and Docker options",
+        "actual isolated Git clone and cached branch refresh",
+        "WordPress 5.9 tag normalization",
+        "stable patch tag",
+        "7.1 RC branch",
+        "missing release tag fallback",
+        "missing all refs error"
+      ],
+      "notes": "Three real Node tests passed, zero failed or skipped, using --test-isolation=none. Temporary local Git fixtures only; no remote write or WordPress container. The scratch harness was pix77-compatibility-smoke.cjs, SHA-256 ad47bbf4177ad02796543ea378a0497fd51effc0bed5604a2ff4a447078ff925. wp-env config and Docker CLI implementation are unchanged between 11.17 and 12; actual changed source imports the named simpleGit export and improves PHPUnit reference selection."
+    },
+    {
+      "tool_version": "Node.js v24.20.0; npm 11.19.0; Git",
+      "date": "2026-10-21",
+      "commit_tested": "65ded6efc88832828a5533552dc8f8c3b50b8641+main-50f9213e2f2e+reviewed-pr77-worktree",
+      "configuration": [
+        "package.json",
+        "package-lock.json",
+        ".npmrc",
+        "scripts/validate-config.mjs"
+      ],
+      "environment_signature": "Linux-x64-glibc|node-v24.20.0|npm-11.19.0|git-local-fixtures|Docker-PHP-PowerShell-unavailable",
+      "name": "Dependabot PR 77 exact config and high-severity audit gate",
+      "command": "npm run validate:config; npm run audit:npm -- --level=high --report=../pix77-audit-final.json; git diff --check",
+      "result": "pass",
+      "duration_ms": null,
+      "coverage": [
+        "20 JSON files",
+        "10 YAML files",
+        "exact wp-env 12.0.0 dependency guard",
+        "exact fs-ext-extra-prebuilt@2.2.16 install-script guard",
+        "high-severity npm audit without exceptions",
+        "whitespace"
+      ],
+      "notes": "Config check 276 ms; audit gate 702 ms; initial diff check 5 ms. Audit reports 4 moderate aggregate/dependency entries via unpatched sprintf-js (latest 1.1.3), zero high/critical and reviewedExceptions empty. No production dependency, application source, media, workflow, release version or audit guard was changed. Full PHP/WordPress/ZIP validation requires CI on the resulting merge commit; local Docker, PHP and PowerShell are unavailable."
+    },
+    {
+      "name": "Dependabot PR 77 automatic rebase and validated-content equivalence",
+      "command": "git fetch --no-tags origin d908f9d2becb4145c2318888580d52b3fe4b8330; git merge-base --is-ancestor 50f9213e2f2e8dc53ecf5b9ebe4b0fc3d1f74566 d908f9d2becb4145c2318888580d52b3fe4b8330; compare full changed-path list and tested manifest/lock/validator SHA-256 with validated tree f8b1dc1c315d96cf1a4017da0f8a6d741d0db31b",
+      "tool_version": "Git; Python 3",
+      "date": "2026-10-21",
+      "commit_tested": "d908f9d2becb4145c2318888580d52b3fe4b8330+reviewed-correction-worktree",
+      "result": "pass",
+      "duration_ms": null,
+      "coverage": [
+        "main is direct parent of refreshed PR head",
+        "all tested dependency and validator bytes unchanged",
+        "existing main ledger preserved without reformatting",
+        "normal one-parent commit applicability"
+      ],
+      "configuration": [
+        "package.json",
+        "package-lock.json",
+        "scripts/validate-config.mjs",
+        ".codex/test-ledger.json"
+      ],
+      "environment_signature": "Linux|local-Git-object-and-SHA256-comparison",
+      "notes": "Dependabot automatically rebased the PR after local validation. The new head reduces its lock changes to wp-env/simple-git and keeps php-wasm 3.1.57/fs-ext 2.2.7. The prepared correction deliberately retains the original PR patch updates already reviewed and tested (php-wasm/playground 3.1.60, fs-ext 2.2.16, nan 2.30.0, fast-uri 3.1.9), plus the compatible http-cache-semantics 4.3.0 security fix. All tested non-ledger bytes exactly match the previous passing candidate; the test-reuse protocol therefore avoids rerunning them. This commit now needs only the refreshed PR head as parent. Updated-head GitHub CI remains required."
     }
   ]
 }

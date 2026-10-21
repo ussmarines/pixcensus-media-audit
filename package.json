@@ -28,7 +28,7 @@
     "yaml": "2.9.1"
   },
   "allowScripts": {
-    "fs-ext-extra-prebuilt@2.2.7": true
+    "fs-ext-extra-prebuilt@2.2.16": true
   },
   "overrides": {
     "adm-zip": "0.6.1",
