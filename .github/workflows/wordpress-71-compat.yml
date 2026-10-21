@@ -36,7 +36,7 @@ jobs:
       - run: npx wp-env run cli --config .wp-env.wp71-package.json wp eval-file /var/www/html/pixcensus-ci-source/tests/integration/ajax-setup.php
       - run: npm run test:ajax
       - run: npx wp-env run cli --config .wp-env.wp71-package.json wp eval-file /var/www/html/pixcensus-ci-source/tests/integration/smoke.php
-      - run: npx wp-env run cli --config .wp-env.wp71-package.json wp plugin install plugin-check --version=2.0.0 --activate
+      - run: npx wp-env run cli --config .wp-env.wp71-package.json wp plugin install plugin-check -- --version=2.0.0 --activate
       - run: npx wp-env run cli --config .wp-env.wp71-package.json wp plugin check pixcensus-media-audit
       - name: Check WordPress debug log
         shell: bash
