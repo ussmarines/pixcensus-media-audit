@@ -1522,6 +1522,29 @@
       "configuration": [".codex/test-ledger.json", "package.json", ".wp-env.json", ".wp-env.package.json", ".wp-env.wp59-package.json", ".wp-env.multisite-package.json", ".github/workflows/qa.yml", ".github/workflows/release.yml", "scripts/validate-config.mjs", "scripts/validate-metadata.mjs", "scripts/validate-branding.mjs", "scripts/run-actionlint.ps1", "scripts/build-zip.ps1"],
       "environment_signature": "Windows|PowerShell-7.6.4|node-v24.19.0|npm-11.17.0|php-8.3.33|git-2.55.0.windows.3|wp-env-11.12.0|docker-unavailable",
       "notes": "All requested local rename checks passed. The ZIP contains 12 entries under pixcensus-media-audit/ with SHA-256 4ca39d881bce435feebf0bb4c562b0ad681c885aaa3a5fde3e548cf09e874649. The renamed threat model is byte-identical to the original blob. Historical commands, runs, URLs and audit evidence retaining the legacy repository name were intentionally preserved. wp-env path behavior was verified from the installed 11.12.0 implementation and configuration, but runtime startup was not attempted because Docker is unavailable on PATH."
+    },
+    {
+      "name": "Dependabot PR 74 reviewed wp-env version invariant",
+      "command": "npx --yes npm@11.17.0 ci && npx --yes npm@11.17.0 run validate:config && git diff --check",
+      "tool_version": "Node.js v24.19.0; npm 11.17.0",
+      "date": "2026-10-21",
+      "commit_tested": "1582767199ce7f5e3301c2a782420b71d4cf6b9b+reviewed-version-guard-worktree",
+      "result": "pass",
+      "duration_ms": null,
+      "coverage": [
+        "exact npm lock installation",
+        "reviewed @wordpress/env 11.17.0 invariant",
+        "repository JSON and YAML configuration",
+        "working-tree whitespace"
+      ],
+      "configuration": [
+        "package.json",
+        "package-lock.json",
+        ".npmrc",
+        "scripts/validate-config.mjs"
+      ],
+      "environment_signature": "Linux|node-v24.19.0|npm-11.17.0",
+      "notes": "Installation completed (393 packages); validate:config passed with 20 JSON and 10 YAML files. Exact elapsed duration was not recorded. The strict version equality was updated from 11.16.0 to the reviewed Dependabot version 11.17.0 without removing the guard. No local WordPress runtime was started. CI on the original PR passed WordPress 5.9 and multisite but failed the stale version invariant; updated-head CI remains required."
     }
   ]
 }

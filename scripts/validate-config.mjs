@@ -47,7 +47,7 @@ const approvedInstallScripts = packageManifest.allowScripts || {};
 if (
 	packageManifest.name !== 'pixcensus-media-audit' ||
 	packageManifest.private !== true ||
-	packageManifest.devDependencies?.['@wordpress/env'] !== '11.16.0' ||
+	packageManifest.devDependencies?.['@wordpress/env'] !== '11.17.0' ||
 	packageManifest.devDependencies?.yaml !== '2.9.1' ||
 	packageManifest.devDependencies?.['fast-check'] !== '4.10.2' ||
 	packageManifest.scripts?.['test:property'] !== 'node tests/property/security-inputs.property.js' ||
