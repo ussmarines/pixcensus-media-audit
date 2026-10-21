@@ -114,7 +114,7 @@ jobs:
       - run: npx wp-env run cli --config .wp-env.package.json wp eval-file /var/www/html/pixcensus-ci-source/tests/integration/ajax-setup.php
       - run: npm run test:ajax
       - run: npx wp-env run cli --config .wp-env.package.json wp eval-file /var/www/html/pixcensus-ci-source/tests/integration/smoke.php
-      - run: npx wp-env run cli --config .wp-env.package.json wp plugin install plugin-check --version=2.0.0 --activate
+      - run: npx wp-env run cli --config .wp-env.package.json wp plugin install plugin-check -- --version=2.0.0 --activate
       - run: npx wp-env run cli --config .wp-env.package.json wp plugin check pixcensus-media-audit
       - run: npx wp-env run cli --config .wp-env.package.json wp i18n make-pot /var/www/html/wp-content/plugins/pixcensus-media-audit /var/www/html/pixcensus-ci-source/languages/pixcensus-media-audit.pot --domain=pixcensus-media-audit --exclude=.agents,docs,tests,vendor,node_modules,scripts,dist --headers='{"POT-Creation-Date":"2026-08-05T17:30:00+00:00","Report-Msgid-Bugs-To":"https://github.com/ussmarines/pixcensus-media-audit/issues"}'
       - run: git diff --exit-code -- languages/pixcensus-media-audit.pot

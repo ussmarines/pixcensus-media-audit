@@ -1689,6 +1689,28 @@
       ],
       "environment_signature": "Linux|local-Git-object-and-SHA256-comparison",
       "notes": "Dependabot automatically rebased the PR after local validation. The new head reduces its lock changes to wp-env/simple-git and keeps php-wasm 3.1.57/fs-ext 2.2.7. The prepared correction deliberately retains the original PR patch updates already reviewed and tested (php-wasm/playground 3.1.60, fs-ext 2.2.16, nan 2.30.0, fast-uri 3.1.9), plus the compatible http-cache-semantics 4.3.0 security fix. All tested non-ledger bytes exactly match the previous passing candidate; the test-reuse protocol therefore avoids rerunning them. This commit now needs only the refreshed PR head as parent. Updated-head GitHub CI remains required."
+    },
+    {
+      "name": "Pinned Plugin Check version argument forwarding in QA, WP7.1 and release checks",
+      "command": "node ../pix77-wp-env-argument-check.cjs",
+      "tool_version": "Node.js v24.21.0; @wordpress/env 11.17.0 and 12.0.0",
+      "date": "2026-10-21",
+      "commit_tested": "5a69a92b98a58a60beb5e334dca3bfaf0d9f2cfb+qa-plugin-check-argument-separator",
+      "result": "pass",
+      "duration_ms": 2277,
+      "coverage": [
+        "Actual CLI parser and run-command handler for wp-env 11.17.0 and 12.0.0",
+        "Existing and corrected command forms with package and WP7.1 config paths",
+        "All eight cases preserve config and activation arguments; separator preserves --version=2.0.0"
+      ],
+      "configuration": [
+        ".github/workflows/qa.yml",
+        ".github/workflows/wordpress-71-compat.yml",
+        ".github/workflows/release.yml",
+        "package-lock.json"
+      ],
+      "environment_signature": "Linux-x64|Node-v24.21.0|configuration-resolution-and-final-runtime-boundary-stubbed|Docker-PHP-PowerShell-unavailable",
+      "notes": "The preexisting command drops --version=2.0.0 in both versions; cli.js and commands/run.js have identical hashes across 11.17.0 and 12.0.0. Adding the documented -- separator passes the pinned version to the runtime. The earlier successful PR74 log also downloaded Plugin Check 2.1.0 despite requesting 2.0.0. This is not evidence of a wp-env12 regression. No container or WordPress runtime was run locally. Initial sandboxed harness launches encountered EPERM at Node child-process creation; the authorized local-only rerun passed. Scratch harness SHA-256 85047ec82e3674b9100704eee26953228f7efc9b49a71be19ec1a8d82ced5175. All three workflow YAML files parse and recursive comparison finds exactly one run-string change in each; triggers, permissions, timeouts and checks are unchanged. The CI URL-validation failure remains compatible with transient DNS failure, not conclusively diagnosed by this argument test. Corrected-head CI is required. The WP7.1 compatibility and release workflows use exactly the same already-tested WP7.1 argument vector, so their parser evidence is reused without rerunning. No release or tag was triggered."
     }
   ]
 }
