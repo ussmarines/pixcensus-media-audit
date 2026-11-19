@@ -47,9 +47,9 @@ const approvedInstallScripts = packageManifest.allowScripts || {};
 if (
 	packageManifest.name !== 'pixcensus-media-audit' ||
 	packageManifest.private !== true ||
-	packageManifest.devDependencies?.['@wordpress/env'] !== '12.0.0' ||
+	packageManifest.devDependencies?.['@wordpress/env'] !== '12.2.0' ||
 	packageManifest.devDependencies?.yaml !== '2.9.1' ||
-	packageManifest.devDependencies?.['fast-check'] !== '4.10.2' ||
+	packageManifest.devDependencies?.['fast-check'] !== '4.10.3' ||
 	packageManifest.scripts?.['test:property'] !== 'node tests/property/security-inputs.property.js' ||
 	packageManifest.scripts?.['audit:npm'] !== 'node scripts/audit-npm.mjs'
 ) {
@@ -65,7 +65,7 @@ if (
 
 if (
 	packageManifest.overrides?.['adm-zip'] !== '0.6.1' ||
-	packageManifest.overrides?.qs !== '6.16.0' ||
+	packageManifest.overrides?.qs !== '6.17.1' ||
 	packageManifest.overrides?.['brace-expansion'] !== '2.1.7' ||
 	packageManifest.overrides?.['proxy-addr'] !== '2.0.8'
 ) {
