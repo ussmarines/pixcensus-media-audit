@@ -60,8 +60,9 @@ if (!allowedLevels.has(level)) {
 	throw new Error(`Unsupported audit level: ${level}`);
 }
 
-const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
-const audit = spawnSync(npmCommand, ['audit', '--json', `--audit-level=${level}`], {
+const auditArgs = ['audit', '--json', `--audit-level=${level}`];
+const npmCli = process.env.npm_execpath;
+const audit = spawnSync(npmCli ? process.execPath : 'npm', npmCli ? [npmCli, ...auditArgs] : auditArgs, {
 	encoding: 'utf8',
 	maxBuffer: 16 * 1024 * 1024,
 });

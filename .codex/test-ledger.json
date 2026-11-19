@@ -1711,6 +1711,90 @@
       ],
       "environment_signature": "Linux-x64|Node-v24.21.0|configuration-resolution-and-final-runtime-boundary-stubbed|Docker-PHP-PowerShell-unavailable",
       "notes": "The preexisting command drops --version=2.0.0 in both versions; cli.js and commands/run.js have identical hashes across 11.17.0 and 12.0.0. Adding the documented -- separator passes the pinned version to the runtime. The earlier successful PR74 log also downloaded Plugin Check 2.1.0 despite requesting 2.0.0. This is not evidence of a wp-env12 regression. No container or WordPress runtime was run locally. Initial sandboxed harness launches encountered EPERM at Node child-process creation; the authorized local-only rerun passed. Scratch harness SHA-256 85047ec82e3674b9100704eee26953228f7efc9b49a71be19ec1a8d82ced5175. All three workflow YAML files parse and recursive comparison finds exactly one run-string change in each; triggers, permissions, timeouts and checks are unchanged. The CI URL-validation failure remains compatible with transient DNS failure, not conclusively diagnosed by this argument test. Corrected-head CI is required. The WP7.1 compatibility and release workflows use exactly the same already-tested WP7.1 argument vector, so their parser evidence is reused without rerunning. No release or tag was triggered."
+    },
+    {
+      "tool_version": "Node 26.7.0 / npm 11.19.0 / Composer 2.10.2 / git version 2.56.1.windows.1",
+      "name": "npm audit",
+      "command": "npm audit",
+      "date": "2026-11-19",
+      "coverage": "npm audit",
+      "commit_tested": "28fd065 + maintenance worktree",
+      "configuration": "repository manifests, locks and QA scripts",
+      "environment_signature": "Windows x64 / PHP 8.3.33",
+      "result": "pass",
+      "duration_ms": 862
+    },
+    {
+      "tool_version": "Node 26.7.0 / npm 11.19.0 / Composer 2.10.2 / git version 2.56.1.windows.1",
+      "name": "npm run audit:npm -- --level=high",
+      "command": "npm run audit:npm -- --level=high",
+      "date": "2026-11-19",
+      "coverage": "npm run audit:npm -- --level=high",
+      "commit_tested": "28fd065 + maintenance worktree",
+      "configuration": "repository manifests, locks and QA scripts",
+      "environment_signature": "Windows x64 / PHP 8.3.33",
+      "result": "pass",
+      "duration_ms": 1029
+    },
+    {
+      "tool_version": "Node 26.7.0 / npm 11.19.0 / Composer 2.10.2 / git version 2.56.1.windows.1",
+      "name": "composer audit --locked",
+      "command": "composer audit --locked",
+      "date": "2026-11-19",
+      "coverage": "composer audit --locked",
+      "commit_tested": "28fd065 + maintenance worktree",
+      "configuration": "repository manifests, locks and QA scripts",
+      "environment_signature": "Windows x64 / PHP 8.3.33",
+      "result": "pass",
+      "duration_ms": 1152
+    },
+    {
+      "tool_version": "Node 26.7.0 / npm 11.19.0 / Composer 2.10.2 / git version 2.56.1.windows.1",
+      "name": "composer validate --strict",
+      "command": "composer validate --strict",
+      "date": "2026-11-19",
+      "coverage": "composer validate --strict",
+      "commit_tested": "28fd065 + maintenance worktree",
+      "configuration": "repository manifests, locks and QA scripts",
+      "environment_signature": "Windows x64 / PHP 8.3.33",
+      "result": "pass",
+      "duration_ms": 1142
+    },
+    {
+      "tool_version": "Node 26.7.0 / npm 11.19.0 / Composer 2.10.2 / git version 2.56.1.windows.1",
+      "name": "npm run validate:config",
+      "command": "npm run validate:config",
+      "date": "2026-11-19",
+      "coverage": "npm run validate:config",
+      "commit_tested": "28fd065 + maintenance worktree",
+      "configuration": "repository manifests, locks and QA scripts",
+      "environment_signature": "Windows x64 / PHP 8.3.33",
+      "result": "pass",
+      "duration_ms": 390
+    },
+    {
+      "tool_version": "Node 26.7.0 / npm 11.19.0 / Composer 2.10.2 / git version 2.56.1.windows.1",
+      "name": "npm run test:property",
+      "command": "npm run test:property",
+      "date": "2026-11-19",
+      "coverage": "npm run test:property",
+      "commit_tested": "28fd065 + maintenance worktree",
+      "configuration": "repository manifests, locks and QA scripts",
+      "environment_signature": "Windows x64 / PHP 8.3.33",
+      "result": "pass",
+      "duration_ms": 420
+    },
+    {
+      "tool_version": "Node 26.7.0 / npm 11.19.0 / Composer 2.10.2 / git version 2.56.1.windows.1",
+      "name": "git diff --check",
+      "command": "git diff --check",
+      "date": "2026-11-19",
+      "coverage": "git diff --check",
+      "commit_tested": "28fd065 + maintenance worktree",
+      "configuration": "repository manifests, locks and QA scripts",
+      "environment_signature": "Windows x64 / PHP 8.3.33",
+      "result": "pass",
+      "duration_ms": 51
     }
   ]
 }
