@@ -35,9 +35,7 @@
       "commit_tested": "adf788ce39ab6b47e84b983dd5ddb944a4a97384+worktree",
       "result": "pass",
       "duration_ms": 317,
-      "coverage": [
-        "assets/admin.js"
-      ],
+      "coverage": ["assets/admin.js"],
       "configuration": [],
       "environment_signature": "Windows|node-v24.18.0"
     },
@@ -49,11 +47,7 @@
       "commit_tested": "adf788ce39ab6b47e84b983dd5ddb944a4a97384+worktree",
       "result": "pass",
       "duration_ms": 288,
-      "coverage": [
-        "image-usage-audit.php",
-        "readme.txt",
-        "languages/image-usage-audit.pot"
-      ],
+      "coverage": ["image-usage-audit.php", "readme.txt", "languages/image-usage-audit.pot"],
       "configuration": [],
       "environment_signature": "Windows|rtk"
     },
@@ -65,11 +59,7 @@
       "commit_tested": "adf788ce39ab6b47e84b983dd5ddb944a4a97384+worktree",
       "result": "pass",
       "duration_ms": 260,
-      "coverage": [
-        "PHP translation calls",
-        "POT metadata",
-        "admin JavaScript"
-      ],
+      "coverage": ["PHP translation calls", "POT metadata", "admin JavaScript"],
       "configuration": [],
       "environment_signature": "Windows|rtk"
     },
@@ -81,9 +71,7 @@
       "commit_tested": "adf788ce39ab6b47e84b983dd5ddb944a4a97384+worktree",
       "result": "pass",
       "duration_ms": 310,
-      "coverage": [
-        "readme.txt headers and required sections"
-      ],
+      "coverage": ["readme.txt headers and required sections"],
       "configuration": [],
       "environment_signature": "Windows|rtk"
     },
@@ -95,9 +83,7 @@
       "commit_tested": "adf788ce39ab6b47e84b983dd5ddb944a4a97384+worktree",
       "result": "warning",
       "duration_ms": 303,
-      "coverage": [
-        "languages/image-usage-audit.pot"
-      ],
+      "coverage": ["languages/image-usage-audit.pot"],
       "configuration": [],
       "environment_signature": "Windows|rtk",
       "notes": "No non-empty msgid was found. POT metadata is synchronized to 2.2.5, but the full catalog requires WP-CLI regeneration before release."
@@ -110,12 +96,8 @@
       "commit_tested": "adf788ce39ab6b47e84b983dd5ddb944a4a97384+worktree",
       "result": "pass",
       "duration_ms": 377,
-      "coverage": [
-        "tracked worktree diff"
-      ],
-      "configuration": [
-        ".git/config"
-      ],
+      "coverage": ["tracked worktree diff"],
+      "configuration": [".git/config"],
       "environment_signature": "Windows|git|rtk"
     },
     {
@@ -126,9 +108,7 @@
       "commit_tested": "adf788ce39ab6b47e84b983dd5ddb944a4a97384+worktree",
       "result": "pass",
       "duration_ms": 177,
-      "coverage": [
-        "LICENSE"
-      ],
+      "coverage": ["LICENSE"],
       "configuration": [],
       "environment_signature": "Windows|rtk"
     },
@@ -140,9 +120,7 @@
       "commit_tested": "adf788ce39ab6b47e84b983dd5ddb944a4a97384+worktree",
       "result": "pass",
       "duration_ms": 316,
-      "coverage": [
-        "entire worktree excluding .git"
-      ],
+      "coverage": ["entire worktree excluding .git"],
       "configuration": [],
       "environment_signature": "Windows|rtk",
       "notes": "ripgrep exit 1 means no matching secret patterns were found."
@@ -155,12 +133,7 @@
       "commit_tested": "adf788ce39ab6b47e84b983dd5ddb944a4a97384+worktree",
       "result": "blocked",
       "duration_ms": 276,
-      "coverage": [
-        "image-usage-audit.php",
-        "includes/class-iua-scanner.php",
-        "views/admin-page.php",
-        "uninstall.php"
-      ],
+      "coverage": ["image-usage-audit.php", "includes/class-iua-scanner.php", "views/admin-page.php", "uninstall.php"],
       "configuration": [],
       "environment_signature": "Windows|php-missing",
       "notes": "PHP is not on PATH; no php -l result exists and none may be reused."
@@ -173,10 +146,7 @@
       "commit_tested": "adf788ce39ab6b47e84b983dd5ddb944a4a97384+worktree",
       "result": "blocked",
       "duration_ms": 294,
-      "coverage": [
-        "POT regeneration",
-        "WordPress runtime checks"
-      ],
+      "coverage": ["POT regeneration", "WordPress runtime checks"],
       "configuration": [],
       "environment_signature": "Windows|wp-cli-missing",
       "notes": "WP-CLI is not on PATH; the POT catalog was not regenerated."
@@ -189,9 +159,7 @@
       "commit_tested": "adf788ce39ab6b47e84b983dd5ddb944a4a97384+worktree",
       "result": "pass",
       "duration_ms": 231,
-      "coverage": [
-        ".codex/test-ledger.json"
-      ],
+      "coverage": [".codex/test-ledger.json"],
       "configuration": [],
       "environment_signature": "Windows|node-v24.18.0"
     },
@@ -203,13 +171,8 @@
       "commit_tested": "fc5c0e3+worktree",
       "result": "pass",
       "duration_ms": 3337,
-      "coverage": [
-        "composer.json",
-        "composer.lock"
-      ],
-      "configuration": [
-        "composer.json"
-      ],
+      "coverage": ["composer.json", "composer.lock"],
+      "configuration": ["composer.json"],
       "environment_signature": "Windows|Docker|composer-2.2|php-platform-7.4"
     },
     {
@@ -220,19 +183,8 @@
       "commit_tested": "fc5c0e3+worktree",
       "result": "pass",
       "duration_ms": 82000,
-      "coverage": [
-        "image-usage-audit.php",
-        "includes",
-        "views",
-        "uninstall.php",
-        "tests/unit"
-      ],
-      "configuration": [
-        "phpcs.xml.dist",
-        "phpstan.neon.dist",
-        "phpunit.xml.dist",
-        "composer.json"
-      ],
+      "coverage": ["image-usage-audit.php", "includes", "views", "uninstall.php", "tests/unit"],
+      "configuration": ["phpcs.xml.dist", "phpstan.neon.dist", "phpunit.xml.dist", "composer.json"],
       "environment_signature": "Windows|Docker|php-7.4.33",
       "notes": "PHPCS, PHPStan and 3 unit tests/7 assertions passed; PHPStan requires 1G when loading WordPress stubs under PHP 7.4."
     },
@@ -244,12 +196,7 @@
       "commit_tested": "fc5c0e3+worktree",
       "result": "pass",
       "duration_ms": 14500,
-      "coverage": [
-        "image-usage-audit.php",
-        "includes/class-iua-scanner.php",
-        "views/admin-page.php",
-        "uninstall.php"
-      ],
+      "coverage": ["image-usage-audit.php", "includes/class-iua-scanner.php", "views/admin-page.php", "uninstall.php"],
       "configuration": [],
       "environment_signature": "Windows|Docker|php-8.3.32"
     },
@@ -261,16 +208,8 @@
       "commit_tested": "fc5c0e3+worktree",
       "result": "blocked",
       "duration_ms": 290000,
-      "coverage": [
-        "plugin activation",
-        "WP-CLI",
-        "Plugin Check",
-        "POT generation"
-      ],
-      "configuration": [
-        ".wp-env.json",
-        "package.json"
-      ],
+      "coverage": ["plugin activation", "WP-CLI", "Plugin Check", "POT generation"],
+      "configuration": [".wp-env.json", "package.json"],
       "environment_signature": "Windows|Docker|node-v24.18.0",
       "notes": "Docker build could not resolve api.github.com while wp-env installed PHPUnit; no WordPress smoke, Plugin Check, or POT generation result exists."
     },
@@ -282,18 +221,8 @@
       "commit_tested": "54e640aaeb0ded2999273cd08ba16c8a70e3260c",
       "result": "partial",
       "duration_ms": 103000,
-      "coverage": [
-        "PHPCS",
-        "PHPStan",
-        "PHPUnit",
-        "PHP syntax",
-        "JavaScript syntax",
-        "npm install",
-        "wp-env startup"
-      ],
-      "configuration": [
-        ".github/workflows/qa.yml"
-      ],
+      "coverage": ["PHPCS", "PHPStan", "PHPUnit", "PHP syntax", "JavaScript syntax", "npm install", "wp-env startup"],
+      "configuration": [".github/workflows/qa.yml"],
       "environment_signature": "GitHub Actions|ubuntu-24.04|run-29205017338",
       "notes": "PHP checks passed. The workflow then failed because rg was absent; wp-env started, but the old plugin slug check failed before Plugin Check and POT generation."
     },
@@ -305,16 +234,8 @@
       "commit_tested": "54e640aaeb0ded2999273cd08ba16c8a70e3260c+worktree",
       "result": "pass",
       "duration_ms": 27000,
-      "coverage": [
-        "image-usage-audit.php",
-        "includes",
-        "views",
-        "uninstall.php"
-      ],
-      "configuration": [
-        "phpcs.xml.dist",
-        "composer.lock"
-      ],
+      "coverage": ["image-usage-audit.php", "includes", "views", "uninstall.php"],
+      "configuration": ["phpcs.xml.dist", "composer.lock"],
       "environment_signature": "Windows|Docker|php-7.4.33",
       "notes": "Commands ran in the parallel final QA batch; duration is the shared batch wall time. The single constant-only follow-up also passed both targeted checks."
     },
@@ -326,16 +247,8 @@
       "commit_tested": "54e640aaeb0ded2999273cd08ba16c8a70e3260c+worktree",
       "result": "pass",
       "duration_ms": 52800,
-      "coverage": [
-        "image-usage-audit.php",
-        "includes",
-        "views",
-        "uninstall.php"
-      ],
-      "configuration": [
-        "phpstan.neon.dist",
-        "vendor/php-stubs/wordpress-stubs/wordpress-stubs.php"
-      ],
+      "coverage": ["image-usage-audit.php", "includes", "views", "uninstall.php"],
+      "configuration": ["phpstan.neon.dist", "vendor/php-stubs/wordpress-stubs/wordpress-stubs.php"],
       "environment_signature": "Windows|Docker|php-7.4.33|memory-1G",
       "notes": "An initial final run identified MINUTE_IN_SECONDS missing from stubs. Replacing the equivalent class constant expression with 900 made the affected rerun pass with no errors."
     },
@@ -347,16 +260,8 @@
       "commit_tested": "54e640aaeb0ded2999273cd08ba16c8a70e3260c+worktree",
       "result": "pass",
       "duration_ms": 349,
-      "coverage": [
-        "scanner normalization",
-        "provenance",
-        "CDN validation",
-        "CSV formula neutralization"
-      ],
-      "configuration": [
-        "phpunit.xml.dist",
-        "tests/bootstrap.php"
-      ],
+      "coverage": ["scanner normalization", "provenance", "CDN validation", "CSV formula neutralization"],
+      "configuration": ["phpunit.xml.dist", "tests/bootstrap.php"],
       "environment_signature": "Windows|Docker|php-7.4.33",
       "notes": "20 tests and 35 assertions. Earlier targeted attempts exposed and corrected the intentionally changed invalid-CDN behavior and PHPCS formatting issues."
     },
@@ -368,10 +273,7 @@
       "commit_tested": "54e640aaeb0ded2999273cd08ba16c8a70e3260c+worktree",
       "result": "pass",
       "duration_ms": 27000,
-      "coverage": [
-        "all first-party PHP",
-        "assets/admin.js"
-      ],
+      "coverage": ["all first-party PHP", "assets/admin.js"],
       "configuration": [],
       "environment_signature": "Windows|Docker|php-7.4.33|php-8.3.32|node-v24.18.0",
       "notes": "Duration is the shared parallel final QA batch wall time."
@@ -384,16 +286,8 @@
       "commit_tested": "54e640aaeb0ded2999273cd08ba16c8a70e3260c+worktree",
       "result": "pass",
       "duration_ms": 27000,
-      "coverage": [
-        "composer.json",
-        "composer.lock",
-        "package.json",
-        "package-lock.json"
-      ],
-      "configuration": [
-        "Composer PHP platform 7.4.0",
-        "npm lockfile v3"
-      ],
+      "coverage": ["composer.json", "composer.lock", "package.json", "package-lock.json"],
+      "configuration": ["Composer PHP platform 7.4.0", "npm lockfile v3"],
       "environment_signature": "Windows|Docker|composer-2-current|npm-11.16.0",
       "notes": "The first Composer current audit found CVE-2026-24765 in PHPUnit 9.6.24. PHPUnit was updated to 9.6.35; the final audit reports no advisories. npm reports zero vulnerabilities. Composer 2.2 validation passes but that historical version has no audit command."
     },
@@ -405,22 +299,8 @@
       "commit_tested": "54e640aaeb0ded2999273cd08ba16c8a70e3260c+worktree",
       "result": "pass",
       "duration_ms": 27000,
-      "coverage": [
-        "6 repository JSON files",
-        ".github/workflows/qa.yml",
-        "phpcs.xml.dist",
-        "phpunit.xml.dist",
-        "readme.txt",
-        "LICENSE",
-        "languages/image-usage-audit.pot",
-        "distribution ZIP"
-      ],
-      "configuration": [
-        "scripts/validate-metadata.mjs",
-        "scripts/validate-config.mjs",
-        "scripts/build-zip.ps1",
-        ".distignore"
-      ],
+      "coverage": ["6 repository JSON files", ".github/workflows/qa.yml", "phpcs.xml.dist", "phpunit.xml.dist", "readme.txt", "LICENSE", "languages/image-usage-audit.pot", "distribution ZIP"],
+      "configuration": ["scripts/validate-metadata.mjs", "scripts/validate-config.mjs", "scripts/build-zip.ps1", ".distignore"],
       "environment_signature": "Windows|node-v24.18.0|pwsh-7.6.3",
       "notes": "Metadata: version 2.2.5, five tags, 124-character short description. ZIP: 11 entries under image-usage-audit/, required metadata present, development paths absent. The first XML shell expression was expanded incorrectly; the corrected targeted command parsed both files successfully."
     },
@@ -432,18 +312,8 @@
       "commit_tested": "54e640aaeb0ded2999273cd08ba16c8a70e3260c+worktree",
       "result": "blocked",
       "duration_ms": 116800,
-      "coverage": [
-        "ZIP install/activation",
-        "runtime smoke",
-        "Plugin Check",
-        "POT generation",
-        "multisite availability"
-      ],
-      "configuration": [
-        ".wp-env.json",
-        "package.json",
-        "tests/integration/smoke.php"
-      ],
+      "coverage": ["ZIP install/activation", "runtime smoke", "Plugin Check", "POT generation", "multisite availability"],
+      "configuration": [".wp-env.json", "package.json", "tests/integration/smoke.php"],
       "environment_signature": "Windows|Docker|node-v24.18.0|wp-env-11.10.0",
       "notes": "The one permitted post-change retry failed while Docker built wp-env images: api.github.com could not be resolved during Composer downloads. Plugin Check, POT source-message generation, ZIP activation, functional/runtime access tests, and uninstall smoke were not executed locally."
     },
@@ -455,9 +325,7 @@
       "commit_tested": "54e640aaeb0ded2999273cd08ba16c8a70e3260c+worktree",
       "result": "pass",
       "duration_ms": 27000,
-      "coverage": [
-        "entire worktree excluding generated/dependency directories"
-      ],
+      "coverage": ["entire worktree excluding generated/dependency directories"],
       "configuration": [],
       "environment_signature": "Windows|rtk",
       "notes": "ripgrep exit 1 means no matching secret patterns were found; duration is the shared final QA batch wall time."
@@ -470,19 +338,8 @@
       "commit_tested": "b5a6601e5b628906a349d096f6fe0e53023c9533",
       "result": "partial",
       "duration_ms": 1500,
-      "coverage": [
-        "ZIP build and installation",
-        "activation",
-        "functional smoke",
-        "Plugin Check",
-        "POT generation",
-        "uninstall"
-      ],
-      "configuration": [
-        ".github/workflows/qa.yml",
-        ".wp-env.json",
-        "tests/integration/smoke.php"
-      ],
+      "coverage": ["ZIP build and installation", "activation", "functional smoke", "Plugin Check", "POT generation", "uninstall"],
+      "configuration": [".github/workflows/qa.yml", ".wp-env.json", "tests/integration/smoke.php"],
       "environment_signature": "GitHub Actions|ubuntu-latest|run-29207132911",
       "notes": "The PHP 7.4 and 8.3 jobs passed. In wordpress-smoke, ZIP build/install/activation, smoke, Plugin Check and POT generation passed. The only failed step was the final POT diff because WP-CLI emitted a dynamic POT-Creation-Date; this is corrected in the uncommitted worktree."
     },
@@ -494,18 +351,8 @@
       "commit_tested": "b5a6601e5b628906a349d096f6fe0e53023c9533",
       "result": "blocked",
       "duration_ms": 116000,
-      "coverage": [
-        "local ZIP installation/activation",
-        "functional smoke",
-        "Plugin Check",
-        "POT generation",
-        "uninstall"
-      ],
-      "configuration": [
-        ".wp-env.json",
-        "package.json",
-        "tests/integration/smoke.php"
-      ],
+      "coverage": ["local ZIP installation/activation", "functional smoke", "Plugin Check", "POT generation", "uninstall"],
+      "configuration": [".wp-env.json", "package.json", "tests/integration/smoke.php"],
       "environment_signature": "Windows|Docker|node-v24.18.0|wp-env-11.10.0",
       "notes": "Docker could not resolve api.github.com while the wp-env CLI image installed PHPUnit. This is an external DNS failure; no plugin code was changed to work around it."
     },
@@ -517,14 +364,8 @@
       "commit_tested": "b5a6601e5b628906a349d096f6fe0e53023c9533+worktree",
       "result": "pass",
       "duration_ms": 3200,
-      "coverage": [
-        "languages/image-usage-audit.pot",
-        "all PHP and JavaScript translation strings",
-        "translator comments"
-      ],
-      "configuration": [
-        ".github/workflows/qa.yml"
-      ],
+      "coverage": ["languages/image-usage-audit.pot", "all PHP and JavaScript translation strings", "translator comments"],
+      "configuration": [".github/workflows/qa.yml"],
       "environment_signature": "Windows|Docker|wordpress-cli-php7.4|wp-cli-2.7.1",
       "notes": "Two consecutive generations produced SHA-256 C68FD00E4E3FB98AD91157C1A6A1B145B849B897FF6465D863F4F973C23B8624. The catalog has domain image-usage-audit, version 2.2.5, no local absolute references, and the repository issue URL."
     },
@@ -536,15 +377,8 @@
       "commit_tested": "b5a6601e5b628906a349d096f6fe0e53023c9533+worktree",
       "result": "pass",
       "duration_ms": 1800,
-      "coverage": [
-        ".github/workflows/qa.yml",
-        "distribution ZIP"
-      ],
-      "configuration": [
-        "scripts/validate-config.mjs",
-        "scripts/build-zip.ps1",
-        ".distignore"
-      ],
+      "coverage": [".github/workflows/qa.yml", "distribution ZIP"],
+      "configuration": ["scripts/validate-config.mjs", "scripts/build-zip.ps1", ".distignore"],
       "environment_signature": "Windows|node-v24.18.0|pwsh-7.6.3",
       "notes": "Configuration validation parsed six JSON files and one YAML file. ZIP inspection passed with 11 allow-listed entries under image-usage-audit/."
     },
@@ -556,17 +390,8 @@
       "commit_tested": "b5a6601e5b628906a349d096f6fe0e53023c9533+worktree",
       "result": "pass",
       "duration_ms": 12000,
-      "coverage": [
-        "Dependabot YAML",
-        "GitHub Actions workflow",
-        "project skills metadata"
-      ],
-      "configuration": [
-        ".github/dependabot.yml",
-        ".github/workflows/qa.yml",
-        "package.json",
-        ".agents/skills"
-      ],
+      "coverage": ["Dependabot YAML", "GitHub Actions workflow", "project skills metadata"],
+      "configuration": [".github/dependabot.yml", ".github/workflows/qa.yml", "package.json", ".agents/skills"],
       "environment_signature": "Windows|node-v24.18.0|docker-29.6.1|python-3.12.10",
       "notes": "validate:config parsed eight JSON files and one YAML file; actionlint ran from its pinned official image; iua-quality-gate frontmatter is valid."
     },
@@ -578,29 +403,8 @@
       "commit_tested": "def18f0be8fe0b2ebe248dbc33e39d9f86847efa",
       "result": "pass",
       "duration_ms": 132000,
-      "coverage": [
-        "actionlint",
-        "PHPCS/WPCS/PHPCompatibilityWP",
-        "PHPStan",
-        "PHPUnit",
-        "PHP/JavaScript syntax",
-        "Composer/npm audits",
-        "metadata/config",
-        "ZIP build/install/activation",
-        "role and functional smoke",
-        "scan lock",
-        "uninstall/media preservation",
-        "Plugin Check",
-        "POT reproducibility"
-      ],
-      "configuration": [
-        ".github/workflows/qa.yml",
-        ".wp-env.json",
-        "composer.lock",
-        "package-lock.json",
-        "scripts/build-zip.ps1",
-        "tests/integration/smoke.php"
-      ],
+      "coverage": ["actionlint", "PHPCS/WPCS/PHPCompatibilityWP", "PHPStan", "PHPUnit", "PHP/JavaScript syntax", "Composer/npm audits", "metadata/config", "ZIP build/install/activation", "role and functional smoke", "scan lock", "uninstall/media preservation", "Plugin Check", "POT reproducibility"],
+      "configuration": [".github/workflows/qa.yml", ".wp-env.json", "composer.lock", "package-lock.json", "scripts/build-zip.ps1", "tests/integration/smoke.php"],
       "environment_signature": "GitHub Actions|ubuntu-latest|run-29207713713",
       "notes": "All four jobs and every required step completed successfully at the current source commit. This is the reusable runtime baseline for the documentation-only final pass."
     },
@@ -612,17 +416,8 @@
       "commit_tested": "def18f0be8fe0b2ebe248dbc33e39d9f86847efa+docs-worktree",
       "result": "pass",
       "duration_ms": 1300,
-      "coverage": [
-        "distribution ZIP root",
-        "11-file runtime allow-list",
-        "required metadata",
-        "GPL license",
-        "development-path exclusions"
-      ],
-      "configuration": [
-        "scripts/build-zip.ps1",
-        ".distignore"
-      ],
+      "coverage": ["distribution ZIP root", "11-file runtime allow-list", "required metadata", "GPL license", "development-path exclusions"],
+      "configuration": ["scripts/build-zip.ps1", ".distignore"],
       "environment_signature": "Windows|node-v24.18.0|pwsh-7.6.3",
       "notes": "Generated dist/image-usage-audit.zip with root image-usage-audit/ and 11 entries. The documentation changes are excluded from the runtime package."
     },
@@ -634,14 +429,8 @@
       "commit_tested": "def18f0be8fe0b2ebe248dbc33e39d9f86847efa+docs-worktree",
       "result": "pass",
       "duration_ms": 600,
-      "coverage": [
-        "all 11 ZIP entries",
-        "common secret patterns",
-        "archive SHA-256"
-      ],
-      "configuration": [
-        "dist/image-usage-audit.zip"
-      ],
+      "coverage": ["all 11 ZIP entries", "common secret patterns", "archive SHA-256"],
+      "configuration": ["dist/image-usage-audit.zip"],
       "environment_signature": "Windows|pwsh-7.6.3",
       "notes": "Every entry is under image-usage-audit/; no secret-like value was found. SHA-256: 9971C1096BBEAF0B60AFD340408EBF3914D11670FCD541DED9862745921347FA."
     },
@@ -653,9 +442,7 @@
       "commit_tested": "def18f0be8fe0b2ebe248dbc33e39d9f86847efa+docs-worktree",
       "result": "pass",
       "duration_ms": 300,
-      "coverage": [
-        "entire worktree excluding Git, dependencies and generated ZIP"
-      ],
+      "coverage": ["entire worktree excluding Git, dependencies and generated ZIP"],
       "configuration": [],
       "environment_signature": "Windows|rtk",
       "notes": "No common private-key or API-token pattern was found."
@@ -668,10 +455,7 @@
       "commit_tested": "def18f0be8fe0b2ebe248dbc33e39d9f86847efa+docs-worktree",
       "result": "pass",
       "duration_ms": 500,
-      "coverage": [
-        ".codex/test-ledger.json",
-        "complete tracked worktree diff"
-      ],
+      "coverage": [".codex/test-ledger.json", "complete tracked worktree diff"],
       "configuration": [],
       "environment_signature": "Windows|node-v24.18.0|git|rtk"
     },
@@ -683,19 +467,8 @@
       "commit_tested": "4424ef226370e53cad06b68f10ae8cf994d293bb+dependabot-policy-worktree",
       "result": "pass",
       "duration_ms": 2000,
-      "coverage": [
-        ".github/dependabot.yml",
-        ".github/workflows/qa.yml",
-        "repository JSON configuration",
-        ".codex/test-ledger.json",
-        "tracked worktree diff"
-      ],
-      "configuration": [
-        "scripts/validate-config.mjs",
-        "package.json",
-        ".github/dependabot.yml",
-        ".github/workflows/qa.yml"
-      ],
+      "coverage": [".github/dependabot.yml", ".github/workflows/qa.yml", "repository JSON configuration", ".codex/test-ledger.json", "tracked worktree diff"],
+      "configuration": ["scripts/validate-config.mjs", "package.json", ".github/dependabot.yml", ".github/workflows/qa.yml"],
       "environment_signature": "Windows|node-v24.18.0|docker-29.6.1|actionlint-1.7.7|git|rtk",
       "notes": "Composer minor and patch updates remain grouped; major updates are intentionally left as independent Dependabot pull requests. Runtime, dependency locks, translations and ZIP content are unchanged."
     },
@@ -707,17 +480,8 @@
       "commit_tested": "6ca2446+worktree",
       "result": "pass",
       "duration_ms": 43000,
-      "coverage": [
-        "PHPStan analysis",
-        "20 unit tests and 35 assertions",
-        "WPCS and PHPCompatibilityWP"
-      ],
-      "configuration": [
-        "phpstan.neon.dist",
-        "phpunit.xml.dist",
-        "phpcs.xml.dist",
-        "composer.lock"
-      ],
+      "coverage": ["PHPStan analysis", "20 unit tests and 35 assertions", "WPCS and PHPCompatibilityWP"],
+      "configuration": ["phpstan.neon.dist", "phpunit.xml.dist", "phpcs.xml.dist", "composer.lock"],
       "environment_signature": "Windows|Docker|php-7.4.33",
       "notes": "The optional PHPStan 2 exclude-path markers allow absent vendor and node_modules paths without lowering analysis scope."
     },
@@ -729,17 +493,8 @@
       "commit_tested": "6ca2446+worktree",
       "result": "partial",
       "duration_ms": 35000,
-      "coverage": [
-        "PHPStan analysis",
-        "20 unit tests and 35 assertions",
-        "diagnostic PHPCS run outside the PHP 8.3 CI lane"
-      ],
-      "configuration": [
-        "phpstan.neon.dist",
-        "phpunit.xml.dist",
-        "phpcs.xml.dist",
-        "composer.lock"
-      ],
+      "coverage": ["PHPStan analysis", "20 unit tests and 35 assertions", "diagnostic PHPCS run outside the PHP 8.3 CI lane"],
+      "configuration": ["phpstan.neon.dist", "phpunit.xml.dist", "phpcs.xml.dist", "composer.lock"],
       "environment_signature": "Windows|Docker|php-8.3.32",
       "notes": "PHPStan and PHPUnit passed. The extra PHPCS invocation, which CI intentionally runs only on PHP 7.4, aborted because PHPCompatibility 9.3.5 passes null to trim under PHP 8.3; the PHP 7.4 lint lane passed."
     },
@@ -751,16 +506,8 @@
       "commit_tested": "6ca2446+worktree",
       "result": "pass",
       "duration_ms": 1700,
-      "coverage": [
-        "composer.json",
-        "composer.lock",
-        ".codex/test-ledger.json",
-        "complete tracked worktree diff"
-      ],
-      "configuration": [
-        "Composer PHP platform 7.4.0",
-        "phpstan.neon.dist"
-      ],
+      "coverage": ["composer.json", "composer.lock", ".codex/test-ledger.json", "complete tracked worktree diff"],
+      "configuration": ["Composer PHP platform 7.4.0", "phpstan.neon.dist"],
       "environment_signature": "Windows|Docker|composer-2-current|node-v24.18.0|git|rtk",
       "notes": "Composer metadata is strictly valid, the locked dependency graph has no security advisories, the ledger parses as JSON, and the patch has no whitespace errors."
     },
@@ -772,22 +519,8 @@
       "commit_tested": "146bccbab9c88dfac1d6f6800978b7d4fe9a9c7c+release-worktree",
       "result": "pass",
       "duration_ms": 2400,
-      "coverage": [
-        "AJAX request envelopes and status codes",
-        "capabilities and action-specific nonces",
-        "bounded IDs and bulk inputs",
-        "owner-token scan lock",
-        "network activation",
-        "scanner batching",
-        "URL/block/shortcode heuristics",
-        "CDN validation",
-        "CSV neutralization",
-        "PHP syntax"
-      ],
-      "configuration": [
-        "phpunit.xml.dist",
-        "tests/bootstrap.php"
-      ],
+      "coverage": ["AJAX request envelopes and status codes", "capabilities and action-specific nonces", "bounded IDs and bulk inputs", "owner-token scan lock", "network activation", "scanner batching", "URL/block/shortcode heuristics", "CDN validation", "CSV neutralization", "PHP syntax"],
+      "configuration": ["phpunit.xml.dist", "tests/bootstrap.php"],
       "environment_signature": "Windows|Docker-29.6.1|php-7.4.33",
       "notes": "39 tests and 131 assertions passed. The reusable pre-change suite had 20 tests and 35 assertions."
     },
@@ -799,17 +532,8 @@
       "commit_tested": "146bccbab9c88dfac1d6f6800978b7d4fe9a9c7c+release-worktree",
       "result": "pass",
       "duration_ms": 31000,
-      "coverage": [
-        "all runtime PHP",
-        "WordPress Coding Standards",
-        "PHP 7.4 compatibility",
-        "PHPStan level 1 with WordPress stubs"
-      ],
-      "configuration": [
-        "phpcs.xml.dist",
-        "phpstan.neon.dist",
-        "composer.lock"
-      ],
+      "coverage": ["all runtime PHP", "WordPress Coding Standards", "PHP 7.4 compatibility", "PHPStan level 1 with WordPress stubs"],
+      "configuration": ["phpcs.xml.dist", "phpstan.neon.dist", "composer.lock"],
       "environment_signature": "Windows|Docker-29.6.1|php-7.4.33"
     },
     {
@@ -820,19 +544,8 @@
       "commit_tested": "146bccbab9c88dfac1d6f6800978b7d4fe9a9c7c+release-worktree",
       "result": "pass",
       "duration_ms": 12000,
-      "coverage": [
-        "10 repository JSON files",
-        "GitHub Actions workflow",
-        "AJAX HTTP test syntax",
-        "tracked patch whitespace"
-      ],
-      "configuration": [
-        "scripts/validate-config.mjs",
-        ".github/workflows/qa.yml",
-        ".wp-env.json",
-        ".wp-env.wp59.json",
-        ".wp-env.multisite.json"
-      ],
+      "coverage": ["10 repository JSON files", "GitHub Actions workflow", "AJAX HTTP test syntax", "tracked patch whitespace"],
+      "configuration": ["scripts/validate-config.mjs", ".github/workflows/qa.yml", ".wp-env.json", ".wp-env.wp59.json", ".wp-env.multisite.json"],
       "environment_signature": "Windows|node-v24.18.0|docker-29.6.1|actionlint-1.7.7|git|rtk"
     },
     {
@@ -843,18 +556,8 @@
       "commit_tested": "146bccbab9c88dfac1d6f6800978b7d4fe9a9c7c+release-worktree",
       "result": "pass",
       "duration_ms": 4000,
-      "coverage": [
-        "complete PHP and JavaScript translation catalog",
-        "text domain",
-        "2.2.6 metadata",
-        "translator comments",
-        "absolute-path exclusion",
-        "reproducibility"
-      ],
-      "configuration": [
-        "languages/image-usage-audit.pot",
-        ".github/workflows/qa.yml"
-      ],
+      "coverage": ["complete PHP and JavaScript translation catalog", "text domain", "2.2.6 metadata", "translator comments", "absolute-path exclusion", "reproducibility"],
+      "configuration": ["languages/image-usage-audit.pot", ".github/workflows/qa.yml"],
       "environment_signature": "Windows|Docker-29.6.1|wordpress-cli-php7.4|wp-cli-2.7.1",
       "notes": "Two consecutive generations produced SHA-256 F4AD191410BBEE15CD0F461E48410D1D662AFBD6A5490E1E198DF5F99E85DA8B."
     },
@@ -866,17 +569,8 @@
       "commit_tested": "146bccbab9c88dfac1d6f6800978b7d4fe9a9c7c+release-worktree",
       "result": "blocked",
       "duration_ms": 116000,
-      "coverage": [
-        "WordPress 7.0.1 exact-ZIP install",
-        "HTTP AJAX",
-        "large-site fixtures",
-        "Plugin Check",
-        "uninstall"
-      ],
-      "configuration": [
-        ".wp-env.json",
-        "package.json"
-      ],
+      "coverage": ["WordPress 7.0.1 exact-ZIP install", "HTTP AJAX", "large-site fixtures", "Plugin Check", "uninstall"],
+      "configuration": [".wp-env.json", "package.json"],
       "environment_signature": "Windows|Docker-29.6.1|node-v24.18.0|wp-env-11.10.0",
       "notes": "The wp-env CLI image build could not resolve api.github.com while Composer downloaded PHPUnit. No retry was made; the pull-request CI jobs remain the authoritative runtime path."
     },
@@ -888,36 +582,8 @@
       "commit_tested": "146bccbab9c88dfac1d6f6800978b7d4fe9a9c7c+release-worktree",
       "result": "pass",
       "duration_ms": null,
-      "coverage": [
-        "all first-party PHP syntax on PHP 7.4 and 8.3",
-        "PHPCS/WPCS/PHPCompatibilityWP",
-        "PHPStan 2",
-        "39 PHPUnit tests and 131 assertions",
-        "Composer metadata and advisories",
-        "npm advisories",
-        "GitHub Actions workflow",
-        "JSON/YAML/XML and release metadata",
-        "JavaScript syntax",
-        "deterministic POT",
-        "distribution ZIP",
-        "common secret patterns",
-        "tracked patch whitespace"
-      ],
-      "configuration": [
-        "composer.json",
-        "composer.lock",
-        "phpcs.xml.dist",
-        "phpstan.neon.dist",
-        "phpunit.xml.dist",
-        "package.json",
-        "package-lock.json",
-        ".github/workflows/qa.yml",
-        ".wp-env.json",
-        ".wp-env.wp59.json",
-        ".wp-env.multisite.json",
-        "scripts/build-zip.ps1",
-        "scripts/validate-metadata.mjs"
-      ],
+      "coverage": ["all first-party PHP syntax on PHP 7.4 and 8.3", "PHPCS/WPCS/PHPCompatibilityWP", "PHPStan 2", "39 PHPUnit tests and 131 assertions", "Composer metadata and advisories", "npm advisories", "GitHub Actions workflow", "JSON/YAML/XML and release metadata", "JavaScript syntax", "deterministic POT", "distribution ZIP", "common secret patterns", "tracked patch whitespace"],
+      "configuration": ["composer.json", "composer.lock", "phpcs.xml.dist", "phpstan.neon.dist", "phpunit.xml.dist", "package.json", "package-lock.json", ".github/workflows/qa.yml", ".wp-env.json", ".wp-env.wp59.json", ".wp-env.multisite.json", "scripts/build-zip.ps1", "scripts/validate-metadata.mjs"],
       "environment_signature": "Windows|Docker-29.6.1|php-7.4.33|php-8.3.32|node-v24.18.0|pwsh-7.6.3|actionlint-1.7.7",
       "notes": "The aggregate wall-clock duration was not retained by the command orchestrator. All listed checks passed. Local wp-env runtime remains separately recorded as blocked by Docker DNS; pull-request CI is the authoritative WordPress runtime validation."
     },
@@ -929,17 +595,8 @@
       "commit_tested": "146bccbab9c88dfac1d6f6800978b7d4fe9a9c7c+release-worktree",
       "result": "pass",
       "duration_ms": 700,
-      "coverage": [
-        "dist/image-usage-audit.zip",
-        "all 11 ZIP entries",
-        "2.2.6 plugin metadata",
-        "common secret patterns",
-        "release checksum"
-      ],
-      "configuration": [
-        "scripts/build-zip.ps1",
-        ".distignore"
-      ],
+      "coverage": ["dist/image-usage-audit.zip", "all 11 ZIP entries", "2.2.6 plugin metadata", "common secret patterns", "release checksum"],
+      "configuration": ["scripts/build-zip.ps1", ".distignore"],
       "environment_signature": "Windows|pwsh-7.6.3",
       "notes": "The ZIP is 35,335 bytes with SHA-256 FA826815E1A865E528F4DA9DFE3EB0FDED9326F3A3A42A9E3883165E16BB1DC9. The checksum file dist/image-usage-audit-2.2.6.zip.sha256 contains the matching value and is ignored by Git."
     },
@@ -951,14 +608,8 @@
       "commit_tested": "db10dde0e5fbbe11d23bb4cba2744253b868a50c",
       "result": "fail",
       "duration_ms": 84000,
-      "coverage": [
-        "WordPress 5.9.13 installation",
-        "plugin activation hook compatibility"
-      ],
-      "configuration": [
-        ".wp-env.wp59.json",
-        ".github/workflows/qa.yml"
-      ],
+      "coverage": ["WordPress 5.9.13 installation", "plugin activation hook compatibility"],
+      "configuration": [".wp-env.wp59.json", ".github/workflows/qa.yml"],
       "environment_signature": "GitHub Actions|ubuntu-24.04|wp-env-11.10.0|wordpress-5.9.13|php-7.4",
       "notes": "WordPress 5.9/WP-CLI passed null to the activation callback. The strict bool parameter raised a TypeError before the environment finished starting."
     },
@@ -970,21 +621,8 @@
       "commit_tested": "db10dde0e5fbbe11d23bb4cba2744253b868a50c+activation-fix-worktree",
       "result": "pass",
       "duration_ms": 28600,
-      "coverage": [
-        "PHP 7.4 syntax",
-        "activation and multisite unit behavior",
-        "6 PluginSecurityTest cases and 77 assertions",
-        "WordPress Coding Standards and PHP compatibility",
-        "PHPStan 2",
-        "distribution ZIP",
-        "tracked patch whitespace"
-      ],
-      "configuration": [
-        "phpunit.xml.dist",
-        "phpcs.xml.dist",
-        "phpstan.neon.dist",
-        "scripts/build-zip.ps1"
-      ],
+      "coverage": ["PHP 7.4 syntax", "activation and multisite unit behavior", "6 PluginSecurityTest cases and 77 assertions", "WordPress Coding Standards and PHP compatibility", "PHPStan 2", "distribution ZIP", "tracked patch whitespace"],
+      "configuration": ["phpunit.xml.dist", "phpcs.xml.dist", "phpstan.neon.dist", "scripts/build-zip.ps1"],
       "environment_signature": "Windows|Docker-29.6.1|php-7.4.33|node-v24.18.0|pwsh-7.6.3",
       "notes": "The activation callback now accepts the legacy null value and normalizes it to bool internally. The rebuilt 11-entry ZIP is 35,343 bytes with SHA-256 8C391CB01E97EF21441B7FF0DC88D115AA044D23ED70D800B119A8285E76007B."
     },
@@ -996,20 +634,8 @@
       "commit_tested": "ae6947d85d49cc55f82d76f4895eeab2fb0921a8+pot-worktree",
       "result": "pass",
       "duration_ms": 7500,
-      "coverage": [
-        "POT source references",
-        "fixed catalog timestamp",
-        "translation domain and 2.2.6 metadata",
-        "POT reproducibility",
-        "distribution ZIP",
-        "tracked patch whitespace"
-      ],
-      "configuration": [
-        "languages/image-usage-audit.pot",
-        ".github/workflows/qa.yml",
-        "scripts/validate-metadata.mjs",
-        "scripts/build-zip.ps1"
-      ],
+      "coverage": ["POT source references", "fixed catalog timestamp", "translation domain and 2.2.6 metadata", "POT reproducibility", "distribution ZIP", "tracked patch whitespace"],
+      "configuration": ["languages/image-usage-audit.pot", ".github/workflows/qa.yml", "scripts/validate-metadata.mjs", "scripts/build-zip.ps1"],
       "environment_signature": "Windows|Docker-29.6.1|wordpress-cli-php7.4|wp-cli-2.7.1|node-v24.18.0|pwsh-7.6.3",
       "notes": "The second PR run proved PHP 7.4, PHP 8.3, WordPress 5.9.13, WordPress 7.0.1 multisite and actionlint green. Only POT line references were stale after the two-line activation fix. Two regenerations produced SHA-256 CC5DC0D568D2AA91CA5ABFBDB6E22039BCF0D42B07896A35DD030D08EA2A2110. The rebuilt 11-entry ZIP is 35,340 bytes with SHA-256 5CF21736268CEA5AA62C2ACA4CA20642B0B82ABA79E2B044B61B1AE225D15A63."
     },
@@ -1021,14 +647,8 @@
       "commit_tested": "798bee520a69609cd98960aca483aa787273b093+security-audit-phase-0-worktree",
       "result": "pass",
       "duration_ms": 400,
-      "coverage": [
-        "docs/security-audit/findings.json",
-        "tracked worktree diff"
-      ],
-      "configuration": [
-        "docs/security-audit/README.md",
-        "docs/security-audit/01-initial-state.md"
-      ],
+      "coverage": ["docs/security-audit/findings.json", "tracked worktree diff"],
+      "configuration": ["docs/security-audit/README.md", "docs/security-audit/01-initial-state.md"],
       "environment_signature": "Windows|PowerShell|node-v24.18.0|git-2.55.0.windows.3",
       "notes": "The JSON findings ledger parses and contains an array. Runtime, dependency, workflow, metadata, translation, and ZIP baselines were reused because Phase 0 changed documentation only. The initial git diff check did not include untracked report files; staged patch integrity is checked separately before commit."
     },
@@ -1040,21 +660,8 @@
       "commit_tested": "798bee520a69609cd98960aca483aa787273b093+security-audit-phase-0-index",
       "result": "pass",
       "duration_ms": 500,
-      "coverage": [
-        ".codex/test-ledger.json",
-        "complete staged Phase 0 patch"
-      ],
-      "configuration": [
-        "docs/security-audit/README.md",
-        "docs/security-audit/01-initial-state.md",
-        "docs/security-audit/02-github-security.md",
-        "docs/security-audit/03-dependencies.md",
-        "docs/security-audit/04-wordpress-code-audit.md",
-        "docs/security-audit/05-ci-supply-chain.md",
-        "docs/security-audit/06-remediation.md",
-        "docs/security-audit/07-final-validation.md",
-        "docs/security-audit/findings.json"
-      ],
+      "coverage": [".codex/test-ledger.json", "complete staged Phase 0 patch"],
+      "configuration": ["docs/security-audit/README.md", "docs/security-audit/01-initial-state.md", "docs/security-audit/02-github-security.md", "docs/security-audit/03-dependencies.md", "docs/security-audit/04-wordpress-code-audit.md", "docs/security-audit/05-ci-supply-chain.md", "docs/security-audit/06-remediation.md", "docs/security-audit/07-final-validation.md", "docs/security-audit/findings.json"],
       "environment_signature": "Windows|PowerShell|node-v24.18.0|git-2.55.0.windows.3",
       "notes": "Entry prepared before the final Phase 0 index validation and must be corrected if that command does not pass."
     },
@@ -1066,18 +673,8 @@
       "commit_tested": "1166cbc+repository-settings",
       "result": "pass",
       "duration_ms": 1200,
-      "coverage": [
-        "dependency graph and alerts",
-        "Dependabot security updates",
-        "secret scanning and push protection",
-        "Actions source and SHA policy",
-        "default workflow token permissions",
-        "private vulnerability reporting",
-        "open Dependabot and secret alerts"
-      ],
-      "configuration": [
-        "GitHub repository settings for ussmarines/WP_image_usage_audit"
-      ],
+      "coverage": ["dependency graph and alerts", "Dependabot security updates", "secret scanning and push protection", "Actions source and SHA policy", "default workflow token permissions", "private vulnerability reporting", "open Dependabot and secret alerts"],
+      "configuration": ["GitHub repository settings for ussmarines/WP_image_usage_audit"],
       "environment_signature": "GitHub|public-repository|gh-2.96.0|api-2022-11-28",
       "notes": "Vulnerability alerts and automated security fixes are enabled. Actions is limited to GitHub-owned and verified actions plus shivammathur/setup-php, with SHA pinning required. Four non-dismissed high Dependabot alerts surfaced. Non-provider secret patterns and validity checks remained disabled after the accepted PATCH and are documented as a manual plan/availability check."
     },
@@ -1089,15 +686,8 @@
       "commit_tested": "1166cbc+security-audit-phase-1-index",
       "result": "pass",
       "duration_ms": 500,
-      "coverage": [
-        ".codex/test-ledger.json",
-        "docs/security-audit/findings.json",
-        "complete staged Phase 1 patch"
-      ],
-      "configuration": [
-        "docs/security-audit/README.md",
-        "docs/security-audit/02-github-security.md"
-      ],
+      "coverage": [".codex/test-ledger.json", "docs/security-audit/findings.json", "complete staged Phase 1 patch"],
+      "configuration": ["docs/security-audit/README.md", "docs/security-audit/02-github-security.md"],
       "environment_signature": "Windows|PowerShell|node-v24.18.0|git-2.55.0.windows.3",
       "notes": "Entry prepared before the final Phase 1 index validation and must be corrected if that command does not pass."
     },
@@ -1109,15 +699,8 @@
       "commit_tested": "2b9770e+security-audit-phase-2-baseline",
       "result": "fail",
       "duration_ms": 16000,
-      "coverage": [
-        "package.json",
-        "package-lock.json",
-        "complete resolved npm development dependency graph"
-      ],
-      "configuration": [
-        "package.json",
-        "package-lock.json"
-      ],
+      "coverage": ["package.json", "package-lock.json", "complete resolved npm development dependency graph"],
+      "configuration": ["package.json", "package-lock.json"],
       "environment_signature": "Windows|PowerShell|node-v24.18.0|npm-11.16.0",
       "notes": "npm ci succeeded. npm audit found five high advisories in adm-zip 0.5.18, brace-expansion 2.1.2, fast-uri 3.1.3, and fast-xml-parser 5.10.0. npm outdated reported @wordpress/env 11.12.0 as the latest direct release. This diagnostic failure was the remediation input; npm audit fix --force was not used."
     },
@@ -1129,14 +712,8 @@
       "commit_tested": "2b9770e+temporary-audit-runtime",
       "result": "pass",
       "duration_ms": 10000,
-      "coverage": [
-        "portable PHP archive provenance",
-        "Composer installer provenance",
-        "local Composer availability"
-      ],
-      "configuration": [
-        "temporary php.ini with curl, mbstring, openssl, and zip enabled"
-      ],
+      "coverage": ["portable PHP archive provenance", "Composer installer provenance", "local Composer availability"],
+      "configuration": ["temporary php.ini with curl, mbstring, openssl, and zip enabled"],
       "environment_signature": "Windows|PowerShell|php-8.3.33-portable|composer-2.10.2",
       "notes": "The PHP archive SHA-256 matched 534399107056313246f424adbbb7937337e40fbbf6aa7bc26287ba9cfd2e4a2a. The Composer installer SHA-384 matched the value served by the official signature endpoint. The first installer attempt correctly stopped because OpenSSL was not enabled in the archive's default configuration; the extension was enabled only in the temporary copy before the verified retry."
     },
@@ -1148,15 +725,8 @@
       "commit_tested": "2b9770e+security-audit-phase-2-baseline",
       "result": "fail",
       "duration_ms": 3800,
-      "coverage": [
-        "composer.json",
-        "composer.lock",
-        "direct Composer development dependencies",
-        "locked Composer advisories"
-      ],
-      "configuration": [
-        "composer.json config.platform.php=7.4.0"
-      ],
+      "coverage": ["composer.json", "composer.lock", "direct Composer development dependencies", "locked Composer advisories"],
+      "configuration": ["composer.json config.platform.php=7.4.0"],
       "environment_signature": "Windows|PowerShell|php-8.3.33-portable|composer-2.10.2|php-platform-7.4.0",
       "notes": "Strict validation passed. The locked audit found the high WPCS CVE-2026-45293 affecting 3.1.0 below 3.4.1. Direct outdated inspection also identified compatible WPCS 3.4.1 and PHPStan 2.2.7 updates."
     },
@@ -1168,17 +738,8 @@
       "commit_tested": "2b9770e+security-audit-phase-2-worktree",
       "result": "pass",
       "duration_ms": 17000,
-      "coverage": [
-        "composer.json",
-        "composer.lock",
-        "package.json",
-        "package-lock.json",
-        "affected direct and transitive dependency constraints"
-      ],
-      "configuration": [
-        "Composer PHP platform 7.4.0",
-        "npm override adm-zip=0.6.0"
-      ],
+      "coverage": ["composer.json", "composer.lock", "package.json", "package-lock.json", "affected direct and transitive dependency constraints"],
+      "configuration": ["Composer PHP platform 7.4.0", "npm override adm-zip=0.6.0"],
       "environment_signature": "Windows|PowerShell|node-v24.18.0|npm-11.16.0|php-8.3.33-portable|composer-2.10.2",
       "notes": "The first Composer update diagnosed WPCS 3.4.1's PHPCS 3.13.5 requirement and made no lock change. After aligning the direct constraint, Composer updated WPCS, PHPCS, PHPCSExtra, PHPCSUtils, and PHPStan and reported no advisory. npm applied only compatible lock updates; no force option was used."
     },
@@ -1190,18 +751,8 @@
       "commit_tested": "2b9770e+security-audit-phase-2-worktree",
       "result": "pass",
       "duration_ms": 10000,
-      "coverage": [
-        "composer.json",
-        "composer.lock",
-        "package.json",
-        "package-lock.json",
-        "complete resolved development dependency graphs"
-      ],
-      "configuration": [
-        "Composer PHP platform 7.4.0",
-        "npm lockfile v3",
-        "npm override adm-zip=0.6.0"
-      ],
+      "coverage": ["composer.json", "composer.lock", "package.json", "package-lock.json", "complete resolved development dependency graphs"],
+      "configuration": ["Composer PHP platform 7.4.0", "npm lockfile v3", "npm override adm-zip=0.6.0"],
       "environment_signature": "Windows|PowerShell|node-v24.18.0|npm-11.16.0|php-8.3.33-portable|composer-2.10.2",
       "notes": "Both clean installs succeeded. Composer and npm reported no security advisory. The resolved npm graph contains adm-zip 0.6.0, brace-expansion 2.1.4, fast-uri 3.1.5, and fast-xml-parser 5.10.1. npm emitted a non-advisory deprecation warning for transitive glob 10.5.0."
     },
@@ -1213,21 +764,8 @@
       "commit_tested": "2b9770e+security-audit-phase-2-worktree",
       "result": "partial",
       "duration_ms": 20900,
-      "coverage": [
-        "runtime PHP coding standards and static analysis",
-        "unit tests",
-        "dependency audit",
-        "metadata",
-        "repository configuration",
-        "Dependabot YAML",
-        "wp-env CLI resolution"
-      ],
-      "configuration": [
-        "phpcs.xml.dist",
-        "phpstan.neon.dist",
-        "phpunit.xml.dist",
-        ".github/dependabot.yml"
-      ],
+      "coverage": ["runtime PHP coding standards and static analysis", "unit tests", "dependency audit", "metadata", "repository configuration", "Dependabot YAML", "wp-env CLI resolution"],
+      "configuration": ["phpcs.xml.dist", "phpstan.neon.dist", "phpunit.xml.dist", ".github/dependabot.yml"],
       "environment_signature": "Windows|PowerShell|php-8.3.33-portable|node-v24.18.0|npm-11.16.0",
       "notes": "PHPStan, npm audit, metadata, configuration, YAML parsing, and wp-env version passed. PHPCS diagnosed CRLF worktree files and the misplaced PHPCompatibility testVersion property. Composer's PHPUnit script could not resolve the Unix-only generated proxy under Windows. These diagnostic failures were corrected and rerun."
     },
@@ -1239,20 +777,8 @@
       "commit_tested": "2b9770e+security-audit-phase-2-worktree",
       "result": "pass",
       "duration_ms": 7500,
-      "coverage": [
-        "all runtime PHP coding standards and PHP 7.4 compatibility",
-        "39 unit tests and 131 assertions",
-        "Composer script portability",
-        "PHP source line-ending policy",
-        "tracked patch whitespace"
-      ],
-      "configuration": [
-        ".gitattributes",
-        "composer.json",
-        "composer.lock",
-        "phpcs.xml.dist",
-        "phpunit.xml.dist"
-      ],
+      "coverage": ["all runtime PHP coding standards and PHP 7.4 compatibility", "39 unit tests and 131 assertions", "Composer script portability", "PHP source line-ending policy", "tracked patch whitespace"],
+      "configuration": [".gitattributes", "composer.json", "composer.lock", "phpcs.xml.dist", "phpunit.xml.dist"],
       "environment_signature": "Windows|PowerShell|php-8.3.33-portable|composer-2.10.2|git-2.55.0.windows.3",
       "notes": "PHPCBF returned its documented fixes-made exit status after converting the three in-scope runtime files; their index content was already LF. The corrected PHPCS run passed. Direct and Composer-script PHPUnit runs both passed with 39 tests and 131 assertions."
     },
@@ -1264,20 +790,8 @@
       "commit_tested": "2b9770e+security-audit-phase-2-index",
       "result": "pass",
       "duration_ms": 5000,
-      "coverage": [
-        "all Phase 2 JSON and YAML",
-        "both dependency locks",
-        "complete staged Phase 2 patch"
-      ],
-      "configuration": [
-        ".github/dependabot.yml",
-        "composer.json",
-        "composer.lock",
-        "package.json",
-        "package-lock.json",
-        ".codex/test-ledger.json",
-        "docs/security-audit/findings.json"
-      ],
+      "coverage": ["all Phase 2 JSON and YAML", "both dependency locks", "complete staged Phase 2 patch"],
+      "configuration": [".github/dependabot.yml", "composer.json", "composer.lock", "package.json", "package-lock.json", ".codex/test-ledger.json", "docs/security-audit/findings.json"],
       "environment_signature": "Windows|PowerShell|node-v24.18.0|npm-11.16.0|php-8.3.33-portable|composer-2.10.2|git-2.55.0.windows.3",
       "notes": "Entry prepared before the final staged validation and must be corrected if that command does not pass."
     },
@@ -1289,20 +803,8 @@
       "commit_tested": "c560a9a+manual-security-review",
       "result": "pass",
       "duration_ms": 5000,
-      "coverage": [
-        "all production PHP",
-        "admin JavaScript",
-        "WordPress hooks and request envelopes",
-        "capabilities and nonces",
-        "SQL and option sinks",
-        "filesystem and multisite behavior",
-        "CSV and output escaping",
-        "relevant regression-test cross-references"
-      ],
-      "configuration": [
-        "docs/codex/PROJECT_MAP.md",
-        "AGENTS.md security invariants"
-      ],
+      "coverage": ["all production PHP", "admin JavaScript", "WordPress hooks and request envelopes", "capabilities and nonces", "SQL and option sinks", "filesystem and multisite behavior", "CSV and output escaping", "relevant regression-test cross-references"],
+      "configuration": ["docs/codex/PROJECT_MAP.md", "AGENTS.md security invariants"],
       "environment_signature": "Windows|PowerShell-7.6.3|ripgrep-15.1.0",
       "notes": "No Codex Security scan was used. An initial inventory command was rejected by PowerShell because of unescaped dollar-sign patterns and produced no audit evidence; the corrected single-quoted patterns were used for all conclusions. Three low-severity candidates were retained for separate validation; no vulnerability was marked confirmed."
     },
@@ -1314,16 +816,8 @@
       "commit_tested": "c560a9a+security-audit-phase-3-index",
       "result": "pass",
       "duration_ms": 600,
-      "coverage": [
-        "docs/security-audit/04-wordpress-code-audit.md",
-        "docs/security-audit/findings.json",
-        "docs/security-audit/README.md",
-        ".codex/test-ledger.json",
-        "complete staged Phase 3 patch"
-      ],
-      "configuration": [
-        "docs/security-audit findings schema and persistent checklist"
-      ],
+      "coverage": ["docs/security-audit/04-wordpress-code-audit.md", "docs/security-audit/findings.json", "docs/security-audit/README.md", ".codex/test-ledger.json", "complete staged Phase 3 patch"],
+      "configuration": ["docs/security-audit findings schema and persistent checklist"],
       "environment_signature": "Windows|PowerShell|node-v24.18.0|git-2.55.0.windows.3",
       "notes": "Entry prepared before the final staged validation and must be corrected if that command does not pass. Runtime and dependency tests were reused because Phase 3 changes documentation only."
     },
@@ -1335,15 +829,8 @@
       "commit_tested": "a677d3a+security-audit-phase-4-validation",
       "result": "pass",
       "duration_ms": 1300,
-      "coverage": [
-        "IUA-SEC-006 scan route and lock prerequisites",
-        "IUA-SEC-007 orphan result producers and consumers",
-        "IUA-SEC-008 nested metadata source and recursive traversal"
-      ],
-      "configuration": [
-        "current production source",
-        "existing PluginSecurityTest access and lock results reused from Phase 2"
-      ],
+      "coverage": ["IUA-SEC-006 scan route and lock prerequisites", "IUA-SEC-007 orphan result producers and consumers", "IUA-SEC-008 nested metadata source and recursive traversal"],
+      "configuration": ["current production source", "existing PluginSecurityTest access and lock results reused from Phase 2"],
       "environment_signature": "Windows|PowerShell|ripgrep-15.1.0|php-8.3.33-portable",
       "notes": "The safe recursion harness returned the expected leaf at depth 512 with no additional allocated memory page. Existing 39-test Phase 2 results were reused because runtime code and test configuration were unchanged. Decisions: IUA-SEC-006 hardening, IUA-SEC-007 hardening, IUA-SEC-008 rejected; no confirmed code vulnerability."
     },
@@ -1355,17 +842,8 @@
       "commit_tested": "a677d3a+security-audit-phase-4-index",
       "result": "pass",
       "duration_ms": 600,
-      "coverage": [
-        "all finding decisions",
-        "Phase 4 narrative",
-        "persistent checklist",
-        "complete staged Phase 4 patch"
-      ],
-      "configuration": [
-        "docs/security-audit/findings.json",
-        "docs/security-audit/04-wordpress-code-audit.md",
-        ".codex/test-ledger.json"
-      ],
+      "coverage": ["all finding decisions", "Phase 4 narrative", "persistent checklist", "complete staged Phase 4 patch"],
+      "configuration": ["docs/security-audit/findings.json", "docs/security-audit/04-wordpress-code-audit.md", ".codex/test-ledger.json"],
       "environment_signature": "Windows|PowerShell|node-v24.18.0|git-2.55.0.windows.3",
       "notes": "Entry prepared before the final staged validation and must be corrected if that command does not pass. No runtime test was rerun because Phase 4 changes documentation only."
     },
@@ -1377,16 +855,8 @@
       "commit_tested": "24cf2f7+orphan-path-hardening-worktree",
       "result": "pass",
       "duration_ms": 500,
-      "coverage": [
-        "uploads-relative orphan result",
-        "absolute-prefix exclusion",
-        "temporary fixture cleanup",
-        "syntax of every changed PHP file"
-      ],
-      "configuration": [
-        "phpunit.xml.dist",
-        "tests/bootstrap.php"
-      ],
+      "coverage": ["uploads-relative orphan result", "absolute-prefix exclusion", "temporary fixture cleanup", "syntax of every changed PHP file"],
+      "configuration": ["phpunit.xml.dist", "tests/bootstrap.php"],
       "environment_signature": "Windows|PowerShell|php-8.3.33-portable",
       "notes": "The focused test passed with 1 test and 4 assertions. The fixture used a unique directory beneath the system temporary directory and removed only its explicit file and empty directories."
     },
@@ -1398,18 +868,8 @@
       "commit_tested": "24cf2f7+orphan-path-hardening-worktree",
       "result": "pass",
       "duration_ms": 6700,
-      "coverage": [
-        "all runtime PHP coding standards and PHP 7.4 compatibility",
-        "complete PHPStan project scope",
-        "40 unit tests and 135 assertions",
-        "tracked patch whitespace"
-      ],
-      "configuration": [
-        "composer.lock",
-        "phpcs.xml.dist",
-        "phpstan.neon.dist",
-        "phpunit.xml.dist"
-      ],
+      "coverage": ["all runtime PHP coding standards and PHP 7.4 compatibility", "complete PHPStan project scope", "40 unit tests and 135 assertions", "tracked patch whitespace"],
+      "configuration": ["composer.lock", "phpcs.xml.dist", "phpstan.neon.dist", "phpunit.xml.dist"],
       "environment_signature": "Windows|PowerShell|php-8.3.33-portable|composer-2.10.2|git-2.55.0.windows.3",
       "notes": "All checks passed. Metadata, npm, dependency, workflow and WordPress runtime checks were not invalidated by this focused PHP and unit-test diff and were reused according to the test ledger protocol."
     },
@@ -1421,15 +881,8 @@
       "commit_tested": "24cf2f7+security-audit-phase-5-index",
       "result": "pass",
       "duration_ms": 600,
-      "coverage": [
-        "Phase 5 code, test, findings, remediation report, checklist and ledger",
-        "complete staged Phase 5 patch"
-      ],
-      "configuration": [
-        "docs/security-audit/findings.json",
-        "docs/security-audit/06-remediation.md",
-        ".codex/test-ledger.json"
-      ],
+      "coverage": ["Phase 5 code, test, findings, remediation report, checklist and ledger", "complete staged Phase 5 patch"],
+      "configuration": ["docs/security-audit/findings.json", "docs/security-audit/06-remediation.md", ".codex/test-ledger.json"],
       "environment_signature": "Windows|PowerShell|node-v24.18.0|git-2.55.0.windows.3",
       "notes": "Entry prepared before the final staged validation and must be corrected if that command does not pass."
     },
@@ -1441,19 +894,8 @@
       "commit_tested": "27fa77f+security-audit-phase-6-baseline",
       "result": "warning",
       "duration_ms": 8000,
-      "coverage": [
-        "QA workflow triggers, permissions, checkouts, expressions and jobs",
-        "Dependabot update policy",
-        "ZIP build and exclusion inputs",
-        "Action release commits and signature verification",
-        "Plugin Check release selection"
-      ],
-      "configuration": [
-        ".github/workflows/qa.yml",
-        ".github/dependabot.yml",
-        "scripts/build-zip.ps1",
-        "package.json"
-      ],
+      "coverage": ["QA workflow triggers, permissions, checkouts, expressions and jobs", "Dependabot update policy", "ZIP build and exclusion inputs", "Action release commits and signature verification", "Plugin Check release selection"],
+      "configuration": [".github/workflows/qa.yml", ".github/dependabot.yml", "scripts/build-zip.ps1", "package.json"],
       "environment_signature": "Windows|PowerShell|gh-2.96.0|api-2022-11-28|docker-not-on-path|python-3.13.14",
       "notes": "Existing Actions were pinned and the workflow token was read-only, but checkout credentials persisted, actionlint lacked a timeout, workflow concurrency was absent, Plugin Check was unpinned, and no Dependency Review, JavaScript CodeQL or Scorecard workflow existed. Docker was not available on PATH in this runtime."
     },
@@ -1465,15 +907,8 @@
       "commit_tested": "27fa77f+security-audit-phase-6-baseline",
       "result": "warning",
       "duration_ms": 11800,
-      "coverage": [
-        "all GitHub Actions workflows",
-        ".github/dependabot.yml",
-        "offline Zizmor audits"
-      ],
-      "configuration": [
-        "official PyPI JSON metadata",
-        "temporary isolated virtual environment"
-      ],
+      "coverage": ["all GitHub Actions workflows", ".github/dependabot.yml", "offline Zizmor audits"],
+      "configuration": ["official PyPI JSON metadata", "temporary isolated virtual environment"],
       "environment_signature": "Windows|PowerShell|python-3.13.14|zizmor-1.27.0-offline",
       "notes": "The Windows wheel SHA-256 matched debc723721172c170d5922171a40eaebf5787a02ff3e69d30597dafdb66a21ba. Zizmor reported five medium artipacked checkout warnings and three medium Dependabot cooldown warnings; five additional rules were suppressed/not applicable in offline mode. Exit status was nonzero because warnings were found."
     },
@@ -1485,16 +920,8 @@
       "commit_tested": "27fa77f+security-audit-phase-6-worktree",
       "result": "partial",
       "duration_ms": 3000,
-      "coverage": [
-        "four GitHub Actions workflows",
-        "verified actionlint wrapper execution",
-        "repository configuration validator"
-      ],
-      "configuration": [
-        ".github/workflows/*.yml",
-        "scripts/run-actionlint.ps1",
-        "scripts/validate-config.mjs"
-      ],
+      "coverage": ["four GitHub Actions workflows", "verified actionlint wrapper execution", "repository configuration validator"],
+      "configuration": [".github/workflows/*.yml", "scripts/run-actionlint.ps1", "scripts/validate-config.mjs"],
       "environment_signature": "Windows|PowerShell|node-v24.18.0|actionlint-1.7.12",
       "notes": "The verified wrapper executed, and actionlint rejected the Scorecard event name branch_protection. The correct GitHub event is branch_protection_rule. The existing configuration validator passed but exposed that it counted only qa.yml. A separate ad hoc PowerShell parser expression emitted a reference-argument diagnostic and was not used as evidence. Both configuration defects were corrected."
     },
@@ -1506,24 +933,8 @@
       "commit_tested": "27fa77f+security-audit-phase-6-worktree",
       "result": "pass",
       "duration_ms": 2600,
-      "coverage": [
-        "all four workflows and Dependabot YAML",
-        "all 11 repository JSON files",
-        "Action SHA pins",
-        "checkout credential persistence",
-        "job timeouts",
-        "workflow permissions and concurrency",
-        "Zizmor offline audits"
-      ],
-      "configuration": [
-        ".github/workflows/qa.yml",
-        ".github/workflows/dependency-review.yml",
-        ".github/workflows/codeql.yml",
-        ".github/workflows/scorecard.yml",
-        ".github/dependabot.yml",
-        "scripts/validate-config.mjs",
-        "scripts/run-actionlint.ps1"
-      ],
+      "coverage": ["all four workflows and Dependabot YAML", "all 11 repository JSON files", "Action SHA pins", "checkout credential persistence", "job timeouts", "workflow permissions and concurrency", "Zizmor offline audits"],
+      "configuration": [".github/workflows/qa.yml", ".github/workflows/dependency-review.yml", ".github/workflows/codeql.yml", ".github/workflows/scorecard.yml", ".github/dependabot.yml", "scripts/validate-config.mjs", "scripts/run-actionlint.ps1"],
       "environment_signature": "Windows|PowerShell|node-v24.18.0|actionlint-1.7.12|zizmor-1.27.0-offline",
       "notes": "Actionlint passed. The validator parsed 11 JSON and five YAML files and enforced full Action SHAs, timeouts, top-level permissions/concurrency, and non-persistent checkout credentials. Zizmor reported no finding; 11 audits were suppressed/not applicable in offline mode."
     },
@@ -1535,12 +946,8 @@
       "commit_tested": "27fa77f+repository-settings",
       "result": "pass",
       "duration_ms": 1100,
-      "coverage": [
-        "repository selected-actions source policy"
-      ],
-      "configuration": [
-        "GitHub Actions repository settings"
-      ],
+      "coverage": ["repository selected-actions source policy"],
+      "configuration": ["GitHub Actions repository settings"],
       "environment_signature": "GitHub|public-repository|gh-2.96.0|api-2022-11-28",
       "notes": "GitHub-owned and verified actions remain allowed. Explicit patterns are shivammathur/setup-php@* and ossf/scorecard-action@*. Repository SHA pin enforcement remains enabled from Phase 1."
     },
@@ -1552,16 +959,8 @@
       "commit_tested": "27fa77f+security-audit-phase-6-index",
       "result": "pass",
       "duration_ms": 1500,
-      "coverage": [
-        "all Phase 6 workflows, scripts, reports, findings and ledger",
-        "complete staged Phase 6 patch"
-      ],
-      "configuration": [
-        "scripts/validate-config.mjs",
-        "docs/security-audit/05-ci-supply-chain.md",
-        "docs/security-audit/findings.json",
-        ".codex/test-ledger.json"
-      ],
+      "coverage": ["all Phase 6 workflows, scripts, reports, findings and ledger", "complete staged Phase 6 patch"],
+      "configuration": ["scripts/validate-config.mjs", "docs/security-audit/05-ci-supply-chain.md", "docs/security-audit/findings.json", ".codex/test-ledger.json"],
       "environment_signature": "Windows|PowerShell|node-v24.18.0|git-2.55.0.windows.3",
       "notes": "Entry prepared before the final staged validation and must be corrected if that command does not pass."
     },
@@ -1573,16 +972,8 @@
       "commit_tested": "4e66ba1+repository-ruleset",
       "result": "pass",
       "duration_ms": 4700,
-      "coverage": [
-        "historically green stable QA context names",
-        "active main ruleset payload",
-        "effective rules for main",
-        "administrator bypass behavior"
-      ],
-      "configuration": [
-        "GitHub repository ruleset 20181296",
-        ".github/workflows/qa.yml"
-      ],
+      "coverage": ["historically green stable QA context names", "active main ruleset payload", "effective rules for main", "administrator bypass behavior"],
+      "configuration": ["GitHub repository ruleset 20181296", ".github/workflows/qa.yml"],
       "environment_signature": "GitHub|public-repository|single-maintainer|gh-2.96.0|api-2022-11-28",
       "notes": "Protect main is active with no bypass actors. It requires a PR with zero approvals, resolved conversations, an up-to-date branch and six previously green stable QA contexts; deletion and force pushes are blocked. New checks were not required before their first repository run."
     },
@@ -1594,17 +985,8 @@
       "commit_tested": "79aa6c5+release-baseline",
       "result": "warning",
       "duration_ms": 14500,
-      "coverage": [
-        "v2.2.6 release identity, tag, assets and checksum",
-        "every published ZIP entry",
-        "artifact and immutable-release attestations",
-        "release workflow Action pins"
-      ],
-      "configuration": [
-        "GitHub release v2.2.6",
-        "scripts/build-zip.ps1",
-        ".distignore"
-      ],
+      "coverage": ["v2.2.6 release identity, tag, assets and checksum", "every published ZIP entry", "artifact and immutable-release attestations", "release workflow Action pins"],
+      "configuration": ["GitHub release v2.2.6", "scripts/build-zip.ps1", ".distignore"],
       "environment_signature": "Windows|PowerShell|gh-2.96.0|public-repository|api-2022-11-28/2026-03-10",
       "notes": "The published ZIP checksum matched its asset and contained 11 expected entries with no development path. The annotated tag is unsigned, the historical release is mutable, and GitHub returned no artifact or immutable-release attestation. These are provenance gaps, not evidence that v2.2.6 was modified. New Action release commits were signature-verified."
     },
@@ -1616,12 +998,8 @@
       "commit_tested": "79aa6c5+repository-release-setting",
       "result": "pass",
       "duration_ms": 1400,
-      "coverage": [
-        "future GitHub release immutability"
-      ],
-      "configuration": [
-        "GitHub repository immutable releases setting"
-      ],
+      "coverage": ["future GitHub release immutability"],
+      "configuration": ["GitHub repository immutable releases setting"],
       "environment_signature": "GitHub|public-repository|gh-2.96.0|api-2026-03-10",
       "notes": "The setting changed from enabled false to enabled true. GitHub documents that this applies prospectively and automatically locks tags/assets and generates a release attestation when a new release is published."
     },
@@ -1633,14 +1011,8 @@
       "commit_tested": "79aa6c5+release-workflow-draft",
       "result": "failed",
       "duration_ms": 900,
-      "coverage": [
-        "draft release workflow",
-        "artifact-publishing cache boundary"
-      ],
-      "configuration": [
-        ".github/workflows/release.yml",
-        "actions/setup-node 6.4.0"
-      ],
+      "coverage": ["draft release workflow", "artifact-publishing cache boundary"],
+      "configuration": [".github/workflows/release.yml", "actions/setup-node 6.4.0"],
       "environment_signature": "Windows|zizmor-1.27.0-offline",
       "notes": "Zizmor reported one high cache-poisoning finding because setup-node 6 enables automatic npm caching when package metadata selects npm. The release workflow now explicitly sets package-manager-cache false."
     },
@@ -1652,21 +1024,8 @@
       "commit_tested": "79aa6c5+security-audit-phase-8-worktree",
       "result": "pass",
       "duration_ms": 10200,
-      "coverage": [
-        "allow-listed ZIP contents and metadata",
-        "checksum creation",
-        "same-state reproducibility",
-        "release tag validation",
-        "all six GitHub YAML files",
-        "workflow security",
-        "targeted ZIP secret patterns"
-      ],
-      "configuration": [
-        "scripts/build-zip.ps1",
-        "scripts/validate-release-tag.mjs",
-        ".github/workflows/release.yml",
-        "scripts/validate-config.mjs"
-      ],
+      "coverage": ["allow-listed ZIP contents and metadata", "checksum creation", "same-state reproducibility", "release tag validation", "all six GitHub YAML files", "workflow security", "targeted ZIP secret patterns"],
+      "configuration": ["scripts/build-zip.ps1", "scripts/validate-release-tag.mjs", ".github/workflows/release.yml", "scripts/validate-config.mjs"],
       "environment_signature": "Windows|PowerShell|node-v24.18.0|actionlint-1.7.12|zizmor-1.27.0-offline",
       "notes": "Two builds were byte-identical at bd6fcb85a74f38eb5cfa33c0f8f99699657f7d98f641eaafb2b4e0e674f84f0d. The ZIP had 11 expected entries and zero targeted secret-pattern match. Actionlint and configuration validation passed; final Zizmor reported no finding with 15 offline-suppressed/not-applicable audits."
     },
@@ -1678,19 +1037,8 @@
       "commit_tested": "4640e31+security-audit-phase-9-worktree",
       "result": "pass",
       "duration_ms": 40500,
-      "coverage": [
-        "complete locked npm development graph",
-        "dependency advisories and direct updates",
-        "all dependency lifecycle scripts",
-        "reviewed fs-ext-extra-prebuilt install script",
-        "transitive glob deprecation path"
-      ],
-      "configuration": [
-        "package.json",
-        "package-lock.json",
-        ".npmrc",
-        "scripts/validate-config.mjs"
-      ],
+      "coverage": ["complete locked npm development graph", "dependency advisories and direct updates", "all dependency lifecycle scripts", "reviewed fs-ext-extra-prebuilt install script", "transitive glob deprecation path"],
+      "configuration": ["package.json", "package-lock.json", ".npmrc", "scripts/validate-config.mjs"],
       "environment_signature": "Windows|PowerShell|node-v24.18.0|npm-11.16.0",
       "notes": "npm ci completed under strict install-script enforcement, npm audit reported zero vulnerabilities across 391 packages, npm outdated returned no direct update, and no install script remained pending. Transitive glob 10.5.0 remains deprecated without an npm advisory or safe direct update and is documented as residual."
     },
@@ -1702,14 +1050,8 @@
       "commit_tested": "3734558eaaf1e66724dfeb0c37004b0fb06c050c",
       "result": "failed",
       "duration_ms": 8000,
-      "coverage": [
-        "PR 16 Zizmor job",
-        "verified wheel download, checksum and pip installation"
-      ],
-      "configuration": [
-        ".github/workflows/qa.yml",
-        "Zizmor 1.27.0 manylinux wheel"
-      ],
+      "coverage": ["PR 16 Zizmor job", "verified wheel download, checksum and pip installation"],
+      "configuration": [".github/workflows/qa.yml", "Zizmor 1.27.0 manylinux wheel"],
       "environment_signature": "GitHub-Actions|ubuntu-24.04|runner-2.336.0|pip",
       "notes": "The official wheel downloaded and its SHA-256 passed, but the workflow renamed it to zizmor-1.27.0.whl; pip correctly rejected that non-canonical wheel filename before installation. The archive path now preserves the complete official wheel filename."
     },
@@ -1721,22 +1063,8 @@
       "commit_tested": "af6cb454d75b4393c7c8763ba2989412aab33526",
       "result": "pass",
       "duration_ms": 167000,
-      "coverage": [
-        "PHP 7.4 and 8.3 QA",
-        "40 unit tests and 135 assertions",
-        "WordPress current exact-ZIP activation, AJAX, Plugin Check and uninstall",
-        "WordPress 5.9 exact-ZIP compatibility",
-        "multisite network activation and uninstall preservation",
-        "Actionlint and Zizmor",
-        "Dependency Review",
-        "JavaScript CodeQL security-extended"
-      ],
-      "configuration": [
-        ".github/workflows/qa.yml",
-        ".github/workflows/dependency-review.yml",
-        ".github/workflows/codeql.yml",
-        "all source, tests, lockfiles and QA configuration at the pull-request SHA"
-      ],
+      "coverage": ["PHP 7.4 and 8.3 QA", "40 unit tests and 135 assertions", "WordPress current exact-ZIP activation, AJAX, Plugin Check and uninstall", "WordPress 5.9 exact-ZIP compatibility", "multisite network activation and uninstall preservation", "Actionlint and Zizmor", "Dependency Review", "JavaScript CodeQL security-extended"],
+      "configuration": [".github/workflows/qa.yml", ".github/workflows/dependency-review.yml", ".github/workflows/codeql.yml", "all source, tests, lockfiles and QA configuration at the pull-request SHA"],
       "environment_signature": "GitHub-Actions|ubuntu-24.04|runner-2.336.0|php-7.4/8.3|WordPress-5.9.13/current/multisite",
       "notes": "QA run 30698198089, CodeQL run 30698198080 and Dependency Review run 30698198094 all completed successfully. PR 16 was mergeable and clean with every reported check green."
     },
@@ -1748,17 +1076,8 @@
       "commit_tested": "af6cb454d75b4393c7c8763ba2989412aab33526+repository-settings",
       "result": "pass",
       "duration_ms": 3300,
-      "coverage": [
-        "GitHub security features",
-        "Actions source and token policy",
-        "future release immutability",
-        "active main rules",
-        "open security alert counts"
-      ],
-      "configuration": [
-        "GitHub repository settings",
-        "ruleset 20181296"
-      ],
+      "coverage": ["GitHub security features", "Actions source and token policy", "future release immutability", "active main rules", "open security alert counts"],
+      "configuration": ["GitHub repository settings", "ruleset 20181296"],
       "environment_signature": "GitHub|public-repository|gh-2.96.0|api-2022-11-28/2026-03-10",
       "notes": "Secret scanning and code scanning each had zero open alert. Four high Dependabot alerts remain against the old main lockfile. The ruleset has no bypass and now requires eight universal green PR contexts; CodeQL and Scorecard remain correctly conditional."
     },
@@ -1770,19 +1089,8 @@
       "commit_tested": "8437b5441800ac7415fdccd74df1bc739627cbb2",
       "result": "pass",
       "duration_ms": 215000,
-      "coverage": [
-        "PR 16 final required checks and merge state",
-        "post-merge QA and JavaScript CodeQL",
-        "first OpenSSF Scorecard run",
-        "open Dependabot, secret-scanning and code-scanning alerts"
-      ],
-      "configuration": [
-        "GitHub pull request 16",
-        ".github/workflows/qa.yml",
-        ".github/workflows/codeql.yml",
-        ".github/workflows/scorecard.yml",
-        "GitHub repository security alerts"
-      ],
+      "coverage": ["PR 16 final required checks and merge state", "post-merge QA and JavaScript CodeQL", "first OpenSSF Scorecard run", "open Dependabot, secret-scanning and code-scanning alerts"],
+      "configuration": ["GitHub pull request 16", ".github/workflows/qa.yml", ".github/workflows/codeql.yml", ".github/workflows/scorecard.yml", "GitHub repository security alerts"],
       "environment_signature": "GitHub|public-repository|main|runner-2.336.0|gh-2.96.0|api-2022-11-28",
       "notes": "PR 16 merged as 8437b5441800ac7415fdccd74df1bc739627cbb2 after every required check passed. Post-merge QA 30698479350, CodeQL 30698479354 and Scorecard 30698479339 passed. Dependabot and secret scanning had zero open alert. CodeQL had zero finding; Scorecard created eight posture alerts for separate triage."
     },
@@ -1794,17 +1102,8 @@
       "commit_tested": "8437b5441800ac7415fdccd74df1bc739627cbb2+security-policy-followup-worktree",
       "result": "pass",
       "duration_ms": 3200,
-      "coverage": [
-        "all eight open Scorecard SARIF alerts",
-        "repository-wide SECURITY.md applicability",
-        "vulnerability response and disclosure timelines",
-        "support scope and disclosure channel preservation"
-      ],
-      "configuration": [
-        "SECURITY.md",
-        "docs/security-audit/07-final-validation.md",
-        "docs/security-audit/findings.json"
-      ],
+      "coverage": ["all eight open Scorecard SARIF alerts", "repository-wide SECURITY.md applicability", "vulnerability response and disclosure timelines", "support scope and disclosure channel preservation"],
+      "configuration": ["SECURITY.md", "docs/security-audit/07-final-validation.md", "docs/security-audit/findings.json"],
       "environment_signature": "Windows|PowerShell|python-3.13.14|GitHub-public-repository|scorecard-5.4.0",
       "notes": "The applicable root policy is SECURITY.md. Seven alerts were classified as structural, historical, time-bound, informational or proportionate residuals. Security-Policy 9/10 was actionable and is remediated with 7/14/90-day targets, accelerated critical handling and private timeline updates; no scope or exclusion changed."
     },
@@ -1816,18 +1115,8 @@
       "commit_tested": "8437b5441800ac7415fdccd74df1bc739627cbb2+security-policy-followup-worktree",
       "result": "pass",
       "duration_ms": 4200,
-      "coverage": [
-        "repository security-policy inventory and SECURITY.md resolution",
-        "all 11 repository JSON files and six YAML files",
-        "IUA-SEC-013 presence",
-        "complete follow-up patch whitespace"
-      ],
-      "configuration": [
-        "SECURITY.md",
-        "scripts/validate-config.mjs",
-        "docs/security-audit/findings.json",
-        ".codex/test-ledger.json"
-      ],
+      "coverage": ["repository security-policy inventory and SECURITY.md resolution", "all 11 repository JSON files and six YAML files", "IUA-SEC-013 presence", "complete follow-up patch whitespace"],
+      "configuration": ["SECURITY.md", "scripts/validate-config.mjs", "docs/security-audit/findings.json", ".codex/test-ledger.json"],
       "environment_signature": "Windows|PowerShell|python-3.13.14|node-v24.18.0|git-2.55.0.windows.3",
       "notes": "The root SECURITY.md is the only policy applicable to repository source; policies under vendor and node_modules apply only to dependencies. JSON/YAML validation and git diff checks passed. Unaffected PHP, WordPress, dependency and workflow test results were reused under the repository test protocol."
     },
@@ -1839,19 +1128,8 @@
       "commit_tested": "41122772915682dc631aeff7c02001c014a13dbe",
       "result": "pass",
       "duration_ms": 11100,
-      "coverage": [
-        "all seven initially open code-scanning alerts",
-        "all 18 published Scorecard checks",
-        "effective main ruleset",
-        "repository Actions permissions and workflow policy",
-        "absence of CodeQL findings"
-      ],
-      "configuration": [
-        "GitHub repository settings",
-        "ruleset 20181296",
-        ".github/workflows/scorecard.yml",
-        ".github/workflows/codeql.yml"
-      ],
+      "coverage": ["all seven initially open code-scanning alerts", "all 18 published Scorecard checks", "effective main ruleset", "repository Actions permissions and workflow policy", "absence of CodeQL findings"],
+      "configuration": ["GitHub repository settings", "ruleset 20181296", ".github/workflows/scorecard.yml", ".github/workflows/codeql.yml"],
       "environment_signature": "Windows|PowerShell|gh-2.96.0|scorecard-5.5.0-windows-amd64|public-repository",
       "notes": "All seven alerts were Scorecard 5.5.0 posture alerts at main commit 4112277; no CodeQL alert was open. Sanitized, token-free evidence is stored in code-scanning-alerts-before.json and scorecard-before.json. No Codex Security scan was used."
     },
@@ -1863,19 +1141,8 @@
       "commit_tested": "1c8cfb4+security-resolve-scorecard-alerts-worktree",
       "result": "pass",
       "duration_ms": 13700,
-      "coverage": [
-        "tests/property/security-inputs.property.js",
-        "tests/property/security-inputs-harness.php",
-        "IUA_CDN_Settings::validate",
-        "IUA_CSV::neutralize_formula",
-        "locked fast-check package integrity"
-      ],
-      "configuration": [
-        "package.json",
-        "package-lock.json",
-        "IUA_PROPERTY_SEED=20260801",
-        "IUA_PROPERTY_RUNS=500"
-      ],
+      "coverage": ["tests/property/security-inputs.property.js", "tests/property/security-inputs-harness.php", "IUA_CDN_Settings::validate", "IUA_CSV::neutralize_formula", "locked fast-check package integrity"],
+      "configuration": ["package.json", "package-lock.json", "IUA_PROPERTY_SEED=20260801", "IUA_PROPERTY_RUNS=500"],
       "environment_signature": "Windows|PowerShell|node-v24.18.0|npm-11.16.0|php-7.4.33/8.3.33-verified",
       "notes": "Both PHP versions passed 500 generated cases and 6,500 invariants with seed 20260801. The tests use the real production validator and CSV neutralizer. They were repeated successfully after npm ci restored the exact lockfile graph."
     },
@@ -1887,14 +1154,8 @@
       "commit_tested": "1c8cfb4+security-resolve-scorecard-alerts-worktree",
       "result": "failed",
       "duration_ms": 6700,
-      "coverage": [
-        "Composer transport preflight",
-        "PHP syntax fallback"
-      ],
-      "configuration": [
-        "composer.json",
-        "composer.lock"
-      ],
+      "coverage": ["Composer transport preflight", "PHP syntax fallback"],
+      "configuration": ["composer.json", "composer.lock"],
       "environment_signature": "Windows|PowerShell|php-7.4.33-verified|openssl-extension-missing",
       "notes": "Composer correctly stopped because the first standalone PHP invocation had no OpenSSL extension. The syntax fallback passed, but this run is not validation evidence. A minimal temporary php.ini enabled the official OpenSSL and mbstring extensions before both complete QA runs below."
     },
@@ -1906,22 +1167,8 @@
       "commit_tested": "1c8cfb4+security-resolve-scorecard-alerts-worktree",
       "result": "pass",
       "duration_ms": 12600,
-      "coverage": [
-        "strict Composer metadata",
-        "locked Composer advisories",
-        "all PHPStan paths",
-        "40 unit tests and 135 assertions",
-        "six WPCS/compatibility lint targets",
-        "all plugin and test PHP syntax"
-      ],
-      "configuration": [
-        "composer.json",
-        "composer.lock",
-        "phpstan.neon.dist",
-        "phpunit.xml.dist",
-        "phpcs.xml.dist",
-        "temporary php.ini with official OpenSSL and mbstring extensions"
-      ],
+      "coverage": ["strict Composer metadata", "locked Composer advisories", "all PHPStan paths", "40 unit tests and 135 assertions", "six WPCS/compatibility lint targets", "all plugin and test PHP syntax"],
+      "configuration": ["composer.json", "composer.lock", "phpstan.neon.dist", "phpunit.xml.dist", "phpcs.xml.dist", "temporary php.ini with official OpenSSL and mbstring extensions"],
       "environment_signature": "Windows|PowerShell|php-7.4.33-verified|composer-2.10.2",
       "notes": "Composer validation and audit, PHPStan, PHPUnit, PHPCS and syntax all passed; Composer reported zero locked advisory."
     },
@@ -1933,22 +1180,8 @@
       "commit_tested": "1c8cfb4+security-resolve-scorecard-alerts-worktree",
       "result": "pass",
       "duration_ms": 13300,
-      "coverage": [
-        "strict Composer metadata",
-        "locked Composer advisories",
-        "all PHPStan paths",
-        "40 unit tests and 135 assertions",
-        "six WPCS/compatibility lint targets",
-        "all plugin and test PHP syntax"
-      ],
-      "configuration": [
-        "composer.json",
-        "composer.lock",
-        "phpstan.neon.dist",
-        "phpunit.xml.dist",
-        "phpcs.xml.dist",
-        "temporary php.ini with official OpenSSL and mbstring extensions"
-      ],
+      "coverage": ["strict Composer metadata", "locked Composer advisories", "all PHPStan paths", "40 unit tests and 135 assertions", "six WPCS/compatibility lint targets", "all plugin and test PHP syntax"],
+      "configuration": ["composer.json", "composer.lock", "phpstan.neon.dist", "phpunit.xml.dist", "phpcs.xml.dist", "temporary php.ini with official OpenSSL and mbstring extensions"],
       "environment_signature": "Windows|PowerShell|php-8.3.33-verified|composer-2.10.2",
       "notes": "Composer validation and audit, PHPStan, PHPUnit, PHPCS and syntax all passed; Composer reported zero locked advisory."
     },
@@ -1960,25 +1193,8 @@
       "commit_tested": "1c8cfb4+security-resolve-scorecard-alerts-worktree",
       "result": "pass",
       "duration_ms": 24300,
-      "coverage": [
-        "complete locked npm graph",
-        "npm advisories",
-        "all 13 repository JSON and six YAML files",
-        "plugin metadata",
-        "all workflows",
-        "admin JavaScript syntax",
-        "allow-listed release ZIP",
-        "targeted ZIP secret patterns",
-        "Scorecard Fuzzing integration"
-      ],
-      "configuration": [
-        "package.json",
-        "package-lock.json",
-        "scripts/validate-config.mjs",
-        "scripts/validate-metadata.mjs",
-        ".github/workflows",
-        "scripts/build-zip.ps1"
-      ],
+      "coverage": ["complete locked npm graph", "npm advisories", "all 13 repository JSON and six YAML files", "plugin metadata", "all workflows", "admin JavaScript syntax", "allow-listed release ZIP", "targeted ZIP secret patterns", "Scorecard Fuzzing integration"],
+      "configuration": ["package.json", "package-lock.json", "scripts/validate-config.mjs", "scripts/validate-metadata.mjs", ".github/workflows", "scripts/build-zip.ps1"],
       "environment_signature": "Windows|PowerShell|node-v24.18.0|npm-11.16.0|actionlint-1.7.12|zizmor-1.27.0-offline|scorecard-5.5.0",
       "notes": "npm audited 393 packages with zero vulnerability. Zizmor reported no finding with 15 offline-suppressed/not-applicable audits. The ZIP contained exactly 11 runtime entries, excluded development material and targeted secret markers, and had SHA-256 e72e1035c9e01d2fb8f4165600005625c0b82004203025b1285f3a49ea340b7f. Scorecard recognized tests/property/security-inputs.property.js and scored Fuzzing 10/10."
     },
@@ -1990,18 +1206,8 @@
       "commit_tested": "cd253ae+security-resolve-scorecard-alerts-documentation-worktree",
       "result": "pass",
       "duration_ms": 900,
-      "coverage": [
-        "complete branch diff from main",
-        "all new and modified files",
-        "machine-readable evidence JSON",
-        "test ledger JSON",
-        "patch whitespace"
-      ],
-      "configuration": [
-        ".codex/test-ledger.json",
-        "docs/security-audit/code-scanning-alerts-before.json",
-        "docs/security-audit/scorecard-before.json"
-      ],
+      "coverage": ["complete branch diff from main", "all new and modified files", "machine-readable evidence JSON", "test ledger JSON", "patch whitespace"],
+      "configuration": [".codex/test-ledger.json", "docs/security-audit/code-scanning-alerts-before.json", "docs/security-audit/scorecard-before.json"],
       "environment_signature": "Windows|PowerShell|node-v24.18.0|git-2.55.0.windows.3",
       "notes": "The inspected branch contains only the two reviewed Dependabot action updates, property-test and CodeQL improvements, validation enforcement, and the phase 12 evidence. Ignored dist, node_modules and vendor outputs are not staged."
     },
@@ -2013,23 +1219,8 @@
       "commit_tested": "04ee628a8256af2a841c54b1417386d0f74bce6b",
       "result": "pass",
       "duration_ms": 131000,
-      "coverage": [
-        "actionlint and Zizmor",
-        "PHP 7.4 and 8.3 QA including property tests",
-        "40 unit tests and 135 assertions per PHP lane",
-        "WordPress current exact-ZIP activation, AJAX, Plugin Check, POT and smoke",
-        "WordPress 5.9 exact-ZIP compatibility",
-        "multisite network activation and uninstall preservation",
-        "Dependency Review",
-        "unconditional JavaScript CodeQL security-extended"
-      ],
-      "configuration": [
-        "pull request 21",
-        ".github/workflows/qa.yml",
-        ".github/workflows/dependency-review.yml",
-        ".github/workflows/codeql.yml",
-        "all source, tests, lockfiles and QA configuration at the pull-request SHA"
-      ],
+      "coverage": ["actionlint and Zizmor", "PHP 7.4 and 8.3 QA including property tests", "40 unit tests and 135 assertions per PHP lane", "WordPress current exact-ZIP activation, AJAX, Plugin Check, POT and smoke", "WordPress 5.9 exact-ZIP compatibility", "multisite network activation and uninstall preservation", "Dependency Review", "unconditional JavaScript CodeQL security-extended"],
+      "configuration": ["pull request 21", ".github/workflows/qa.yml", ".github/workflows/dependency-review.yml", ".github/workflows/codeql.yml", "all source, tests, lockfiles and QA configuration at the pull-request SHA"],
       "environment_signature": "GitHub-Actions|ubuntu-24.04|runner-2.336.0|php-7.4/8.3|WordPress-5.9.13/current/multisite",
       "notes": "QA run 30701380357, Dependency Review run 30701380346 and CodeQL run 30701380371 completed successfully. Both PHP jobs installed the locked npm graph and passed the new property test. CodeQL reported no finding."
     },
@@ -2041,22 +1232,8 @@
       "commit_tested": "b6cd6f99a411e7313da28e681914ab9b12e7c7a8",
       "result": "pass",
       "duration_ms": 135000,
-      "coverage": [
-        "final PR head QA, Dependency Review and CodeQL",
-        "merged PR state",
-        "post-merge PHP and WordPress QA",
-        "post-merge CodeQL security-extended",
-        "post-merge official Scorecard and SARIF publication",
-        "all 18 before/after Scorecard checks"
-      ],
-      "configuration": [
-        "pull request 21",
-        ".github/workflows/qa.yml",
-        ".github/workflows/dependency-review.yml",
-        ".github/workflows/codeql.yml",
-        ".github/workflows/scorecard.yml",
-        "GitHub repository Code scanning"
-      ],
+      "coverage": ["final PR head QA, Dependency Review and CodeQL", "merged PR state", "post-merge PHP and WordPress QA", "post-merge CodeQL security-extended", "post-merge official Scorecard and SARIF publication", "all 18 before/after Scorecard checks"],
+      "configuration": ["pull request 21", ".github/workflows/qa.yml", ".github/workflows/dependency-review.yml", ".github/workflows/codeql.yml", ".github/workflows/scorecard.yml", "GitHub repository Code scanning"],
       "environment_signature": "GitHub|main|runner-2.336.0|gh-2.96.0|scorecard-5.5.0",
       "notes": "PR 21 merged as b6cd6f99a411e7313da28e681914ab9b12e7c7a8 only after its final head was completely green. Post-merge QA 30701586247, CodeQL 30701586167 and Scorecard 30701586170 passed. The published global Scorecard improved from 6.1 to 6.6; Fuzzing improved 0 to 10, CI-Tests improved 9 to 10, and SAST evidence improved from 13/25 to 20/30 commits."
     },
@@ -2068,16 +1245,8 @@
       "commit_tested": "b6cd6f99a411e7313da28e681914ab9b12e7c7a8+repository-settings",
       "result": "pass",
       "duration_ms": 12100,
-      "coverage": [
-        "active main ruleset and all nine required contexts",
-        "all seven initial Scorecard alerts",
-        "final open Code scanning alert count",
-        "dismissal reason and comment integrity"
-      ],
-      "configuration": [
-        "ruleset 20181296",
-        "GitHub Code scanning alerts 1, 3, 4, 5, 6, 7 and 8"
-      ],
+      "coverage": ["active main ruleset and all nine required contexts", "all seven initial Scorecard alerts", "final open Code scanning alert count", "dismissal reason and comment integrity"],
+      "configuration": ["ruleset 20181296", "GitHub Code scanning alerts 1, 3, 4, 5, 6, 7 and 8"],
       "environment_signature": "GitHub|public-repository|main|gh-2.96.0|api-2022-11-28",
       "notes": "The ruleset has no bypass and now requires analyze plus the original eight contexts. SARIF automatically fixed alerts 3 and 8. Alerts 1, 4, 5, 6 and 7 were dismissed as won't fix with the exact evidence comments in the report. The final query returned zero open Code scanning alert; no CodeQL finding or exploitable vulnerability was dismissed."
     },
@@ -2089,19 +1258,8 @@
       "commit_tested": "b6cd6f99a411e7313da28e681914ab9b12e7c7a8+post-merge-evidence-worktree",
       "result": "pass",
       "duration_ms": 900,
-      "coverage": [
-        "all four sanitized before/after JSON snapshots",
-        "phase 12 report",
-        "complete documentation-only diff",
-        "patch whitespace"
-      ],
-      "configuration": [
-        "docs/security-audit/scorecard-before.json",
-        "docs/security-audit/scorecard-after.json",
-        "docs/security-audit/code-scanning-alerts-before.json",
-        "docs/security-audit/code-scanning-alerts-after.json",
-        ".codex/test-ledger.json"
-      ],
+      "coverage": ["all four sanitized before/after JSON snapshots", "phase 12 report", "complete documentation-only diff", "patch whitespace"],
+      "configuration": ["docs/security-audit/scorecard-before.json", "docs/security-audit/scorecard-after.json", "docs/security-audit/code-scanning-alerts-before.json", "docs/security-audit/code-scanning-alerts-after.json", ".codex/test-ledger.json"],
       "environment_signature": "Windows|PowerShell|node-v24.18.0|git-2.55.0.windows.3",
       "notes": "The evidence diff adds only sanitized JSON, final report updates and ledger records. It contains no authentication material and makes no code, dependency, workflow or repository-setting change."
     },
@@ -2113,16 +1271,8 @@
       "commit_tested": "f08293b30386aa7701de24304b0f8ddb45f46349+2.2.8-worktree",
       "result": "fail",
       "duration_ms": 1804,
-      "coverage": [
-        "single and bulk attachment-ID AJAX parsing",
-        "AJAX response envelopes",
-        "PHP 7.4 syntax",
-        "changed production PHP coding standards"
-      ],
-      "configuration": [
-        "phpunit.xml.dist",
-        "phpcs.xml.dist"
-      ],
+      "coverage": ["single and bulk attachment-ID AJAX parsing", "AJAX response envelopes", "PHP 7.4 syntax", "changed production PHP coding standards"],
+      "configuration": ["phpunit.xml.dist", "phpcs.xml.dist"],
       "environment_signature": "Windows|PowerShell-7.6.4|php-7.4.33-verified|phpunit-9.6.35|phpcs-3.13.5",
       "notes": "Production syntax and PHPCS passed. PHPUnit exposed two test-only expectation errors: an untouched absent option returns false in the bootstrap stub, not an empty array. No production defect was found."
     },
@@ -2134,21 +1284,8 @@
       "commit_tested": "f08293b30386aa7701de24304b0f8ddb45f46349+2.2.8-worktree",
       "result": "pass",
       "duration_ms": 713,
-      "coverage": [
-        "10 PluginSecurityTest cases and 173 assertions",
-        "single IDs",
-        "bulk IDs",
-        "malformed and non-scalar input",
-        "deduplication",
-        "attachment filtering",
-        "stable mark and unmark responses",
-        "PHP 7.4 syntax",
-        "changed production PHP coding standards"
-      ],
-      "configuration": [
-        "phpunit.xml.dist",
-        "phpcs.xml.dist"
-      ],
+      "coverage": ["10 PluginSecurityTest cases and 173 assertions", "single IDs", "bulk IDs", "malformed and non-scalar input", "deduplication", "attachment filtering", "stable mark and unmark responses", "PHP 7.4 syntax", "changed production PHP coding standards"],
+      "configuration": ["phpunit.xml.dist", "phpcs.xml.dist"],
       "environment_signature": "Windows|PowerShell-7.6.4|php-7.4.33-verified|phpunit-9.6.35|phpcs-3.13.5",
       "notes": "All targeted checks passed after correcting the two test-only expectations."
     },
@@ -2160,24 +1297,8 @@
       "commit_tested": "f08293b30386aa7701de24304b0f8ddb45f46349+2.2.8-worktree",
       "result": "pass",
       "duration_ms": 15489,
-      "coverage": [
-        "locked npm dependency graph",
-        "npm advisories",
-        "2.2.8 metadata synchronization",
-        "all repository JSON and YAML",
-        "workflow syntax",
-        "JavaScript syntax",
-        "500 property cases and 6500 invariants",
-        "allow-listed release ZIP"
-      ],
-      "configuration": [
-        "package.json",
-        "package-lock.json",
-        "scripts/validate-metadata.mjs",
-        "scripts/validate-config.mjs",
-        ".github/workflows",
-        "scripts/build-zip.ps1"
-      ],
+      "coverage": ["locked npm dependency graph", "npm advisories", "2.2.8 metadata synchronization", "all repository JSON and YAML", "workflow syntax", "JavaScript syntax", "500 property cases and 6500 invariants", "allow-listed release ZIP"],
+      "configuration": ["package.json", "package-lock.json", "scripts/validate-metadata.mjs", "scripts/validate-config.mjs", ".github/workflows", "scripts/build-zip.ps1"],
       "environment_signature": "Windows|PowerShell-7.6.4|node-v24.18.0|npm-11.16.0|php-7.4.33-verified",
       "notes": "npm audited 393 packages with zero vulnerability. The deterministic ZIP contained 11 runtime entries and had SHA-256 bef6646eb27d337bdbd7a7260f5dd3a5465163134f2381894c5b64c816c09c08. npm emitted only its existing glob 10.5.0 deprecation notice."
     },
@@ -2189,16 +1310,8 @@
       "commit_tested": "f08293b30386aa7701de24304b0f8ddb45f46349+2.2.8-worktree",
       "result": "failed",
       "duration_ms": 3900,
-      "coverage": [
-        "Composer metadata",
-        "locked Composer advisories",
-        "portable PHP subprocess availability"
-      ],
-      "configuration": [
-        "composer.json",
-        "composer.lock",
-        "phpstan.neon.dist"
-      ],
+      "coverage": ["Composer metadata", "locked Composer advisories", "portable PHP subprocess availability"],
+      "configuration": ["composer.json", "composer.lock", "phpstan.neon.dist"],
       "environment_signature": "Windows|PowerShell-7.6.4|php-7.4.33-verified|composer-2.10.2|php-missing-from-PATH",
       "notes": "Composer validation and audit passed, then the analyse script could not resolve php because the portable runtime directory was not on PATH. This was an environment-only diagnostic; the complete rerun below corrected PATH."
     },
@@ -2210,22 +1323,8 @@
       "commit_tested": "f08293b30386aa7701de24304b0f8ddb45f46349+2.2.8-worktree",
       "result": "pass",
       "duration_ms": 14633,
-      "coverage": [
-        "strict Composer metadata",
-        "locked Composer advisories",
-        "all PHPStan paths",
-        "44 unit tests and 231 assertions",
-        "WPCS and PHPCompatibilityWP",
-        "all tracked PHP syntax"
-      ],
-      "configuration": [
-        "composer.json",
-        "composer.lock",
-        "phpstan.neon.dist",
-        "phpunit.xml.dist",
-        "phpcs.xml.dist",
-        "portable php.ini with OpenSSL and mbstring"
-      ],
+      "coverage": ["strict Composer metadata", "locked Composer advisories", "all PHPStan paths", "44 unit tests and 231 assertions", "WPCS and PHPCompatibilityWP", "all tracked PHP syntax"],
+      "configuration": ["composer.json", "composer.lock", "phpstan.neon.dist", "phpunit.xml.dist", "phpcs.xml.dist", "portable php.ini with OpenSSL and mbstring"],
       "environment_signature": "Windows|PowerShell-7.6.4|php-7.4.33-verified|composer-2.10.2",
       "notes": "All PHP 7.4 checks passed with zero Composer advisory."
     },
@@ -2237,21 +1336,8 @@
       "commit_tested": "f08293b30386aa7701de24304b0f8ddb45f46349+2.2.8-worktree",
       "result": "pass",
       "duration_ms": 11448,
-      "coverage": [
-        "strict Composer metadata",
-        "all PHPStan paths",
-        "44 unit tests and 231 assertions",
-        "all tracked PHP syntax",
-        "500 property cases and 6500 invariants"
-      ],
-      "configuration": [
-        "composer.json",
-        "composer.lock",
-        "phpstan.neon.dist",
-        "phpunit.xml.dist",
-        "IUA_PROPERTY_SEED=20260801",
-        "IUA_PROPERTY_RUNS=500"
-      ],
+      "coverage": ["strict Composer metadata", "all PHPStan paths", "44 unit tests and 231 assertions", "all tracked PHP syntax", "500 property cases and 6500 invariants"],
+      "configuration": ["composer.json", "composer.lock", "phpstan.neon.dist", "phpunit.xml.dist", "IUA_PROPERTY_SEED=20260801", "IUA_PROPERTY_RUNS=500"],
       "environment_signature": "Windows|PowerShell-7.6.4|node-v24.18.0|php-8.3.33-verified|composer-2.10.2",
       "notes": "All PHP 8.3 and property checks passed."
     },
@@ -2263,19 +1349,8 @@
       "commit_tested": "f08293b30386aa7701de24304b0f8ddb45f46349+2.2.8-worktree",
       "result": "pass",
       "duration_ms": 500,
-      "coverage": [
-        "release checksum",
-        "all 11 ZIP entries",
-        "single image-usage-audit root",
-        "development-file exclusion",
-        "targeted ZIP and worktree credential patterns"
-      ],
-      "configuration": [
-        "dist/image-usage-audit.zip",
-        "dist/image-usage-audit.zip.sha256",
-        ".distignore",
-        "scripts/build-zip.ps1"
-      ],
+      "coverage": ["release checksum", "all 11 ZIP entries", "single image-usage-audit root", "development-file exclusion", "targeted ZIP and worktree credential patterns"],
+      "configuration": ["dist/image-usage-audit.zip", "dist/image-usage-audit.zip.sha256", ".distignore", "scripts/build-zip.ps1"],
       "environment_signature": "Windows|PowerShell-7.6.4|dotnet-compression|rg-15.1.0",
       "notes": "The checksum file matched bef6646eb27d337bdbd7a7260f5dd3a5465163134f2381894c5b64c816c09c08; the ZIP used one correct root, contained no development path, and both targeted secret scans passed."
     },
@@ -2287,18 +1362,8 @@
       "commit_tested": "f08293b30386aa7701de24304b0f8ddb45f46349+2.2.8-worktree",
       "result": "pass",
       "duration_ms": 3033,
-      "coverage": [
-        "all 15 repository JSON files",
-        "all six YAML files",
-        "permanent tag-triggered release workflow",
-        "removal of the stale 2.2.7 pull-request publisher and request file",
-        "GitHub Actions security posture"
-      ],
-      "configuration": [
-        ".github/workflows/release.yml",
-        "scripts/validate-config.mjs",
-        ".codex/test-ledger.json"
-      ],
+      "coverage": ["all 15 repository JSON files", "all six YAML files", "permanent tag-triggered release workflow", "removal of the stale 2.2.7 pull-request publisher and request file", "GitHub Actions security posture"],
+      "configuration": [".github/workflows/release.yml", "scripts/validate-config.mjs", ".codex/test-ledger.json"],
       "environment_signature": "Windows|PowerShell-7.6.4|node-v24.18.0|actionlint-1.7.12|zizmor-1.27.0-offline",
       "notes": "Configuration validation and actionlint passed. Zizmor reported no finding, with 15 offline-suppressed or not-applicable audits. The release workflow now publishes only from an explicit v* tag already contained in main."
     },
@@ -2310,21 +1375,8 @@
       "commit_tested": "f08293b30386aa7701de24304b0f8ddb45f46349+2.2.8-final-worktree",
       "result": "pass",
       "duration_ms": 1609,
-      "coverage": [
-        "10 targeted security tests and 173 assertions",
-        "changed production PHP coding standards",
-        "2.2.8 metadata",
-        "all repository JSON and YAML",
-        "test ledger syntax",
-        "complete branch patch whitespace and scope"
-      ],
-      "configuration": [
-        "phpunit.xml.dist",
-        "phpcs.xml.dist",
-        "scripts/validate-metadata.mjs",
-        "scripts/validate-config.mjs",
-        ".codex/test-ledger.json"
-      ],
+      "coverage": ["10 targeted security tests and 173 assertions", "changed production PHP coding standards", "2.2.8 metadata", "all repository JSON and YAML", "test ledger syntax", "complete branch patch whitespace and scope"],
+      "configuration": ["phpunit.xml.dist", "phpcs.xml.dist", "scripts/validate-metadata.mjs", "scripts/validate-config.mjs", ".codex/test-ledger.json"],
       "environment_signature": "Windows|PowerShell-7.6.4|php-7.4.33-verified|node-v24.18.0|git-2.55.0.windows.3",
       "notes": "The complete branch diff contains only the requested sanitization, focused tests, README and release metadata changes, the stale 2.2.7 publisher cleanup, project-map and test-ledger updates. No temporary artifact or secret is tracked."
     },
@@ -2336,20 +1388,8 @@
       "commit_tested": "3752394b8742c721d027951f76a23e227ae99ef0+admin-width-worktree",
       "result": "pass",
       "duration_ms": 14117,
-      "coverage": [
-        "locked npm dependency graph",
-        "repository JSON and YAML configuration",
-        "allow-listed release ZIP",
-        "assets/admin.css principal-container width constraint",
-        "branch patch whitespace and scope"
-      ],
-      "configuration": [
-        "package.json",
-        "package-lock.json",
-        "scripts/validate-config.mjs",
-        "scripts/build-zip.ps1",
-        "assets/admin.css"
-      ],
+      "coverage": ["locked npm dependency graph", "repository JSON and YAML configuration", "allow-listed release ZIP", "assets/admin.css principal-container width constraint", "branch patch whitespace and scope"],
+      "configuration": ["package.json", "package-lock.json", "scripts/validate-config.mjs", "scripts/build-zip.ps1", "assets/admin.css"],
       "environment_signature": "Windows|PowerShell-7.6.4|node-v24.18.0|npm-11.16.0|git-2.55.0.windows.3|ripgrep-15.1.0",
       "notes": "npm ci audited 393 packages with zero vulnerabilities. The ZIP build passed with 12 entries and SHA-256 88f06f237f8bf6956d83e5833dbe67135d52df3f87845025a32d737124166aa4. The targeted CSS guard found no fixed or maximum width applied to #iua-admin. No PHP file changed, so PHP syntax and static-analysis checks were not required."
     },
@@ -2361,20 +1401,8 @@
       "commit_tested": "1f86ca9e844d1602e22a09526415851d5824fd61+3.0.2-hardening-worktree",
       "result": "pass",
       "duration_ms": 436,
-      "coverage": [
-        "40 scanner normalization tests and 66 assertions",
-        "self-referential arrays",
-        "cyclic objects",
-        "depth and node limits",
-        "builder IDs",
-        "upload URLs",
-        "CDN prefix boundary",
-        "changed PHP coding standards"
-      ],
-      "configuration": [
-        "phpunit.xml.dist",
-        "phpcs.xml.dist"
-      ],
+      "coverage": ["40 scanner normalization tests and 66 assertions", "self-referential arrays", "cyclic objects", "depth and node limits", "builder IDs", "upload URLs", "CDN prefix boundary", "changed PHP coding standards"],
+      "configuration": ["phpunit.xml.dist", "phpcs.xml.dist"],
       "environment_signature": "Windows|PowerShell-7.6.4|php-8.3.33|phpunit-9.6.35|phpcs-3.13.6",
       "notes": "The bounded iterative walker preserved normal results and terminated safely for recursive and oversized values."
     },
@@ -2386,30 +1414,8 @@
       "commit_tested": "1f86ca9e844d1602e22a09526415851d5824fd61+3.0.2-hardening-worktree",
       "result": "pass",
       "duration_ms": 27679,
-      "coverage": [
-        "strict Composer metadata and locked advisories",
-        "all PHPStan paths",
-        "50 PHPUnit tests and 239 assertions",
-        "WPCS and PHPCompatibilityWP",
-        "all tracked PHP syntax",
-        "locked npm graph and all-severity audit",
-        "500 property cases and 6500 assertions",
-        "metadata",
-        "configuration",
-        "branding",
-        "GitHub Actions syntax"
-      ],
-      "configuration": [
-        "composer.json",
-        "composer.lock",
-        "phpstan.neon.dist",
-        "phpunit.xml.dist",
-        "phpcs.xml.dist",
-        "package.json",
-        "package-lock.json",
-        "IUA_PROPERTY_SEED=20260801",
-        "IUA_PROPERTY_RUNS=500"
-      ],
+      "coverage": ["strict Composer metadata and locked advisories", "all PHPStan paths", "50 PHPUnit tests and 239 assertions", "WPCS and PHPCompatibilityWP", "all tracked PHP syntax", "locked npm graph and all-severity audit", "500 property cases and 6500 assertions", "metadata", "configuration", "branding", "GitHub Actions syntax"],
+      "configuration": ["composer.json", "composer.lock", "phpstan.neon.dist", "phpunit.xml.dist", "phpcs.xml.dist", "package.json", "package-lock.json", "IUA_PROPERTY_SEED=20260801", "IUA_PROPERTY_RUNS=500"],
       "environment_signature": "Windows|PowerShell-7.6.4|php-8.3.33|composer-2.10.2|node-v24.19.0|npm-11.17.0",
       "notes": "All local application and dependency gates passed; npm and Composer reported zero known vulnerability."
     },
@@ -2421,21 +1427,8 @@
       "commit_tested": "1f86ca9e844d1602e22a09526415851d5824fd61+3.0.2-hardening-worktree",
       "result": "failed",
       "duration_ms": 68831,
-      "coverage": [
-        "tracked identity policy",
-        "full-history secret scan",
-        "six static-analysis rules over 16 files",
-        "npm and Composer advisories",
-        "Trivy filesystem vulnerabilities and misconfigurations",
-        "CycloneDX SBOM",
-        "GitHub Actions security"
-      ],
-      "configuration": [
-        "tools/security/security-policy.json",
-        "tools/security/opengrep-rules.yml",
-        "tools/security/security-scan.ps1",
-        "tools/security/run_security_suite.py"
-      ],
+      "coverage": ["tracked identity policy", "full-history secret scan", "six static-analysis rules over 16 files", "npm and Composer advisories", "Trivy filesystem vulnerabilities and misconfigurations", "CycloneDX SBOM", "GitHub Actions security"],
+      "configuration": ["tools/security/security-policy.json", "tools/security/opengrep-rules.yml", "tools/security/security-scan.ps1", "tools/security/run_security_suite.py"],
       "environment_signature": "Windows|PowerShell-7.6.4|git-2.55.0.windows.3|gitleaks-8.30.1|opengrep-1.22.0|trivy-0.70.0|zizmor-1.26.1",
       "notes": "Both pre-commit invocations reported four unreadable tracked paths because the Git index still referenced files renamed in the worktree. Gitleaks, Opengrep, npm audit, Composer audit, Trivy and Zizmor otherwise passed. After enabling Trivy development dependencies, it inspected both npm and Composer with zero vulnerability or misconfiguration, and the CycloneDX 1.6 SBOM contained 391 components. A post-commit enforcing rerun is required."
     },
@@ -2447,24 +1440,8 @@
       "commit_tested": "1f86ca9e844d1602e22a09526415851d5824fd61+3.0.2-hardening-worktree",
       "result": "pass",
       "duration_ms": 6340,
-      "coverage": [
-        "single-root allow-listed ZIP",
-        "runtime symlink and forbidden-path rejection",
-        "version coherence",
-        "public WordPress.org asset allowlist",
-        "PNG dimensions and content format",
-        "SVG structure",
-        "MIME metadata",
-        "version mismatch rejection",
-        "PowerShell and Python syntax"
-      ],
-      "configuration": [
-        "scripts/build-zip.ps1",
-        "scripts/verify-wordpress-org-submission.ps1",
-        "scripts/prepare-wordpress-org-svn.ps1",
-        ".distignore",
-        ".wordpress-org"
-      ],
+      "coverage": ["single-root allow-listed ZIP", "runtime symlink and forbidden-path rejection", "version coherence", "public WordPress.org asset allowlist", "PNG dimensions and content format", "SVG structure", "MIME metadata", "version mismatch rejection", "PowerShell and Python syntax"],
+      "configuration": ["scripts/build-zip.ps1", "scripts/verify-wordpress-org-submission.ps1", "scripts/prepare-wordpress-org-svn.ps1", ".distignore", ".wordpress-org"],
       "environment_signature": "Windows|PowerShell-7.6.4|python-3.14.6|dotnet-compression|system-drawing-common",
       "notes": "The provisional 12-entry ZIP passed with SHA-256 f6645ce0184b8a8a60a4bd73e32af9ad714380d39522fe684c80cb2f822a9c18. All five required public assets were uniquely present with the expected format and dimensions. The 3.0.1 mismatch failed as required. SVN itself is unavailable and no checkout, tag or publication was attempted. An initial auxiliary invocation used two nonexistent historical Node paths and the unsupported -ZipPath parameter; the corrected repository paths and parameters passed."
     },
@@ -2476,19 +1453,8 @@
       "commit_tested": "1f86ca9e844d1602e22a09526415851d5824fd61+3.0.2-hardening-worktree",
       "result": "pass",
       "duration_ms": 139,
-      "coverage": [
-        "JavaScript syntax",
-        "WCAG contrast",
-        "density aria-pressed",
-        "column chooser aria-expanded",
-        "dynamic live notices",
-        "reduced-motion transitions and removals"
-      ],
-      "configuration": [
-        "assets/admin.js",
-        "assets/admin.css",
-        "views/admin-page.php"
-      ],
+      "coverage": ["JavaScript syntax", "WCAG contrast", "density aria-pressed", "column chooser aria-expanded", "dynamic live notices", "reduced-motion transitions and removals"],
+      "configuration": ["assets/admin.js", "assets/admin.css", "views/admin-page.php"],
       "environment_signature": "Windows|PowerShell-7.6.4|node-v24.19.0",
       "notes": "All measured contrast ratios were at least 4.74:1; stateful controls and notices expose synchronized ARIA state, and reduced-motion users avoid fades and card transforms."
     },
@@ -2500,21 +1466,8 @@
       "commit_tested": "ce05e5338f0cd923cfd5af2f612a701ece785753",
       "result": "pass",
       "duration_ms": 19163,
-      "coverage": [
-        "tracked identity policy and approved history",
-        "57-commit full-history secret scan",
-        "six static-analysis rules over 16 files",
-        "npm and Composer advisories",
-        "Trivy npm and Composer vulnerabilities plus misconfigurations",
-        "CycloneDX 1.6 SBOM",
-        "GitHub Actions security"
-      ],
-      "configuration": [
-        "tools/security/security-policy.json",
-        "tools/security/opengrep-rules.yml",
-        "tools/security/security-scan.ps1",
-        "tools/security/run_security_suite.py"
-      ],
+      "coverage": ["tracked identity policy and approved history", "57-commit full-history secret scan", "six static-analysis rules over 16 files", "npm and Composer advisories", "Trivy npm and Composer vulnerabilities plus misconfigurations", "CycloneDX 1.6 SBOM", "GitHub Actions security"],
+      "configuration": ["tools/security/security-policy.json", "tools/security/opengrep-rules.yml", "tools/security/security-scan.ps1", "tools/security/run_security_suite.py"],
       "environment_signature": "Windows|PowerShell-7.6.4|git-2.55.0.windows.3|gitleaks-8.30.1|opengrep-1.22.0|trivy-0.70.0|zizmor-1.26.1",
       "notes": "Blocking enforcement passed with zero failed check: identity guard had zero current finding and 13 approved historical findings, Gitleaks zero, Opengrep zero results and errors, Trivy zero vulnerability and misconfiguration across two dependency targets, npm audit zero, Composer audit zero, Zizmor zero, and the SBOM contained 391 components. Reports are sanitized and include no matched values."
     },
@@ -2526,19 +1479,8 @@
       "commit_tested": "67bd31110ecd42fcc3e68a9e0a278eed0bb416ae+portable-zip-worktree",
       "result": "pass",
       "duration_ms": 26777,
-      "coverage": [
-        "real failed GitHub QA log",
-        "signed ZIP ExternalAttributes conversion",
-        "PowerShell syntax",
-        "two reproducible release builds",
-        "WordPress.org ZIP verification",
-        "full blocking local security suite"
-      ],
-      "configuration": [
-        "scripts/build-zip.ps1",
-        "scripts/verify-wordpress-org-submission.ps1",
-        "tools/security/security-scan.ps1"
-      ],
+      "coverage": ["real failed GitHub QA log", "signed ZIP ExternalAttributes conversion", "PowerShell syntax", "two reproducible release builds", "WordPress.org ZIP verification", "full blocking local security suite"],
+      "configuration": ["scripts/build-zip.ps1", "scripts/verify-wordpress-org-submission.ps1", "tools/security/security-scan.ps1"],
       "environment_signature": "Windows|PowerShell-7.6.4|git-2.55.0.windows.3|GitHub-Actions-ubuntu-24.04",
       "notes": "QA run 31387960079 exposed a Linux-only UInt32 conversion failure for negative ZipArchiveEntry.ExternalAttributes, blocking the PHP 7.4 and all WordPress lanes before runtime startup. Masking the signed Int32 through Int64 preserved the 32-bit pattern and produced regular-file type 0x8000. Both local builds retained SHA-256 f6645ce93c8aa9e411ab7b9f95092a5ec738255465c97544cf1992c8fda4cfc1, exact ZIP verification passed, and the full local security suite remained green."
     },
@@ -2550,18 +1492,8 @@
       "commit_tested": "957079b2760ffbb98d2aeb359d1d04b97a886979+screenshots-worktree",
       "result": "pass",
       "duration_ms": 3500,
-      "coverage": [
-        "five supplied screenshot copies",
-        "PNG structural integrity",
-        "exact source SHA-256 values",
-        "GitHub Actions workflow syntax",
-        "working-tree whitespace"
-      ],
-      "configuration": [
-        "docs/screenshots",
-        ".github/workflows/wporg-screenshots-3.0.2.yml",
-        "README.md"
-      ],
+      "coverage": ["five supplied screenshot copies", "PNG structural integrity", "exact source SHA-256 values", "GitHub Actions workflow syntax", "working-tree whitespace"],
+      "configuration": ["docs/screenshots", ".github/workflows/wporg-screenshots-3.0.2.yml", "README.md"],
       "environment_signature": "Windows|PowerShell-7.6.4|Python-3.14.6|node-v24.19.0|git-2.55.0.windows.3",
       "notes": "All five copied PNGs retained their supplied bytes and passed structural validation. The workflow gates SVN publication to the dedicated same-repository PR and title, checks exact hashes, constrains the SVN delta, and uses the existing secret only at commit time."
     },
@@ -2573,22 +1505,8 @@
       "commit_tested": "1726c3c253c18c44dfc692568fb873bdc1adfdb1",
       "result": "pass",
       "duration_ms": 27000,
-      "coverage": [
-        "initial runner diagnostic",
-        "Subversion installation",
-        "exact five-source PNG verification",
-        "strict seven-path SVN delta",
-        "SVN commit",
-        "public WordPress.org page",
-        "SVN trunk and stable-tag readmes",
-        "five direct PNG asset responses"
-      ],
-      "configuration": [
-        ".github/workflows/wporg-screenshots-3.0.2.yml",
-        "docs/screenshots",
-        "README.md",
-        "WordPress.org SVN assets and readmes"
-      ],
+      "coverage": ["initial runner diagnostic", "Subversion installation", "exact five-source PNG verification", "strict seven-path SVN delta", "SVN commit", "public WordPress.org page", "SVN trunk and stable-tag readmes", "five direct PNG asset responses"],
+      "configuration": [".github/workflows/wporg-screenshots-3.0.2.yml", "docs/screenshots", "README.md", "WordPress.org SVN assets and readmes"],
       "environment_signature": "GitHub-Actions-ubuntu-24.04|PowerShell-7.6.4|node-v24.19.0",
       "notes": "The first remote run failed before checkout because the runner did not include svn (exit 127; no SVN changes). After the targeted ephemeral client-install step, run 31477093481 passed and committed WordPress.org SVN revision 3641574. Public verification returned five ordered rev=3641574 screenshot URLs, matching captions, stable tag 3.0.2 in trunk and tags/3.0.2, and five image/png asset responses with source byte lengths."
     },
@@ -2600,33 +1518,8 @@
       "commit_tested": "78ef4fa334ba1345e76a6bcdb2c0222c62fcadd0+repository-rename-worktree",
       "result": "pass",
       "duration_ms": 16424,
-      "coverage": [
-        "active repository identity",
-        "package and test-ledger JSON",
-        "repository JSON and YAML configuration",
-        "plugin metadata",
-        "PixCensus branding",
-        "GitHub Actions syntax",
-        "main plugin PHP syntax",
-        "allow-listed release ZIP",
-        "threat-model rename and Markdown link",
-        "UTF-8 without BOM and mojibake"
-      ],
-      "configuration": [
-        ".codex/test-ledger.json",
-        "package.json",
-        ".wp-env.json",
-        ".wp-env.package.json",
-        ".wp-env.wp59-package.json",
-        ".wp-env.multisite-package.json",
-        ".github/workflows/qa.yml",
-        ".github/workflows/release.yml",
-        "scripts/validate-config.mjs",
-        "scripts/validate-metadata.mjs",
-        "scripts/validate-branding.mjs",
-        "scripts/run-actionlint.ps1",
-        "scripts/build-zip.ps1"
-      ],
+      "coverage": ["active repository identity", "package and test-ledger JSON", "repository JSON and YAML configuration", "plugin metadata", "PixCensus branding", "GitHub Actions syntax", "main plugin PHP syntax", "allow-listed release ZIP", "threat-model rename and Markdown link", "UTF-8 without BOM and mojibake"],
+      "configuration": [".codex/test-ledger.json", "package.json", ".wp-env.json", ".wp-env.package.json", ".wp-env.wp59-package.json", ".wp-env.multisite-package.json", ".github/workflows/qa.yml", ".github/workflows/release.yml", "scripts/validate-config.mjs", "scripts/validate-metadata.mjs", "scripts/validate-branding.mjs", "scripts/run-actionlint.ps1", "scripts/build-zip.ps1"],
       "environment_signature": "Windows|PowerShell-7.6.4|node-v24.19.0|npm-11.17.0|php-8.3.33|git-2.55.0.windows.3|wp-env-11.12.0|docker-unavailable",
       "notes": "All requested local rename checks passed. The ZIP contains 12 entries under pixcensus-media-audit/ with SHA-256 4ca39d881bce435feebf0bb4c562b0ad681c885aaa3a5fde3e548cf09e874649. The renamed threat model is byte-identical to the original blob. Historical commands, runs, URLs and audit evidence retaining the legacy repository name were intentionally preserved. wp-env path behavior was verified from the installed 11.12.0 implementation and configuration, but runtime startup was not attempted because Docker is unavailable on PATH."
     },
