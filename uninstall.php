@@ -16,6 +16,8 @@ function pixcensus_delete_plugin_options(): void {
 	delete_option( 'pixcensus_cdn_rewrites' );
 	delete_option( 'pixcensus_scan_lock' );
 	delete_option( 'pixcensus_cleanup_queue' );
+	delete_option( 'pixcensus_local_trash' );
+	delete_option( 'pixcensus_direct_delete' );
 }
 
 pixcensus_delete_plugin_options();

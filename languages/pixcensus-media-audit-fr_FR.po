@@ -2,7 +2,7 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: PixCensus — Media Usage Audit 3.2.1\n"
+"Project-Id-Version: PixCensus — Media Usage Audit 3.3.0\n"
 "Report-Msgid-Bugs-To: https://github.com/ussmarines/pixcensus-media-audit/issues\n"
 "Last-Translator: ussmarines\n"
 "Language: fr_FR\n"
@@ -555,3 +555,21 @@ msgstr "Les images mises de côté restent dans la médiathèque. Les retirer de
 
 msgid "Only manually protected images can have their protection removed. Open the linked publication to review a detected use."
 msgstr "Seules les images protégées manuellement peuvent perdre cette protection. Pour vérifier une utilisation détectée, ouvrez la publication indiquée dans le tableau."
+
+msgid "Trash and deletion settings"
+msgstr "Réglages de la corbeille et de la suppression"
+
+msgid "Enable Media Trash in PixCensus"
+msgstr "Activer la corbeille des images dans PixCensus"
+
+msgid "WordPress retains trashed images for %d days."
+msgstr "WordPress conserve les images dans la corbeille pendant %d jours."
+
+msgid "The site retains trashed items for zero days. A positive retention period is required to offer restoration."
+msgstr "Le délai de conservation du site est de zéro jour. La restauration nécessite un délai supérieur à zéro."
+
+msgid "Allow permanent deletion from To review after confirmation"
+msgstr "Autoriser la suppression définitive depuis « À examiner » après confirmation"
+
+msgid "Manage Trash and deletion settings"
+msgstr "Configurer la corbeille et la suppression"

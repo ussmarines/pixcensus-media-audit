@@ -270,6 +270,9 @@
 	}
 
 	$(function () {
+		$('#pixcensus-open-cleanup-settings').on('click', function () {
+			$('#pixcensus-cleanup-settings').prop('open', true).find('summary').trigger('focus');
+		});
 		var columns = loadColumns();
 		applyColumns(columns);
 		mountPanel(columns);
