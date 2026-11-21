@@ -119,7 +119,10 @@
 	$(document).on('click', '#pixcensus-open-media', function () {
 		var $selected = $('.pixcensus-select:visible:checked');
 		if ($selected.length === 1) {
-			window.location.assign($selected.attr('data-media-url'));
+			var id = $selected.val();
+			if (/^[1-9][0-9]*$/.test(id)) {
+				window.location.assign($selected.is('[data-trashed]') ? 'upload.php?mode=list&attachment-filter=trash' : 'post.php?action=edit&post=' + encodeURIComponent(id));
+			}
 		}
 	});
 

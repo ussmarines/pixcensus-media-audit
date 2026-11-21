@@ -11,33 +11,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-08-05T17:30:00+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.12.0\n"
+"X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: pixcensus-media-audit\n"
 
 #. Plugin Name of the plugin
-#: pixcensus-media-audit.php
 #: pixcensus-media-audit.php:210
 #: views/admin-page.php:130
 msgid "PixCensus — Media Usage Audit"
 msgstr ""
 
 #. Plugin URI of the plugin
-#: pixcensus-media-audit.php
 msgid "https://github.com/ussmarines/pixcensus-media-audit"
 msgstr ""
 
 #. Description of the plugin
-#: pixcensus-media-audit.php
 msgid "Inventory media usage with provenance, CSV export, manual review tools, and CDN rewrite support."
 msgstr ""
 
 #. Author of the plugin
-#: pixcensus-media-audit.php
 msgid "ussmarines"
 msgstr ""
 
 #. Author URI of the plugin
-#: pixcensus-media-audit.php
 msgid "https://github.com/ussmarines"
 msgstr ""
 
@@ -119,7 +114,6 @@ msgstr ""
 
 #. translators: %d: number of rows currently shown after filtering.
 #: pixcensus-media-audit.php:275
-#, php-format
 msgid "%d shown"
 msgstr ""
 
@@ -255,7 +249,6 @@ msgstr ""
 
 #. translators: %s: last scan datetime.
 #: views/admin-page.php:164
-#, php-format
 msgid "Last scan: %s"
 msgstr ""
 
@@ -329,7 +322,6 @@ msgstr ""
 
 #. translators: %d: number of images moved to Trash.
 #: views/admin-page.php:253
-#, php-format
 msgid "%d image moved to Trash."
 msgid_plural "%d images moved to Trash."
 msgstr[0] ""
@@ -337,7 +329,6 @@ msgstr[1] ""
 
 #. translators: %d: selected images kept because they were protected.
 #: views/admin-page.php:257
-#, php-format
 msgid "%d image remained protected."
 msgid_plural "%d images remained protected."
 msgstr[0] ""
@@ -374,7 +365,6 @@ msgstr ""
 
 #. translators: %d: total number of still-protected images in this filtered selection.
 #: views/admin-page.php:312
-#, php-format
 msgid "%d image from your selection remains protected."
 msgid_plural "%d images from your selection remain protected."
 msgstr[0] ""
@@ -517,7 +507,6 @@ msgstr ""
 
 #. translators: %d: WordPress Trash retention in days.
 #: views/admin-page.php:410
-#, php-format
 msgid "WordPress keeps images for %d day, then deletes them at its next scheduled cleanup. You can restore them or confirm permanent deletion here."
 msgid_plural "WordPress keeps images for %d days, then deletes them at its next scheduled cleanup. You can restore them or confirm permanent deletion here."
 msgstr[0] ""
@@ -525,17 +514,16 @@ msgstr[1] ""
 
 #. translators: 1: first visible image, 2: last visible image, 3: total matching images.
 #: views/admin-page.php:419
-#, php-format
 msgid "Images %1$d–%2$d of %3$d"
 msgstr ""
 
 #: views/admin-page.php:447
-#: views/admin-page.php:576
+#: views/admin-page.php:575
 msgid "« Previous"
 msgstr ""
 
 #: views/admin-page.php:448
-#: views/admin-page.php:577
+#: views/admin-page.php:576
 msgid "Next »"
 msgstr ""
 
@@ -555,56 +543,55 @@ msgstr ""
 msgid "Time remaining"
 msgstr ""
 
-#: views/admin-page.php:504
+#: views/admin-page.php:503
 msgid "(unknown)"
 msgstr ""
 
-#: views/admin-page.php:506
+#: views/admin-page.php:505
 msgid "Protected"
 msgstr ""
 
-#: views/admin-page.php:508
+#: views/admin-page.php:507
 msgid "Not protected"
 msgstr ""
 
-#: views/admin-page.php:517
-#: views/admin-page.php:527
+#: views/admin-page.php:516
+#: views/admin-page.php:526
 msgid "Unknown"
 msgstr ""
 
-#: views/admin-page.php:519
+#: views/admin-page.php:518
 msgid "No automatic deletion"
 msgstr ""
 
 #. translators: %d: remaining days before the scheduled deletion.
-#: views/admin-page.php:524
-#, php-format
+#: views/admin-page.php:523
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %d: remaining days before the scheduled deletion.
-#: views/admin-page.php:524
+#: views/admin-page.php:523
 msgid "At the next scheduled cleanup"
 msgstr ""
 
-#: views/admin-page.php:542
+#: views/admin-page.php:541
 msgid "No known use"
 msgstr ""
 
-#: views/admin-page.php:550
+#: views/admin-page.php:549
 msgid "No items."
 msgstr ""
 
-#: views/admin-page.php:587
+#: views/admin-page.php:586
 msgid "Support the project"
 msgstr ""
 
-#: views/admin-page.php:588
+#: views/admin-page.php:587
 msgid "If PixCensus — Media Usage Audit has been useful to you, you can support its continued development with an optional donation."
 msgstr ""
 
-#: views/admin-page.php:591
+#: views/admin-page.php:590
 msgid "Support via PayPal"
 msgstr ""

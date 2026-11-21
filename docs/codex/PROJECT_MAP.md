@@ -31,7 +31,7 @@ Runtime code remains dependency-free. Composer/npm are development-only, WordPre
 
 ## Data flow
 
-1. An administrator with `manage_options` opens **Media â†’ PixCensus â€” Media Usage Audit**.
+1. An administrator with `manage_options` opens **Media → PixCensus — Media Usage Audit**.
 2. WordPress localizes the admin AJAX URL, action-specific nonces, last-scan time, page URLs, and UI strings into `PixCensusAdmin`.
 3. **Run scan** posts to `wp_ajax_pixcensus_run_scan`; the handler verifies nonce and capability, then calls `PIXCENSUS_Scanner::run()`.
 4. The scanner loads settings, enumerates image attachments, maps originals/generated sizes, scans supported sources, classifies IDs, enumerates orphan files within the canonical uploads boundary, and limits provenance to 12 labels per attachment.

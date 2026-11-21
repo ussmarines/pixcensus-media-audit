@@ -482,7 +482,6 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 					$pixcensus_protected  = in_array( $pixcensus_attachment_id, $pixcensus_manual_ids, true );
 					$pixcensus_file_path  = get_attached_file( $pixcensus_attachment_id );
 					$pixcensus_thumb_html = wp_get_attachment_image( $pixcensus_attachment_id, array( 60, 60 ), true, array( 'style' => 'max-width:60px;height:auto' ) );
-					$pixcensus_edit_url   = admin_url( 'post.php?post=' . $pixcensus_attachment_id . '&action=edit' );
 					$pixcensus_provenance = ( isset( $pixcensus_usage['provenance'][ $pixcensus_attachment_id ] ) && is_array( $pixcensus_usage['provenance'][ $pixcensus_attachment_id ] ) ) ? array_values( $pixcensus_usage['provenance'][ $pixcensus_attachment_id ] ) : array();
 					$pixcensus_locations  = PIXCENSUS_Usage::locations( $pixcensus_provenance );
 					$pixcensus_count      = count( $pixcensus_locations );
@@ -498,7 +497,7 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 					);
 					?>
 					<tr class="pixcensus-row" id="pixcensus-row-<?php echo esc_attr( $pixcensus_attachment_id ); ?>" data-pixcensus-haystack="<?php echo esc_attr( $pixcensus_haystack ); ?>">
-						<td><input type="checkbox" class="pixcensus-select" data-media-url="<?php echo esc_url( 'trash' === $pixcensus_tab ? admin_url( 'upload.php?mode=list&attachment-filter=trash' ) : $pixcensus_edit_url ); ?>" data-manual="<?php echo $pixcensus_protected ? '1' : '0'; ?>" aria-label="<?php echo esc_attr( get_the_title( $pixcensus_attachment_id ) . ' (#' . $pixcensus_attachment_id . ')' ); ?>" name="ids[]" form="pixcensus-cleanup" value="<?php echo esc_attr( $pixcensus_attachment_id ); ?>" /></td>
+						<td><input type="checkbox" class="pixcensus-select" <?php if ( 'trash' === $pixcensus_tab ) : ?>data-trashed<?php endif; ?> data-manual="<?php echo $pixcensus_protected ? '1' : '0'; ?>" aria-label="<?php echo esc_attr( get_the_title( $pixcensus_attachment_id ) . ' (#' . $pixcensus_attachment_id . ')' ); ?>" name="ids[]" form="pixcensus-cleanup" value="<?php echo esc_attr( $pixcensus_attachment_id ); ?>" /></td>
 						<td data-col="thumb" class="pixcensus-thumb"><?php echo $pixcensus_thumb_html ? wp_kses_post( $pixcensus_thumb_html ) : '&nbsp;'; ?></td>
 						<td data-col="id"><?php echo esc_html( (string) $pixcensus_attachment_id ); ?></td>
 						<td data-col="file"><?php echo esc_html( $pixcensus_file_path ? basename( $pixcensus_file_path ) : __( '(unknown)', 'pixcensus-media-audit' ) ); ?></td>
