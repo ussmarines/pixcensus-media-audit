@@ -282,9 +282,5 @@
 	#pixcensus-admin .pixcensus-tabs .nav-tab { padding: 6px 9px; }
 }
 
-#pixcensus-admin th[data-col="thumb"] { width: 6%; }
-#pixcensus-admin th[data-col="id"] { width: 7%; }
-#pixcensus-admin th[data-col="file"] { width: 17%; }
-#pixcensus-admin th[data-col="uploaded"] { width: 13%; }
-#pixcensus-admin th[data-col="provenance"] { width: 24%; }
-#pixcensus-admin th[data-col="count"] { width: 9%; }
+#pixcensus-admin .pixcensus-filter-notice { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; padding: 10px 14px; margin: 12px 0; }
+#pixcensus-admin .pixcensus-filter-notice p { margin: 0; }

@@ -626,3 +626,99 @@ msgstr[1] ""
 "WordPress conserve les images pendant %d jours, puis les supprime lors de "
 "son prochain nettoyage planifié. Vous pouvez les restaurer ou confirmer leur"
 " suppression définitive ici."
+
+#: views/admin-page.php:351
+msgid ""
+"With retention set to zero, images stay in Trash until you restore or "
+"permanently delete them."
+msgstr ""
+"La durée de conservation est fixée à zéro. Les images restent dans la "
+"corbeille jusqu’à leur restauration ou leur suppression définitive."
+
+#: views/admin-page.php:411
+msgid "Moved to Trash"
+msgstr "Date de mise en corbeille"
+
+#: views/admin-page.php:412
+msgid "Time remaining"
+msgstr "Temps restant"
+
+#: views/admin-page.php:451 views/admin-page.php:460
+msgid "Unknown"
+msgstr "Inconnu"
+
+#: views/admin-page.php:453
+msgid "No automatic deletion"
+msgstr "Aucune suppression automatique"
+
+#. translators: %d: remaining days before the scheduled deletion.
+#: views/admin-page.php:457
+#, php-format
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] "%d jour"
+msgstr[1] "%d jours"
+
+#. translators: %d: remaining days before the scheduled deletion.
+#: views/admin-page.php:457
+msgid "At the next scheduled cleanup"
+msgstr "Au prochain nettoyage planifié"
+
+msgid "Protect"
+msgstr "Protéger"
+
+msgid ""
+"PixCensus protects the images you choose. Select an image in To review, "
+"Drafts or In use and choose Protect. To unlock it, select it in In use and "
+"choose Remove manual protection."
+msgstr ""
+"PixCensus protège les images que vous choisissez. Cochez une image dans « À "
+"examiner », « Brouillons » ou « Utilisées », puis cliquez sur « Protéger ». "
+"Pour la débloquer, cochez-la dans « Utilisées » et cliquez sur « Retirer la "
+"protection manuelle »."
+
+msgid "Protection"
+msgstr "Protection"
+
+msgid "Protected"
+msgstr "Protégée"
+
+msgid "Not protected"
+msgstr "Non protégée"
+
+msgid "%d image moved to Trash."
+msgid_plural "%d images moved to Trash."
+msgstr[0] "%d image mise à la corbeille."
+msgstr[1] "%d images mises à la corbeille."
+
+msgid "%d image remained protected."
+msgid_plural "%d images remained protected."
+msgstr[0] "%d image restée protégée."
+msgstr[1] "%d images restées protégées."
+
+msgid "View the images that remained protected"
+msgstr "Voir les images restées protégées"
+
+msgid "Protected images from this selection"
+msgstr "Images restées protégées de cette sélection"
+
+msgid "Table filtered"
+msgstr "Tableau filtré"
+
+msgid "Only images that remained protected from your selection are shown."
+msgstr ""
+"Seules les images restées protégées de votre sélection sont affichées."
+
+msgid "This selection is no longer available."
+msgstr "Cette sélection n’est plus disponible."
+
+msgid "Show all images in use"
+msgstr "Afficher toutes les images utilisées"
+
+msgid "%d image from your selection remains protected."
+msgid_plural "%d images from your selection remain protected."
+msgstr[0] "%d image de votre sélection reste protégée."
+msgstr[1] "%d images de votre sélection restent protégées."
+
+msgid "No images in this selection are still protected."
+msgstr "Aucune image de cette sélection n’est encore protégée."

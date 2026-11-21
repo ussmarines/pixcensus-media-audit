@@ -108,6 +108,10 @@ function add_action( $hook, $callback ) {
 	$GLOBALS['pixcensus_test_actions'][ $hook ] = $callback;
 }
 
+function add_filter( $hook, $callback, $priority = 10, $accepted_args = 1 ) {
+	$GLOBALS['pixcensus_test_filters'][ $hook ][ $priority ][] = array( $callback, $accepted_args );
+}
+
 function register_activation_hook( $file, $callback ) {
 	$GLOBALS['pixcensus_test_activation_hook'] = $callback;
 }

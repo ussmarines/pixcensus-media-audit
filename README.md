@@ -4,22 +4,20 @@
 
 # PixCensus — Media Usage Audit
 
-Review image usage and prepare a cleanup selection in the WordPress Media Library.
+Find where WordPress uses each image, protect files you want to keep, and manage Trash from the Media menu.
 
 [![WordPress.org](https://img.shields.io/badge/WordPress.org-PixCensus-21759B?logo=wordpress)](https://wordpress.org/plugins/pixcensus-media-audit/)
 [![Latest release](https://img.shields.io/github/v/release/ussmarines/pixcensus-media-audit)](https://github.com/ussmarines/pixcensus-media-audit/releases/latest)
 [![QA](https://github.com/ussmarines/pixcensus-media-audit/actions/workflows/qa.yml/badge.svg)](https://github.com/ussmarines/pixcensus-media-audit/actions/workflows/qa.yml)
 [![License](https://img.shields.io/badge/license-GPL--2.0--or--later-blue.svg)](LICENSE)
 
-The local 3.4.0 test package includes guarded Media Trash actions.
-
 ## Official release
 
-**PixCensus — Media Usage Audit 3.0.4 is the current source release.**
+**PixCensus — Media Usage Audit 3.4.9 is the current source release.**
 
 - **WordPress.org:** https://wordpress.org/plugins/pixcensus-media-audit/
-- **GitHub release:** https://github.com/ussmarines/pixcensus-media-audit/releases/tag/v3.0.4
-- **Current version:** `3.0.4`
+- **GitHub release:** https://github.com/ussmarines/pixcensus-media-audit/releases/tag/v3.4.9
+- **Current version:** `3.4.9`
 - **WordPress:** `5.9+`, tested through `7.1`
 - **PHP:** `7.4+`
 - **License:** GPL-2.0-or-later
@@ -51,7 +49,7 @@ It can also report image files found in the uploads directory that are not regis
 
 ## Review and clean up images
 
-In **Media → PixCensus**, select images in **To review**, **Drafts** or **In use** and choose **Move to Trash**. Open **Which images are protected?** for help removing manual protection or locating references. In **Trash**, restore images or confirm permanent deletion. WordPress controls automatic deletion using the site retention period. At zero days, PixCensus disables moves to Trash.
+In **Media → PixCensus**, select images in **To review**, **Drafts** or **In use** and choose **Move to Trash**. Open **Which images are protected?** for help removing manual protection or locating references. In **Trash**, restore images or confirm permanent deletion. WordPress controls automatic deletion using the site retention period. At zero days, images stay in Trash for manual restoration or deletion.
 
 ## Installation
 
@@ -68,7 +66,7 @@ https://wordpress.org/plugins/pixcensus-media-audit/
 
 ### GitHub release
 
-You can also download the signed release ZIP from:
+You can also download the release ZIP with a checksum and GitHub attestation from:
 
 https://github.com/ussmarines/pixcensus-media-audit/releases/latest
 
@@ -79,7 +77,7 @@ Upload `pixcensus-media-audit.zip` from **Plugins → Add New Plugin → Upload 
 1. Open **Media → PixCensus — Media Usage Audit**.
 2. Review the scan settings and choose whether draft content should be included.
 3. Run a scan.
-4. Review **Unused**, **Draft-only**, and **Used (published)** results.
+4. Review **To review**, **Drafts**, and **In use** results.
 5. Inspect provenance before acting on any image.
 6. Mark reviewed false negatives manually when necessary or export results to CSV.
 
@@ -87,35 +85,9 @@ Scan results are snapshots. Run a new scan after meaningful content, media, buil
 
 ## Screenshots
 
-### 1. Audit overview
+![Review images, inspect their uses and protection, and apply an action to the selection.](.wordpress-org/screenshot-1.png)
 
-![PixCensus audit overview](docs/screenshots/screenshot-1.png)
-
-PixCensus audit overview with scan controls, media status tabs, and CDN settings.
-
-### 2. Published media usage
-
-![Published media usage results](docs/screenshots/screenshot-2.png)
-
-Published media usage results with thumbnails, provenance, and match counts.
-
-### 3. Draft-only references
-
-![Draft-only media references](docs/screenshots/screenshot-3.png)
-
-Draft-only media references, clearly separated from published usage.
-
-### 4. Unused-media review
-
-![Potentially unused media review](docs/screenshots/screenshot-4.png)
-
-Potentially unused media review with thumbnails and direct Media Library access.
-
-### 5. Published-use controls
-
-![Published-use overview](docs/screenshots/screenshot-5.png)
-
-Published-use overview with provenance filters and result density controls.
+![Restore images or review a permanent deletion from Trash. Each row shows its retention deadline.](.wordpress-org/screenshot-2.png)
 
 ## Important limitations
 
@@ -132,18 +104,11 @@ Manual review may still be required for references stored in:
 
 Large sites may also reach PHP execution-time or memory limits during a synchronous scan.
 
-## What changed in 3.0.4
+## Changes since 3.0.4
 
-Version 3.0.4 is a focused WordPress 7.1 compatibility release:
+Manage selected images directly in each review tab. Protected images stay in place when a mixed selection moves to Trash. Follow the result link to review those images and change their protection. Only Trash offers permanent deletion, with a separate confirmation. Each trashed image shows when it was moved and the time remaining under the site's retention policy.
 
-- declares compatibility through WordPress 7.1 after validating the actual distributable ZIP on WordPress 7.1 RC2;
-- adds dedicated 7.1 regression coverage for activation, authenticated AJAX behavior, scanner smoke tests, Plugin Check, and WordPress debug logs;
-- confirms no PixCensus runtime migration is required for WordPress 7.1 client-side media processing because the plugin reads resulting Media Library records rather than participating in image processing;
-- preserves WordPress 5.9+, PHP 7.4+, multisite support, and the existing non-destructive, administrator-only workflow.
-
-See the complete GitHub release:
-
-https://github.com/ussmarines/pixcensus-media-audit/releases/tag/v3.0.4
+See the [3.4.9 audit and database test results](docs/security-audit/2026-11-21-pixcensus-3.4.9.md).
 
 ## Privacy and security
 

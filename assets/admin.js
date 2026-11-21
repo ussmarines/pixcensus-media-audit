@@ -46,7 +46,7 @@
 
 	function syncSelectAllState() {
 		var $visible = $('.pixcensus-select:visible');
-		var $checked = $('.pixcensus-select:visible:checked');
+		var $checked = $visible.filter(':checked');
 		var allChecked = $visible.length > 0 && $visible.length === $checked.length;
 
 		$('.pixcensus-select-all-toggle').prop('checked', allChecked).prop('indeterminate', $checked.length > 0 && !allChecked);
@@ -55,6 +55,7 @@
 		$('#pixcensus-cleanup button').not('[value="pixcensus_review_empty"], [data-unavailable]').prop('disabled', !$checked.length);
 		$('#pixcensus-open-media').prop('disabled', $checked.length !== 1);
 		$('button[value="pixcensus_trash_reviewed"]:not([data-unavailable])').prop('disabled', !$checked.filter('[data-manual="0"]').length);
+		$('#pixcensus-bulk-mark').prop('disabled', !$checked.filter('[data-manual="0"]').length);
 		var hasManualProtection = $checked.filter('[data-manual="1"]').length > 0;
 		$('#pixcensus-bulk-unmark').prop('disabled', !hasManualProtection);
 		$('#pixcensus-protection-help').prop('hidden', !$checked.length || hasManualProtection);
@@ -62,14 +63,13 @@
 
 	function updateQuickCount() {
 		var query = ($('#pixcensus-quick-filter').val() || '').toString().toLowerCase().trim();
-		var shown = $('.pixcensus-row:visible').length;
 
 		if (!query) {
 			$('#pixcensus-quick-count').text('');
 			return;
 		}
 
-		$('#pixcensus-quick-count').text(getString('shown_count', '%d shown').replace('%d', shown));
+		$('#pixcensus-quick-count').text(getString('shown_count', '%d shown').replace('%d', $('.pixcensus-row:visible').length));
 	}
 
 	function applyQuickFilter() {
@@ -186,6 +186,7 @@
 		file: true,
 		uploaded: true,
 		provenance: true,
+		protection: true,
 		count: true
 	};
 
@@ -223,6 +224,7 @@
 		$('#pixcensus-col-file').prop('checked', !!columns.file);
 		$('#pixcensus-col-uploaded').prop('checked', !!columns.uploaded);
 		$('#pixcensus-col-provenance').prop('checked', !!columns.provenance);
+		$('#pixcensus-col-protection').prop('checked', !!columns.protection);
 		$('#pixcensus-col-count').prop('checked', !!columns.count);
 	}
 

@@ -4,7 +4,7 @@
 
 - Audited source commit: `bb043eb2ef67914272af7c20fa3ae78bf4da0d38` (`main`, defense-in-depth hardening integrated and post-merge QA, CodeQL, and OpenSSF checks verified on 2026-08-11).
 - Release preparation: `3.0.4` on `release/3.0.4-wordpress-7.1`.
-- Local test package: `3.4.0` on `codex/media-cleanup-review`.
+- Local test package: `3.4.9` on `codex/media-cleanup-review`.
 - Declared compatibility: WordPress 5.9+, PHP 7.4+, tested through WordPress 7.1; dedicated compatibility validation uses WordPress 7.1 RC2.
 - Entry point: `pixcensus-media-audit.php`.
 - Text domain: `pixcensus-media-audit`; translations live under `languages/`.
@@ -19,7 +19,7 @@
 | `includes/class-pixcensus-cdn-settings.php` | Pure, bounded validation/canonicalization for host aliases and upload-path rewrite rules. |
 | `includes/class-pixcensus-csv.php` | Spreadsheet-formula neutralization for exported site-derived values, including Unicode-obscured formula prefixes. |
 | `views/admin-page.php` | Admin settings, result tabs, pagination, filters, escaped output, bulk/manual controls, and export link. |
-| `assets/admin.js` | Authenticated AJAX calls, result-row updates, quick filtering, column preferences in browser local storage, density controls, and notices. |
+| `assets/admin.js` | Authenticated AJAX calls, result-row updates, quick filtering, column preferences in browser local storage, and notices. |
 | `assets/admin.css` | Admin-only layout and responsive presentation. |
 | `uninstall.php` | Deletes only plugin-owned options for the current site and every multisite site. |
 | `scripts/build-zip.ps1` | Builds and inspects an allow-listed, deterministic `pixcensus-media-audit/` distribution ZIP and writes its SHA-256 checksum. |
@@ -39,7 +39,7 @@ Runtime code remains dependency-free. Composer/npm are development-only, WordPre
 5. An atomic 15-minute option lock rejects concurrent scans. Results are stored with autoload disabled in `pixcensus_usage_results` and rendered from the saved snapshot. Manual decisions are merged into display/export classifications.
 6. Settings and CSV exports use authenticated `admin-post.php` handlers. CSV generation reads saved results and attachment metadata, neutralizes formula-leading cells including Unicode-obscured prefixes, and does not alter media.
 
-7. Cleanup actions use the scan lock. Trash requires an explicit selection, positive WordPress retention, a fresh scan including drafts, current tab membership, no manual protection, and per-attachment delete capability.
+7. Cleanup actions use the scan lock. Trash requires an explicit selection, a fresh scan including drafts, current tab membership, no manual protection, and per-attachment delete capability.
 
 8. The image Trash uses native attachment statuses and WordPress restore/delete APIs. Review freezes the eligible image IDs in a short-lived, site- and user-specific confirmation. The final POST checks each attachment again. Stored scan labels are resolved into distinct publication titles and permission-aware links when displaying results.
 
@@ -73,7 +73,7 @@ Runtime code remains dependency-free. Composer/npm are development-only, WordPre
 - CSRF: settings use section-specific admin nonces; CSV uses `pixcensus_export_csv`; every AJAX action uses a distinct nonce.
 - Input: tabs/filters/sections are sanitized then allow-listed; IDs use `absint`, attachment validation, scalar checks, and a 500-ID bulk cap; CDN settings are structurally validated and bounded.
 - Filesystem: attachment and generated-size paths are resolved canonically with `realpath()` and accepted only when the resolved file remains strictly inside the resolved uploads directory; traversal and symlink escapes are rejected.
-- SQL: the sole direct query is a prepared, read-only, ID-paginated enumeration of the current site's options table. No user input enters SQL.
+- SQL: the scanner uses a prepared, ID-paginated options query. Expired locks use a conditional delete on the exact stored lock value. No user input enters SQL.
 - Output: admin HTML uses `esc_html*`, `esc_attr*`, `esc_url`, `esc_textarea`, or constrained `wp_kses_post`; redirects use `wp_safe_redirect`.
 - Privacy: no remote requests or telemetry. Saved provenance exposes IDs, option names, and source locations to authorized administrators; CSV and orphan paths should be treated as sensitive operational data.
 - CSV: site-derived cells with spreadsheet formula markers after ASCII/Unicode whitespace, BOM, zero-width, bidi, or formatting controls are prefixed with an apostrophe; exports remain operationally sensitive and should be treated as untrusted files.

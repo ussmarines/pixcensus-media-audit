@@ -9,6 +9,10 @@ $repoPrefix = [System.IO.Path]::TrimEndingDirectorySeparator($repoRoot) + [Syste
 $outputFullPath = [System.IO.Path]::GetFullPath((Join-Path $repoRoot $OutputPath))
 $checksumFullPath = $outputFullPath + '.sha256'
 
+if ([System.IO.Path]::GetExtension($outputFullPath) -ne '.zip') {
+	throw 'The output must be a ZIP file.'
+}
+
 if (-not $outputFullPath.StartsWith($repoPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
 	throw 'The ZIP output path must stay inside the repository.'
 }
@@ -26,37 +30,34 @@ $runtimeFiles = @(
 	'pixcensus-media-audit.php',
 	'uninstall.php',
 	'readme.txt',
-	'LICENSE'
+	'LICENSE',
+	'assets/admin.css',
+	'assets/admin.js',
+	'assets/pixcensus-media-audit-mark.svg',
+	'includes/class-pixcensus-cdn-settings.php',
+	'includes/class-pixcensus-csv.php',
+	'includes/class-pixcensus-scanner.php',
+	'includes/class-pixcensus-usage.php',
+	'languages/pixcensus-media-audit-fr_FR.mo',
+	'languages/pixcensus-media-audit-fr_FR.po',
+	'languages/pixcensus-media-audit.pot',
+	'views/admin-page.php'
 )
-$runtimeDirectories = @(
-	'assets',
-	'includes',
-	'languages',
-	'views'
-)
-
-foreach ($relativePath in @($runtimeFiles + $runtimeDirectories)) {
-	$sourcePath = Join-Path $repoRoot $relativePath
-	$sourceItems = if (Test-Path -LiteralPath $sourcePath -PathType Container) {
-		@(Get-Item -LiteralPath $sourcePath -Force) + @(Get-ChildItem -LiteralPath $sourcePath -Recurse -Force)
-	} else {
-		@(Get-Item -LiteralPath $sourcePath -Force)
-	}
-
-	if ($sourceItems | Where-Object { $_.Attributes -band [System.IO.FileAttributes]::ReparsePoint }) {
-		throw "Unexpected symlink or reparse point in runtime source: $relativePath"
-	}
-}
-
 try {
 	New-Item -ItemType Directory -Path $packageRoot -Force | Out-Null
 
 	foreach ($relativePath in $runtimeFiles) {
-		Copy-Item -LiteralPath (Join-Path $repoRoot $relativePath) -Destination (Join-Path $packageRoot $relativePath)
-	}
-
-	foreach ($relativePath in $runtimeDirectories) {
-		Copy-Item -LiteralPath (Join-Path $repoRoot $relativePath) -Destination (Join-Path $packageRoot $relativePath) -Recurse
+		$source = Get-Item -LiteralPath (Join-Path $repoRoot $relativePath)
+		$ancestor = $source
+		while ($ancestor.FullName -ne $repoRoot) {
+			if ($ancestor.Attributes -band [System.IO.FileAttributes]::ReparsePoint) {
+				throw "Unexpected reparse point in runtime path: $relativePath"
+			}
+			$ancestor = if ($ancestor -is [System.IO.FileInfo]) { $ancestor.Directory } else { $ancestor.Parent }
+		}
+		$destination = Join-Path $packageRoot $relativePath
+		[System.IO.Directory]::CreateDirectory((Split-Path -Parent $destination)) | Out-Null
+		Copy-Item -LiteralPath $source.FullName -Destination $destination
 	}
 
 	$fixedTimestamp = [System.DateTime]::SpecifyKind([System.DateTime]'2000-01-01T00:00:00', [System.DateTimeKind]::Utc)

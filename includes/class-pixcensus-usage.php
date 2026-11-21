@@ -18,11 +18,11 @@ final class PIXCENSUS_Usage {
 		foreach ( $labels as $label ) {
 			$url = '';
 			if ( preg_match( '/^post:(\d+)\b/', $label, $matches ) ) {
-				$key  = 'post:' . $matches[1];
-				$post = get_post( (int) $matches[1] );
+				$key = 'post:' . $matches[1];
 				if ( isset( $locations[ $key ] ) ) {
 					continue;
 				}
+				$post = get_post( (int) $matches[1] );
 				$name = __( 'Publication unavailable', 'pixcensus-media-audit' );
 				if ( $post && current_user_can( 'read_post', $post->ID ) ) {
 					$name = get_the_title( $post );
