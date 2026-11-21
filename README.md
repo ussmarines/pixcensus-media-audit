@@ -47,6 +47,17 @@ It can also report image files found in the uploads directory that are not regis
 - Exports used, draft-only, and potentially unused results to CSV.
 - Reports orphan image files in the WordPress uploads directory.
 
+## What changes in your Media Library
+
+Running a scan reads site content and saves an audit snapshot. It leaves media files and attachment records untouched. Cleanup actions have different effects:
+
+- **Protect** keeps selected images out of Trash. Remove protection when you are ready to review them again.
+- **Move to Trash** changes the selected attachments’ status. Trashing an image that a page uses can affect that page.
+- **Restore** returns an image from Trash. **Permanently delete** removes its attachment record and associated files after confirmation. Keep a tested backup if you might need them again.
+- With a positive retention period, WordPress can permanently delete expired items during scheduled cleanup. With zero days, PixCensus keeps them in Trash for manual action.
+
+Uninstalling PixCensus removes its settings and saved audit results. It leaves media in their current state, including items already in Trash.
+
 ## Review and clean up images
 
 In **Media → PixCensus**, select images in **To review**, **Drafts** or **In use** and choose **Move to Trash**. Open **Which images are protected?** for help removing manual protection or locating references. In **Trash**, restore images or confirm permanent deletion. WordPress controls automatic deletion using the site retention period. At zero days, images stay in Trash for manual restoration or deletion.
