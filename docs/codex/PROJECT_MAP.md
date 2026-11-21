@@ -4,7 +4,7 @@
 
 - Audited source commit: `bb043eb2ef67914272af7c20fa3ae78bf4da0d38` (`main`, defense-in-depth hardening integrated and post-merge QA, CodeQL, and OpenSSF checks verified on 2026-08-11).
 - Release preparation: `3.0.4` on `release/3.0.4-wordpress-7.1`.
-- Local test package: `3.3.1` on `codex/media-cleanup-review`.
+- Local test package: `3.3.2` on `codex/media-cleanup-review`.
 - Declared compatibility: WordPress 5.9+, PHP 7.4+, tested through WordPress 7.1; dedicated compatibility validation uses WordPress 7.1 RC2.
 - Entry point: `pixcensus-media-audit.php`.
 - Text domain: `pixcensus-media-audit`; translations live under `languages/`.

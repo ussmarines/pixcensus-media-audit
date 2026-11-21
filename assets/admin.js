@@ -53,7 +53,8 @@
 		var $status = $('#pixcensus-selected');
 		$status.text($status.data('label') + ': ' + $checked.length);
 		$('#pixcensus-cleanup button').not('[value="pixcensus_review_empty"], [data-unavailable]').prop('disabled', !$checked.length);
-		var hasManualProtection = $checked.closest('tr').find('.pixcensus-unmark-used').length > 0;
+		$('#pixcensus-open-media').prop('disabled', $checked.length !== 1);
+		var hasManualProtection = $checked.filter('[data-manual="1"]').length > 0;
 		$('#pixcensus-bulk-unmark').prop('disabled', !hasManualProtection);
 		$('#pixcensus-protection-help').prop('hidden', !$checked.length || hasManualProtection);
 	}
@@ -114,56 +115,11 @@
 			});
 	});
 
-	$(document).on('click', '.pixcensus-mark-used', function (event) {
-		event.preventDefault();
-
-		var id = parseInt($(this).data('id'), 10);
-		if (!id) {
-			return;
+	$(document).on('click', '#pixcensus-open-media', function () {
+		var $selected = $('.pixcensus-select:visible:checked');
+		if ($selected.length === 1) {
+			window.location.assign($selected.attr('data-media-url'));
 		}
-
-		$.post(PixCensusAdmin.ajax_url, {
-			action: 'pixcensus_mark_manual_used',
-			nonce: PixCensusAdmin.nonces.mark_manual,
-			id: id
-		})
-			.done(function (response) {
-				if (response && response.success) {
-					window.location.reload();
-					return;
-				}
-
-				showNotice('error', getString('error', 'An error occurred.'));
-			})
-			.fail(function () {
-				showNotice('error', getString('error', 'An error occurred.'));
-			});
-	});
-
-	$(document).on('click', '.pixcensus-unmark-used', function (event) {
-		event.preventDefault();
-
-		var id = parseInt($(this).data('id'), 10);
-		if (!id) {
-			return;
-		}
-
-		$.post(PixCensusAdmin.ajax_url, {
-			action: 'pixcensus_unmark_manual_used',
-			nonce: PixCensusAdmin.nonces.unmark_manual,
-			id: id
-		})
-			.done(function (response) {
-				if (response && response.success) {
-					window.location.reload();
-					return;
-				}
-
-				showNotice('error', getString('error', 'An error occurred.'));
-			})
-			.fail(function () {
-				showNotice('error', getString('error', 'An error occurred.'));
-			});
 	});
 
 	$(document).on('click', '#pixcensus-bulk-mark', function (event) {
@@ -335,21 +291,4 @@
 		applyQuickFilter();
 	});
 
-	$(document).on('click', '[data-pixcensus-density]', function (event) {
-		event.preventDefault();
-
-		var mode = $(this).attr('data-pixcensus-density');
-		var $root = $('#pixcensus-admin');
-
-		$('[data-pixcensus-density]').removeClass('button-primary').attr('aria-pressed', 'false');
-
-		if ('compact' === mode) {
-			$root.addClass('pixcensus-compact');
-			$('[data-pixcensus-density="compact"]').addClass('button-primary').attr('aria-pressed', 'true');
-			return;
-		}
-
-		$root.removeClass('pixcensus-compact');
-		$('[data-pixcensus-density="comfortable"]').addClass('button-primary').attr('aria-pressed', 'true');
-	});
 })(jQuery);

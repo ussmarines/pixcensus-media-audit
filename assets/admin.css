@@ -95,8 +95,7 @@
 }
 
 #pixcensus-admin .pixcensus-left,
-#pixcensus-admin .pixcensus-right,
-#pixcensus-admin .pixcensus-actions {
+#pixcensus-admin .pixcensus-right {
 	display: flex;
 	gap: 8px;
 	align-items: center;
@@ -149,16 +148,6 @@
 #pixcensus-admin .pixcensus-thumb img {
 	border-radius: 6px;
 	border: 1px solid var(--pixcensus-border);
-}
-
-#pixcensus-admin.pixcensus-compact table.widefat td,
-#pixcensus-admin.pixcensus-compact table.widefat th {
-	padding-top: 6px;
-	padding-bottom: 6px;
-}
-
-#pixcensus-admin.pixcensus-compact .pixcensus-thumb img {
-	max-width: 48px !important;
 }
 
 #pixcensus-admin .pixcensus-columns {
@@ -270,8 +259,6 @@
 #pixcensus-admin .pixcensus-table-scroll { clear: both; box-sizing: border-box; width: 100%; overflow-x: auto; border: 1px solid var(--pixcensus-border); border-radius: 6px; }
 #pixcensus-admin .pixcensus-table-scroll table { width: 100%; min-width: 900px; border: 0; table-layout: fixed; }
 #pixcensus-admin .pixcensus-table-scroll td { vertical-align: middle; overflow-wrap: anywhere; }
-#pixcensus-admin .pixcensus-table-scroll td.pixcensus-actions { display: table-cell; }
-#pixcensus-admin td.pixcensus-actions .button { margin: 2px; }
 #pixcensus-admin .pixcensus-locations a { text-decoration: underline; text-underline-offset: 2px; }
 #pixcensus-admin .pixcensus-confirm { padding: 12px 18px; }
 #pixcensus-admin .pixcensus-confirm-list { max-height: 12em; overflow-y: auto; }
@@ -282,7 +269,6 @@
 	#pixcensus-admin .pixcensus-right { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); }
 	#pixcensus-admin .pixcensus-quick, #pixcensus-admin .pixcensus-inline-form { grid-column: 1 / -1; }
 	#pixcensus-admin .pixcensus-columns-panel { right: auto; left: 0; }
-	#pixcensus-admin .pixcensus-density { display: flex; }
 }
 
 @media (max-width: 600px) {
@@ -292,7 +278,7 @@
 	#pixcensus-admin .pixcensus-version { grid-column: 2; padding: 1px 8px; }
 	#pixcensus-admin .pixcensus-right { display: flex; }
 	#pixcensus-admin .pixcensus-quick { flex: 1 0 100%; }
-	#pixcensus-admin .pixcensus-density, #pixcensus-admin .pixcensus-inline-form { flex-wrap: wrap; }
+	#pixcensus-admin .pixcensus-inline-form { flex-wrap: wrap; }
 	#pixcensus-admin .pixcensus-tabs .nav-tab { padding: 6px 9px; }
 }
 
@@ -302,4 +288,3 @@
 #pixcensus-admin th[data-col="uploaded"] { width: 13%; }
 #pixcensus-admin th[data-col="provenance"] { width: 24%; }
 #pixcensus-admin th[data-col="count"] { width: 9%; }
-#pixcensus-admin .pixcensus-actions .button { white-space: normal; line-height: 1.4; padding: 6px 10px; }

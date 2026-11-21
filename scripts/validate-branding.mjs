@@ -68,9 +68,9 @@ const adminScript = fs.readFileSync(path.join(root, 'assets/admin.js'), 'utf8');
 const adminView = fs.readFileSync(path.join(root, 'views/admin-page.php'), 'utf8');
 const requiredMain = [
   'Plugin Name: PixCensus — Media Usage Audit',
-  'Version: 3.3.1',
+  'Version: 3.3.2',
   'Text Domain: pixcensus-media-audit',
-  "define( 'PIXCENSUS_VERSION', '3.3.1' )",
+  "define( 'PIXCENSUS_VERSION', '3.3.2' )",
   "define( 'PIXCENSUS_SLUG', 'pixcensus-media-audit' )",
   "current_user_can( 'manage_options' )",
   'check_admin_referer(',
@@ -79,16 +79,13 @@ const requiredMain = [
 for (const token of requiredMain) {
   if (!main.includes(token)) throw new Error(`Required main-plugin control is missing: ${token}`);
 }
-if (!readme.includes('Stable tag: 3.3.1')) throw new Error('The WordPress.org stable tag is not 3.3.1.');
+if (!readme.includes('Stable tag: 3.3.2')) throw new Error('The WordPress.org stable tag is not 3.3.2.');
 if (!readme.includes('Tested up to: 7.1')) throw new Error('The WordPress.org tested-up-to value is not 7.1.');
 if (!githubReadme.includes('.wordpress-org/banner-1544x500.png')) {
   throw new Error('The GitHub README does not use the PixCensus banner.');
 }
-if (
-	!adminView.includes('data-pixcensus-density=') ||
-	!adminScript.includes("$(this).attr('data-pixcensus-density')")
-) {
-	throw new Error('The PixCensus density attribute must stay synchronized between the admin view and script.');
+if (adminView.includes('data-pixcensus-density') || adminScript.includes('data-pixcensus-density')) {
+  throw new Error('The admin table must use a single comfortable layout.');
 }
 
 const ajaxMethods = [
@@ -105,4 +102,4 @@ for (const method of ajaxMethods) {
   if (!excerpt.includes('verify_ajax_request(')) throw new Error(`${method} does not verify capability, action, method, and nonce.`);
 }
 
-console.log(JSON.stringify({ result: 'pass', name: 'PixCensus — Media Usage Audit', slug: 'pixcensus-media-audit', version: '3.3.1' }));
+console.log(JSON.stringify({ result: 'pass', name: 'PixCensus — Media Usage Audit', slug: 'pixcensus-media-audit', version: '3.3.2' }));

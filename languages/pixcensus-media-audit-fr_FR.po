@@ -303,8 +303,8 @@ msgid "Cleanup selection"
 msgstr "Sélection à nettoyer"
 
 #: views/admin-page.php:208
-msgid "Image Trash"
-msgstr "Corbeille des images"
+msgid "Trash"
+msgstr "Corbeille"
 
 #: views/admin-page.php:211
 msgid "Image categories"

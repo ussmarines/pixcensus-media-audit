@@ -5,7 +5,7 @@ Tags: media, attachments, audit, images, csv
 Requires at least: 5.9
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.3.1
+Stable tag: 3.3.2
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,6 +49,9 @@ No. Run a new scan to refresh the results.
 Typical cases include custom CSS, HTML widgets, theme files, rewritten CDN domains, or third-party integrations. Use the manual mark feature when needed.
 
 == Changelog ==
+
+= 3.3.2 =
+* Group actions above the table, use comfortable spacing and limit permanent deletion to Trash.
 
 = 3.3.1 =
 * Use the full available table width and remove the Review later list.
