@@ -102,6 +102,9 @@
 		$('.pixcensus-row').each(function () {
 			var haystack = ($(this).attr('data-pixcensus-haystack') || '').toString();
 			var matches = !query || haystack.indexOf(query) !== -1;
+			if (!matches) {
+				$(this).find('.pixcensus-select').prop('checked', false);
+			}
 			$(this).toggle(matches);
 		});
 

@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 
-const version = '3.0.4';
+const version = '3.1.0';
 const testedUpTo = '7.1';
 const donationUrl = 'https://paypal.me/ussmarinesdot';
 const main = fs.readFileSync('pixcensus-media-audit.php', 'utf8');
@@ -15,7 +15,7 @@ const expectedFunding = `custom:\n  - "${donationUrl}"`;
 const checks = [
 	[main.includes(`Version: ${version}`), 'plugin header version'],
 	[main.includes(`define( 'PIXCENSUS_VERSION', '${version}' )`), 'PIXCENSUS_VERSION'],
-	[main.includes(`Tested up to: ${testedUpTo}`), 'plugin tested-up-to'],
+	[!/^\s*\*\s*Tested up to:/im.test(main), 'tested-up-to only in readme'],
 	[readme.includes(`Stable tag: ${version}`), 'readme stable tag'],
 	[readme.includes(`Tested up to: ${testedUpTo}`), 'readme tested-up-to'],
 	[donateLinkMatch !== null && donateLinkMatch[1] === donationUrl, 'WordPress.org donate link'],

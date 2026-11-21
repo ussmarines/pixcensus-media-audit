@@ -5,7 +5,7 @@ Tags: media, attachments, audit, images, csv
 Requires at least: 5.9
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.0.4
+Stable tag: 3.1.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,7 +21,7 @@ Features:
 * Mark false negatives manually as used, with reversible actions and a dedicated filter.
 * Export each tab to CSV, including provenance and match count.
 * Support CDN aliases and advanced read-only rewrite rules during scans.
-* Stay non-destructive: the plugin does not delete attachments or modify Media Library behavior.
+* Prepare a shared cleanup selection. When Media Trash is enabled, administrators can recheck usage including drafts and move checked images to Trash. Restore them in Media before WordPress empties its Trash.
 
 Supported builders and editors include WordPress core, Elementor, Divi, Beaver Builder, Oxygen, Bricks, SiteOrigin, and WPBakery.
 
@@ -49,6 +49,9 @@ No. Run a new scan to refresh the results.
 Typical cases include custom CSS, HTML widgets, theme files, rewritten CDN domains, or third-party integrations. Use the manual mark feature when needed.
 
 == Changelog ==
+
+= 3.1.0 =
+* Review and manage a shared cleanup selection. Recheck usage, including drafts, before moving checked attachments to the native WordPress Media Trash. Filtering clears hidden selections.
 
 = 3.0.4 =
 * Declared compatibility with WordPress 7.1 after validating the distributable ZIP against WordPress 7.1 RC2.

@@ -4,12 +4,14 @@
 
 # PixCensus — Media Usage Audit
 
-A non-destructive WordPress plugin for finding where images are used before cleaning up the Media Library.
+Review image usage and prepare a cleanup selection in the WordPress Media Library.
 
 [![WordPress.org](https://img.shields.io/badge/WordPress.org-PixCensus-21759B?logo=wordpress)](https://wordpress.org/plugins/pixcensus-media-audit/)
 [![Latest release](https://img.shields.io/github/v/release/ussmarines/pixcensus-media-audit)](https://github.com/ussmarines/pixcensus-media-audit/releases/latest)
 [![QA](https://github.com/ussmarines/pixcensus-media-audit/actions/workflows/qa.yml/badge.svg)](https://github.com/ussmarines/pixcensus-media-audit/actions/workflows/qa.yml)
 [![License](https://img.shields.io/badge/license-GPL--2.0--or--later-blue.svg)](LICENSE)
+
+The local 3.1.0 test package adds a shared cleanup selection and guarded Media Trash actions.
 
 ## Official release
 
@@ -47,15 +49,9 @@ It can also report image files found in the uploads directory that are not regis
 - Exports used, draft-only, and potentially unused results to CSV.
 - Reports orphan image files in the WordPress uploads directory.
 
-## Non-destructive by design
+## Review and clean up images
 
-PixCensus is an **audit and review tool**, not an automatic cleanup tool.
-
-It does **not** delete, move, rename, rewrite, or otherwise modify media files, posts, metadata, terms, or Media Library entries. It stores only its own settings, scan snapshots, manual review decisions, and temporary scan state.
-
-Uninstalling PixCensus removes only plugin-owned data.
-
-**Always verify results and keep a tested backup before manually deleting media.**
+In **Media → PixCensus**, scan and open **To review**. Check images and add them to the shared site selection. In **Cleanup selection**, check the items you want to process. When WordPress Media Trash is available, PixCensus scans again including drafts, skips protected and referenced images, and moves eligible attachments to Trash. Restore them in the Media Library before WordPress empties its Trash. External references can escape detection.
 
 ## Installation
 
@@ -165,7 +161,7 @@ Runtime code has no third-party dependencies. Development and QA dependencies ar
 
 The project CI covers supported PHP versions, WordPress 5.9 and current WordPress, WordPress 7.1 compatibility, multisite, authenticated AJAX behavior, Plugin Check, static analysis, security checks, reproducible packaging, and installation of the exact release ZIP.
 
-Contributions should use a focused topic branch and preserve WordPress 5.9+, PHP 7.4+, WordPress Coding Standards, and the plugin's non-destructive behavior.
+Contributions should use a focused topic branch and preserve WordPress 5.9+, PHP 7.4+, WordPress Coding Standards, and the plugin's review and Media Trash safeguards.
 
 ## License
 

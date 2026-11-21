@@ -38,10 +38,11 @@ class PIXCENSUS_Scanner {
 	/**
 	 * Run the scan.
 	 *
+	 * @param bool $force_drafts Include drafts during cleanup verification.
 	 * @return array<string, mixed>
 	 */
-	public function run(): array {
-		$pixcensus_include_drafts = '1' === get_option( 'pixcensus_include_drafts', '1' );
+	public function run( bool $force_drafts = false ): array {
+		$pixcensus_include_drafts = $force_drafts || '1' === get_option( 'pixcensus_include_drafts', '1' );
 
 		$this->load_cdn_settings();
 
