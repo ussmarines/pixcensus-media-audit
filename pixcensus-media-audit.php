@@ -3,7 +3,7 @@
  * Plugin Name: PixCensus — Media Usage Audit
  * Plugin URI: https://github.com/ussmarines/pixcensus-media-audit
  * Description: Inventory media usage with provenance, CSV export, manual review tools, and CDN rewrite support.
- * Version: 3.3.0
+ * Version: 3.3.1
  * Author: ussmarines
  * Author URI: https://github.com/ussmarines
  * License: GPL-2.0-or-later
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'PIXCENSUS_VERSION' ) ) {
-	define( 'PIXCENSUS_VERSION', '3.3.0' );
+	define( 'PIXCENSUS_VERSION', '3.3.1' );
 }
 
 if ( ! defined( 'PIXCENSUS_SLUG' ) ) {
@@ -154,9 +154,7 @@ final class PIXCENSUS_Plugin {
 		foreach ( array( 'restore', 'review_delete', 'review_empty', 'confirm_delete', 'review_direct', 'confirm_direct' ) as $operation ) {
 			add_action( 'admin_post_pixcensus_' . $operation, array( $this, 'handle_image_trash' ) );
 		}
-		foreach ( array( 'queue', 'remove', 'trash', 'trash_reviewed' ) as $operation ) {
-			add_action( 'admin_post_pixcensus_' . $operation, array( $this, 'handle_cleanup' ) );
-		}
+		add_action( 'admin_post_pixcensus_trash_reviewed', array( $this, 'handle_cleanup' ) );
 		add_action( 'admin_post_pixcensus_export_csv', array( $this, 'export_csv' ) );
 
 		add_action( 'wp_ajax_pixcensus_run_scan', array( $this, 'ajax_run_scan' ) );
@@ -437,10 +435,6 @@ final class PIXCENSUS_Plugin {
 				$usage['unused_ids'] = array_values( array_diff( $usage['unused_ids'], $deleted ) );
 				update_option( 'pixcensus_usage_results', $usage, false );
 			}
-			if ( $deleted ) {
-				$queue = (array) get_option( 'pixcensus_cleanup_queue', array() );
-				update_option( 'pixcensus_cleanup_queue', array_values( array_diff( $queue, $deleted ) ), false );
-			}
 			if ( $eligible ) {
 				$token = wp_generate_uuid4();
 				set_transient( $prefix . get_current_user_id() . '_' . $token, $eligible, 600 );
@@ -467,7 +461,7 @@ final class PIXCENSUS_Plugin {
 	 */
 	public function handle_cleanup(): void {
 		$operation = substr( (string) current_action(), strlen( 'admin_post_pixcensus_' ) );
-		if ( ! $this->current_user_can_manage() || ! in_array( $operation, array( 'queue', 'remove', 'trash', 'trash_reviewed' ), true ) ) {
+		if ( ! $this->current_user_can_manage() || 'trash_reviewed' !== $operation ) {
 			wp_die( esc_html__( 'Access denied.', 'pixcensus-media-audit' ) );
 		}
 		check_admin_referer( 'pixcensus_cleanup_' . $operation, 'pixcensus_nonce_' . $operation );
@@ -481,23 +475,11 @@ final class PIXCENSUS_Plugin {
 
 		$changed = 0;
 		try {
-			$queue = (array) get_option( 'pixcensus_cleanup_queue', array() );
-			$ids   = $selection['ids'];
-			if ( 'remove' === $operation ) {
-				$changed = count( array_intersect( $queue, $ids ) );
-				$queue   = array_diff( $queue, $ids );
-			} elseif ( 'queue' === $operation ) {
-				$usage   = get_option( 'pixcensus_usage_results', array() );
-				$add     = array_diff( array_intersect( $ids, $usage['unused_ids'] ?? array() ), $queue, (array) get_option( 'pixcensus_manual_used_ids', array() ) );
-				$queue   = array_merge( $queue, $add );
-				$changed = count( $add );
-			} elseif ( $this->media_trash_enabled() ) {
+			if ( $this->media_trash_enabled() ) {
 				$this->maybe_raise_resource_limits();
-				$usage      = ( new PIXCENSUS_Scanner() )->run( true );
-				$candidates = 'trash_reviewed' === $operation ? $ids : array_intersect( $ids, $queue );
-				foreach ( $candidates as $id ) {
+				$usage = ( new PIXCENSUS_Scanner() )->run( true );
+				foreach ( $selection['ids'] as $id ) {
 					if ( ! in_array( $id, $usage['unused_ids'], true ) ) {
-						$queue = array_diff( $queue, array( $id ) );
 						continue;
 					}
 					$post = get_post( $id );
@@ -509,13 +491,11 @@ final class PIXCENSUS_Plugin {
 					}
 					if ( wp_trash_post( $id ) && 'trash' === get_post_status( $id ) ) {
 						++$changed;
-						$queue               = array_diff( $queue, array( $id ) );
 						$usage['unused_ids'] = array_values( array_diff( $usage['unused_ids'], array( $id ) ) );
 					}
 				}
 				update_option( 'pixcensus_usage_results', $usage, false );
 			}
-			update_option( 'pixcensus_cleanup_queue', array_values( $queue ), false );
 		} finally {
 			$this->release_scan_lock();
 		}
@@ -523,8 +503,8 @@ final class PIXCENSUS_Plugin {
 			add_query_arg(
 				array(
 					'page'              => 'pixcensus-audit',
-					'pixcensus_tab'     => in_array( $operation, array( 'trash', 'trash_reviewed' ), true ) && $changed ? 'trash' : ( 'queue' === $operation || 'trash_reviewed' === $operation ? 'unused' : 'cleanup' ),
-					'pixcensus_result'  => 'trash_reviewed' === $operation ? 'trash' : $operation,
+					'pixcensus_tab'     => $changed ? 'trash' : 'unused',
+					'pixcensus_result'  => 'trash',
 					'pixcensus_changed' => $changed,
 				),
 				admin_url( 'upload.php' )
@@ -767,8 +747,6 @@ final class PIXCENSUS_Plugin {
 
 		if ( 'trash' === $pixcensus_tab ) {
 			$pixcensus_export_ids = $this->image_trash_ids();
-		} elseif ( 'cleanup' === $pixcensus_tab ) {
-			$pixcensus_export_ids = (array) get_option( 'pixcensus_cleanup_queue', array() );
 		} elseif ( 'unused' === $pixcensus_tab ) {
 			$pixcensus_export_ids = $pixcensus_unused_ids;
 		} elseif ( 'draft' === $pixcensus_tab ) {

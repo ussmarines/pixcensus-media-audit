@@ -267,7 +267,7 @@
 #pixcensus-admin .pixcensus-quick { order: -1; flex: 1 1 200px; }
 #pixcensus-admin .pixcensus-quick input { width: 100%; min-width: 0; }
 #pixcensus-admin .pixcensus-bulk { background: #f6f7f7; border: 1px solid var(--pixcensus-border); border-top: 0; padding: 10px 14px; margin-bottom: 10px; }
-#pixcensus-admin .pixcensus-table-scroll { overflow-x: auto; border: 1px solid var(--pixcensus-border); border-radius: 6px; }
+#pixcensus-admin .pixcensus-table-scroll { clear: both; box-sizing: border-box; width: 100%; overflow-x: auto; border: 1px solid var(--pixcensus-border); border-radius: 6px; }
 #pixcensus-admin .pixcensus-table-scroll table { width: 100%; min-width: 900px; border: 0; table-layout: fixed; }
 #pixcensus-admin .pixcensus-table-scroll td { vertical-align: middle; overflow-wrap: anywhere; }
 #pixcensus-admin .pixcensus-table-scroll td.pixcensus-actions { display: table-cell; }

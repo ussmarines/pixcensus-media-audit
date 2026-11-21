@@ -4,7 +4,7 @@
 
 - Audited source commit: `bb043eb2ef67914272af7c20fa3ae78bf4da0d38` (`main`, defense-in-depth hardening integrated and post-merge QA, CodeQL, and OpenSSF checks verified on 2026-08-11).
 - Release preparation: `3.0.4` on `release/3.0.4-wordpress-7.1`.
-- Local test package: `3.3.0` on `codex/media-cleanup-review`.
+- Local test package: `3.3.1` on `codex/media-cleanup-review`.
 - Declared compatibility: WordPress 5.9+, PHP 7.4+, tested through WordPress 7.1; dedicated compatibility validation uses WordPress 7.1 RC2.
 - Entry point: `pixcensus-media-audit.php`.
 - Text domain: `pixcensus-media-audit`; translations live under `languages/`.
@@ -39,7 +39,7 @@ Runtime code remains dependency-free. Composer/npm are development-only, WordPre
 5. An atomic 15-minute option lock rejects concurrent scans. Results are stored with autoload disabled in `pixcensus_usage_results` and rendered from the saved snapshot. Manual decisions are merged into display/export classifications.
 6. Settings and CSV exports use authenticated `admin-post.php` handlers. CSV generation reads saved results and attachment metadata, neutralizes formula-leading cells including Unicode-obscured prefixes, and does not alter media.
 
-7. The shared site selection lives in the non-autoloaded option `pixcensus_cleanup_queue`. Admin-post actions serialize queue changes with the scan lock. Trash requires an explicit selection, positive retention and either native Media Trash or the per-site PixCensus Trash setting, a fresh scan including drafts, and per-attachment delete capability.
+7. Cleanup actions use the scan lock. Trash requires an explicit selection, positive retention and either native Media Trash or the per-site PixCensus Trash setting, a fresh scan including drafts, and per-attachment delete capability.
 
 8. The image Trash uses native attachment statuses and WordPress restore/delete APIs. Review freezes the eligible image IDs in a short-lived, site- and user-specific confirmation. The final POST checks each attachment again. Stored scan labels are resolved into distinct publication titles and permission-aware links when displaying results.
 

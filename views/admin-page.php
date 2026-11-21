@@ -45,11 +45,10 @@ $pixcensus_used_ids = array_values(
 );
 
 $pixcensus_trash_ids = $pixcensus_trash_ids ?? array();
-$pixcensus_queue     = (array) get_option( 'pixcensus_cleanup_queue', array() );
 $pixcensus_raw_tab   = filter_input( INPUT_GET, 'pixcensus_tab', FILTER_UNSAFE_RAW );
 $pixcensus_tab       = is_string( $pixcensus_raw_tab ) ? sanitize_key( $pixcensus_raw_tab ) : 'unused';
 
-if ( ! in_array( $pixcensus_tab, array( 'unused', 'draft', 'used', 'cleanup', 'trash' ), true ) ) {
+if ( ! in_array( $pixcensus_tab, array( 'unused', 'draft', 'used', 'trash' ), true ) ) {
 	$pixcensus_tab = 'unused';
 }
 
@@ -65,8 +64,6 @@ $pixcensus_all_ids         = array();
 
 if ( 'trash' === $pixcensus_tab ) {
 	$pixcensus_all_ids = $pixcensus_trash_ids;
-} elseif ( 'cleanup' === $pixcensus_tab ) {
-	$pixcensus_all_ids = $pixcensus_queue;
 } elseif ( 'unused' === $pixcensus_tab ) {
 	$pixcensus_all_ids = $pixcensus_unused_ids;
 } elseif ( 'draft' === $pixcensus_tab ) {
@@ -201,11 +198,10 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 	</details>
 	<?php
 	$pixcensus_tabs = array(
-		'unused'  => array( __( 'To review', 'pixcensus-media-audit' ), count( $pixcensus_unused_ids ) ),
-		'draft'   => array( __( 'Drafts', 'pixcensus-media-audit' ), count( $pixcensus_draft_ids ) ),
-		'used'    => array( __( 'In use', 'pixcensus-media-audit' ), count( $pixcensus_used_ids ) ),
-		'cleanup' => array( __( 'Review later', 'pixcensus-media-audit' ), count( $pixcensus_queue ) ),
-		'trash'   => array( __( 'Image Trash', 'pixcensus-media-audit' ), count( $pixcensus_trash_ids ) ),
+		'unused' => array( __( 'To review', 'pixcensus-media-audit' ), count( $pixcensus_unused_ids ) ),
+		'draft'  => array( __( 'Drafts', 'pixcensus-media-audit' ), count( $pixcensus_draft_ids ) ),
+		'used'   => array( __( 'In use', 'pixcensus-media-audit' ), count( $pixcensus_used_ids ) ),
+		'trash'  => array( __( 'Image Trash', 'pixcensus-media-audit' ), count( $pixcensus_trash_ids ) ),
 	);
 	?>
 	<details class="pixcensus-settings" id="pixcensus-cleanup-settings">
@@ -259,9 +255,7 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 		<p class="notice notice-info inline" role="status">
 		<?php
 			$pixcensus_messages = array(
-				'queue'  => __( 'Images added to Review later:', 'pixcensus-media-audit' ),
-				'remove' => __( 'Images removed from the list and kept in the Media Library:', 'pixcensus-media-audit' ),
-				'trash'  => __( 'Images moved to Trash:', 'pixcensus-media-audit' ),
+				'trash' => __( 'Images moved to Trash:', 'pixcensus-media-audit' ),
 			);
 			$pixcensus_result   = filter_input( INPUT_GET, 'pixcensus_result', FILTER_UNSAFE_RAW );
 			echo esc_html( $pixcensus_messages[ is_string( $pixcensus_result ) ? $pixcensus_result : '' ] ?? __( 'Images processed:', 'pixcensus-media-audit' ) );
@@ -338,16 +332,13 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 		</div>
 	</div>
 
-	<?php if ( 'cleanup' === $pixcensus_tab ) : ?>
-		<p><?php esc_html_e( 'Images saved for a later review stay in the Media Library. Removing an image from this list only removes the reminder.', 'pixcensus-media-audit' ); ?></p>
-	<?php endif; ?>
 	<form id="pixcensus-cleanup" class="pixcensus-bulk" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 		<label><input type="checkbox" class="pixcensus-select-all-toggle" /> <?php esc_html_e( 'Select all visible', 'pixcensus-media-audit' ); ?></label>
 		<output id="pixcensus-selected" aria-live="polite" data-label="<?php esc_attr_e( 'Selected', 'pixcensus-media-audit' ); ?>"></output>
 		<?php
 		$pixcensus_actions = array();
-		if ( in_array( $pixcensus_tab, array( 'unused', 'cleanup' ), true ) ) {
-			$pixcensus_trash_action = 'unused' === $pixcensus_tab ? 'trash_reviewed' : 'trash';
+		if ( 'unused' === $pixcensus_tab ) {
+			$pixcensus_trash_action = 'trash_reviewed';
 			wp_nonce_field( 'pixcensus_cleanup_' . $pixcensus_trash_action, 'pixcensus_nonce_' . $pixcensus_trash_action, false );
 			?>
 			<button class="button button-primary" name="action" value="<?php echo esc_attr( 'pixcensus_' . $pixcensus_trash_action ); ?>"
@@ -363,9 +354,6 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 			if ( get_option( 'pixcensus_direct_delete' ) ) {
 				$pixcensus_actions['review_direct'] = __( 'Delete selected permanently…', 'pixcensus-media-audit' );
 			}
-			$pixcensus_actions['queue'] = __( 'Save for later', 'pixcensus-media-audit' );
-		} elseif ( 'cleanup' === $pixcensus_tab ) {
-			$pixcensus_actions['remove'] = __( 'Remove from this list', 'pixcensus-media-audit' );
 		} elseif ( 'trash' === $pixcensus_tab ) {
 			$pixcensus_actions['restore']       = __( 'Restore selected', 'pixcensus-media-audit' );
 			$pixcensus_actions['review_delete'] = __( 'Delete selected permanently…', 'pixcensus-media-audit' );
@@ -387,7 +375,7 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 	<?php if ( 'used' === $pixcensus_tab ) : ?>
 		<p id="pixcensus-protection-help" hidden><?php esc_html_e( 'Only manually protected images can have their protection removed. Open the linked publication to review a detected use.', 'pixcensus-media-audit' ); ?></p>
 	<?php endif; ?>
-	<?php if ( in_array( $pixcensus_tab, array( 'unused', 'cleanup' ), true ) && empty( $pixcensus_media_trash_enabled ) ) : ?>
+	<?php if ( 'unused' === $pixcensus_tab && empty( $pixcensus_media_trash_enabled ) ) : ?>
 		<p id="pixcensus-trash-help"><a href="#pixcensus-cleanup-settings" id="pixcensus-open-cleanup-settings"><?php esc_html_e( 'Manage Trash and deletion settings', 'pixcensus-media-audit' ); ?></a></p>
 	<?php endif; ?>
 	<p class="pixcensus-page-summary">
