@@ -31,38 +31,6 @@
 		}, 3000);
 	}
 
-	function updateTabCounts(deltaUnused, deltaUsed) {
-		function adjust($tab, delta) {
-			var text = $tab.text();
-			var match = text.match(/\((\d+)\)/);
-
-			if (!match) {
-				return;
-			}
-
-			var nextValue = parseInt(match[1], 10) + (delta || 0);
-			if (nextValue < 0) {
-				nextValue = 0;
-			}
-
-			$tab.text(text.replace(/\(\d+\)/, '(' + nextValue + ')'));
-		}
-
-		adjust($('.nav-tab[href*="pixcensus_tab=unused"]'), deltaUnused || 0);
-		adjust($('.nav-tab[href*="pixcensus_tab=used"]'), deltaUsed || 0);
-	}
-
-	function removeRow(id) {
-		if (prefersReducedMotion()) {
-			$('#pixcensus-row-' + id).remove();
-			return;
-		}
-
-		$('#pixcensus-row-' + id).fadeOut(120, function () {
-			$(this).remove();
-		});
-	}
-
 	function getSelected() {
 		var ids = [];
 
@@ -81,7 +49,11 @@
 		var $checked = $('.pixcensus-select:visible:checked');
 		var allChecked = $visible.length > 0 && $visible.length === $checked.length;
 
-		$('.pixcensus-select-all-toggle').prop('checked', allChecked);
+		$('.pixcensus-select-all-toggle').prop('checked', allChecked).prop('indeterminate', $checked.length > 0 && !allChecked);
+		var $status = $('#pixcensus-selected');
+		$status.text($status.data('label') + ': ' + $checked.length);
+		$('#pixcensus-cleanup button').not('[value="pixcensus_review_empty"]').prop('disabled', !$checked.length);
+		$('#pixcensus-bulk-unmark').prop('disabled', !$checked.closest('tr').find('.pixcensus-unmark-used').length);
 	}
 
 	function updateQuickCount() {
@@ -155,9 +127,7 @@
 		})
 			.done(function (response) {
 				if (response && response.success) {
-					removeRow(id);
-					updateTabCounts(-1, 1);
-					showNotice('success', getString('marked', 'Marked as used (manual).'));
+					window.location.reload();
 					return;
 				}
 
@@ -183,9 +153,7 @@
 		})
 			.done(function (response) {
 				if (response && response.success) {
-					removeRow(id);
-					updateTabCounts(1, -1);
-					showNotice('success', getString('unmarked', 'Unmarked (manual).'));
+					window.location.reload();
 					return;
 				}
 
@@ -213,9 +181,7 @@
 		})
 			.done(function (response) {
 				if (response && response.success) {
-					ids.forEach(removeRow);
-					updateTabCounts(-ids.length, ids.length);
-					showNotice('success', getString('bulk_done', 'Bulk action completed.'));
+					window.location.reload();
 					return;
 				}
 
@@ -243,9 +209,7 @@
 		})
 			.done(function (response) {
 				if (response && response.success) {
-					ids.forEach(removeRow);
-					updateTabCounts(ids.length, -ids.length);
-					showNotice('success', getString('bulk_done', 'Bulk action completed.'));
+					window.location.reload();
 					return;
 				}
 
@@ -254,22 +218,6 @@
 			.fail(function () {
 				showNotice('error', getString('error', 'An error occurred.'));
 			});
-	});
-
-	$(document).on('click', '.pixcensus-toggle-prov', function (event) {
-		event.preventDefault();
-
-		var $button = $(this);
-		var $wrap = $button.closest('.pixcensus-prov-wrap');
-		var $more = $wrap.find('.pixcensus-prov-more');
-
-		if ($more.is(':visible')) {
-			$more.slideUp(120);
-			$button.text(getString('show_more', 'Show more'));
-		} else {
-			$more.slideDown(120);
-			$button.text(getString('show_less', 'Show less'));
-		}
 	});
 
 	var key = 'pixcensus_columns_v1';
@@ -371,7 +319,7 @@
 		var checked = $(this).is(':checked');
 
 		$('.pixcensus-select:visible').prop('checked', checked);
-		$('.pixcensus-select-all-toggle').prop('checked', checked);
+		syncSelectAllState();
 	});
 
 	$(document).on('change', '.pixcensus-select', function () {

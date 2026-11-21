@@ -11,7 +11,7 @@ Review image usage and prepare a cleanup selection in the WordPress Media Librar
 [![QA](https://github.com/ussmarines/pixcensus-media-audit/actions/workflows/qa.yml/badge.svg)](https://github.com/ussmarines/pixcensus-media-audit/actions/workflows/qa.yml)
 [![License](https://img.shields.io/badge/license-GPL--2.0--or--later-blue.svg)](LICENSE)
 
-The local 3.1.0 test package adds a shared cleanup selection and guarded Media Trash actions.
+The local 3.2.0 test package adds a shared cleanup selection and guarded Media Trash actions.
 
 ## Official release
 

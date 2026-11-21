@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 
-const version = '3.1.0';
+const version = '3.2.0';
 const testedUpTo = '7.1';
 const donationUrl = 'https://paypal.me/ussmarinesdot';
 const main = fs.readFileSync('pixcensus-media-audit.php', 'utf8');
