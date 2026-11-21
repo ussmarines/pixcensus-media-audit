@@ -153,6 +153,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes subversion
           svn --version --quiet
+      - name: Read directory screenshots from the reviewed main revision for manual publication
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          path: directory-source
+          sparse-checkout: .wordpress-org
+          persist-credentials: false
       - name: Prepare strict WordPress.org SVN delta
         id: svn_prepare
         shell: bash
@@ -161,22 +169,30 @@ jobs:
           VERSION="${RELEASE_TAG#v}"
           svn checkout --quiet "$SVN_URL" svn-work
 
+          asset_source=.wordpress-org
+          if [[ "$GITHUB_EVENT_NAME" == workflow_dispatch ]]; then
+            asset_source=directory-source/.wordpress-org
+          fi
+          assets=(assets/screenshot-1.png assets/screenshot-2.png)
+          cp "$asset_source"/screenshot-{1,2}.png svn-work/assets/
+          (cd svn-work && svn add --force "${assets[@]}" >/dev/null && svn propset svn:mime-type image/png "${assets[@]}" >/dev/null)
           if [ -d "svn-work/tags/$VERSION" ]; then
             if ! diff -qr --exclude='.svn' release/extracted/pixcensus-media-audit "svn-work/tags/$VERSION"; then
               echo "Existing WordPress.org tag $VERSION differs from the tested ZIP; refusing to continue." >&2
               exit 1
             fi
             echo "WordPress.org tag $VERSION already contains the exact tested package; treating this as an idempotent rerun."
-            echo "changed=false" >> "$GITHUB_OUTPUT"
+            if [[ -n "$(cd svn-work && svn status "${assets[@]}")" ]]; then
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+            fi
             exit 0
           fi
 
           mkdir -p svn-work/trunk svn-work/tags
           rsync -a --delete --exclude='.svn' release/extracted/pixcensus-media-audit/ svn-work/trunk/
-          cp .wordpress-org/screenshot-{1,2}.png svn-work/assets/
           cd svn-work
-          svn add --force assets/screenshot-{1,2}.png >/dev/null
-          svn propset svn:mime-type image/png assets/screenshot-{1,2}.png >/dev/null
           python3 - <<'PY'
           import subprocess
           import xml.etree.ElementTree as ET
