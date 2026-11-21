@@ -121,7 +121,7 @@
 		if ($selected.length === 1) {
 			var id = $selected.val();
 			if (/^[1-9][0-9]*$/.test(id)) {
-				window.location.assign($selected.is('[data-trashed]') ? 'upload.php?mode=list&attachment-filter=trash' : 'post.php?action=edit&post=' + encodeURIComponent(id));
+				window.location.assign($selected.is('[data-tab="trash"]') ? 'upload.php?mode=list&attachment-filter=trash' : 'post.php?action=edit&post=' + encodeURIComponent(id));
 			}
 		}
 	});
