@@ -54,6 +54,7 @@
 		$status.text($status.data('label') + ': ' + $checked.length);
 		$('#pixcensus-cleanup button').not('[value="pixcensus_review_empty"], [data-unavailable]').prop('disabled', !$checked.length);
 		$('#pixcensus-open-media').prop('disabled', $checked.length !== 1);
+		$('button[value="pixcensus_trash_reviewed"]:not([data-unavailable])').prop('disabled', !$checked.filter('[data-manual="0"]').length);
 		var hasManualProtection = $checked.filter('[data-manual="1"]').length > 0;
 		$('#pixcensus-bulk-unmark').prop('disabled', !hasManualProtection);
 		$('#pixcensus-protection-help').prop('hidden', !$checked.length || hasManualProtection);
@@ -226,9 +227,6 @@
 	}
 
 	$(function () {
-		$('#pixcensus-open-cleanup-settings').on('click', function () {
-			$('#pixcensus-cleanup-settings').prop('open', true).find('summary').trigger('focus');
-		});
 		var columns = loadColumns();
 		applyColumns(columns);
 		mountPanel(columns);

@@ -2,7 +2,7 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: PixCensus — Media Usage Audit 3.3.2\n"
+"Project-Id-Version: PixCensus — Media Usage Audit 3.4.0\n"
 "Report-Msgid-Bugs-To: https://github.com/ussmarines/pixcensus-media-audit/issues\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 #. Plugin Name of the plugin
 #: pixcensus-media-audit.php
 #: pixcensus-media-audit.php:201
-#: views/admin-page.php:121
+#: views/admin-page.php:122
 msgid "PixCensus — Media Usage Audit"
 msgstr ""
 
@@ -70,12 +70,12 @@ msgid "PixCensus"
 msgstr ""
 
 #: pixcensus-media-audit.php:254
-#: pixcensus-media-audit.php:591
+#: pixcensus-media-audit.php:590
 msgid "Marked as used (manual)."
 msgstr ""
 
 #: pixcensus-media-audit.php:255
-#: pixcensus-media-audit.php:621
+#: pixcensus-media-audit.php:620
 msgid "Unmarked (manual)."
 msgstr ""
 
@@ -88,12 +88,12 @@ msgid "An error occurred."
 msgstr ""
 
 #: pixcensus-media-audit.php:258
-#: views/admin-page.php:126
+#: views/admin-page.php:127
 msgid "Run scan"
 msgstr ""
 
 #: pixcensus-media-audit.php:259
-#: views/admin-page.php:126
+#: views/admin-page.php:127
 msgid "Run scan again"
 msgstr ""
 
@@ -124,400 +124,402 @@ msgid "%d shown"
 msgstr ""
 
 #: pixcensus-media-audit.php:279
-#: pixcensus-media-audit.php:294
-#: pixcensus-media-audit.php:687
+#: pixcensus-media-audit.php:293
+#: pixcensus-media-audit.php:686
 msgid "Permission denied."
 msgstr ""
 
-#: pixcensus-media-audit.php:328
+#: pixcensus-media-audit.php:324
 msgid "Invalid settings section."
 msgstr ""
 
-#: pixcensus-media-audit.php:377
-#: pixcensus-media-audit.php:445
+#: pixcensus-media-audit.php:373
+#: pixcensus-media-audit.php:437
+#: pixcensus-media-audit.php:446
 msgid "Access denied."
 msgstr ""
 
-#: pixcensus-media-audit.php:382
-#: pixcensus-media-audit.php:453
+#: pixcensus-media-audit.php:378
+#: pixcensus-media-audit.php:454
 msgid "Another operation is running. Please retry."
 msgstr ""
 
-#: pixcensus-media-audit.php:391
-#: views/admin-page.php:288
+#: pixcensus-media-audit.php:387
+#: views/admin-page.php:274
 msgid "This confirmation expired. Review the Trash again."
 msgstr ""
 
-#: pixcensus-media-audit.php:450
+#: pixcensus-media-audit.php:451
 msgid "Choose at least one image."
 msgstr ""
 
-#: pixcensus-media-audit.php:507
+#: pixcensus-media-audit.php:506
 msgid "A scan is already running. Try again later."
 msgstr ""
 
-#: pixcensus-media-audit.php:531
+#: pixcensus-media-audit.php:530
 msgid "The scan stopped before completion. The previous complete results were preserved."
 msgstr ""
 
-#: pixcensus-media-audit.php:539
+#: pixcensus-media-audit.php:538
 msgid "Scan complete."
 msgstr ""
 
-#: pixcensus-media-audit.php:581
-#: pixcensus-media-audit.php:611
+#: pixcensus-media-audit.php:580
+#: pixcensus-media-audit.php:610
 msgid "Invalid attachment."
 msgstr ""
 
-#: pixcensus-media-audit.php:639
-#: pixcensus-media-audit.php:665
+#: pixcensus-media-audit.php:638
+#: pixcensus-media-audit.php:664
 msgid "Invalid attachment selection."
 msgstr ""
 
-#: pixcensus-media-audit.php:647
+#: pixcensus-media-audit.php:646
 msgid "Bulk marked as used (manual)."
 msgstr ""
 
-#: pixcensus-media-audit.php:673
+#: pixcensus-media-audit.php:672
 msgid "Bulk unmarked (manual)."
 msgstr ""
 
-#: pixcensus-media-audit.php:750
+#: pixcensus-media-audit.php:749
 msgid "Unable to create the CSV export."
 msgstr ""
 
-#: pixcensus-media-audit.php:821
+#: pixcensus-media-audit.php:820
 msgid "Authentication required."
 msgstr ""
 
-#: pixcensus-media-audit.php:842
+#: pixcensus-media-audit.php:841
 msgid "This action requires an HTTP POST request."
 msgstr ""
 
-#: pixcensus-media-audit.php:856
+#: pixcensus-media-audit.php:855
 msgid "Invalid AJAX action."
 msgstr ""
 
-#: pixcensus-media-audit.php:865
+#: pixcensus-media-audit.php:864
 msgid "Insufficient permissions."
 msgstr ""
 
-#: pixcensus-media-audit.php:878
+#: pixcensus-media-audit.php:877
 msgid "Security check failed."
 msgstr ""
 
-#: views/admin-page.php:89
+#: views/admin-page.php:90
 msgid "Never"
 msgstr ""
 
-#: views/admin-page.php:111
+#: views/admin-page.php:112
 msgid "Settings saved."
 msgstr ""
 
-#: views/admin-page.php:115
+#: views/admin-page.php:116
 msgid "CDN settings were not saved. Use at most 20 host-only aliases and 20 FROM => /wp-content/uploads rewrite rules."
 msgstr ""
 
-#: views/admin-page.php:121
+#: views/admin-page.php:122
 msgid "Find where images appear and manage your image Trash."
 msgstr ""
 
-#: views/admin-page.php:127
+#: views/admin-page.php:128
 msgid "Last scan"
 msgstr ""
 
-#: views/admin-page.php:128
+#: views/admin-page.php:129
 msgid "Scan and CDN settings"
 msgstr ""
 
-#: views/admin-page.php:131
+#: views/admin-page.php:132
 msgid "Scan"
 msgstr ""
 
-#: views/admin-page.php:132
+#: views/admin-page.php:133
 msgid "The audit is not live. Re-run the scan to reflect content changes."
 msgstr ""
 
-#: views/admin-page.php:133
+#: views/admin-page.php:134
 msgid "Tip: unchecking drafts makes the scan faster."
 msgstr ""
 
-#: views/admin-page.php:142
+#: views/admin-page.php:143
 msgid "Include drafts in scan (Draft-only list)."
 msgstr ""
 
-#: views/admin-page.php:146
-#: views/admin-page.php:224
+#: views/admin-page.php:147
 msgid "Save settings"
 msgstr ""
 
 #. translators: %s: last scan datetime.
-#: views/admin-page.php:155
+#: views/admin-page.php:156
 #, php-format
 msgid "Last scan: %s"
 msgstr ""
 
-#: views/admin-page.php:164
+#: views/admin-page.php:165
 msgid "Disclaimer:"
 msgstr ""
 
-#: views/admin-page.php:164
+#: views/admin-page.php:165
 msgid "Images referenced via custom CSS, HTML widgets, theme files, plugin files, or external/CDN domains may require manual review."
 msgstr ""
 
-#: views/admin-page.php:168
+#: views/admin-page.php:169
 msgid "Backup:"
 msgstr ""
 
-#: views/admin-page.php:168
+#: views/admin-page.php:169
 msgid "Make a full backup before deleting any images from the Media Library."
 msgstr ""
 
-#: views/admin-page.php:173
+#: views/admin-page.php:174
 msgid "CDN support"
 msgstr ""
 
-#: views/admin-page.php:181
+#: views/admin-page.php:182
 msgid "CDN aliases (comma-separated)"
 msgstr ""
 
-#: views/admin-page.php:186
+#: views/admin-page.php:187
 msgid "Advanced CDN rewrites (one per line, format: FROM => TO)"
 msgstr ""
 
-#: views/admin-page.php:188
+#: views/admin-page.php:189
 msgid "Each rule is applied read-only during the scan."
 msgstr ""
 
-#: views/admin-page.php:192
+#: views/admin-page.php:193
 msgid "Save CDN settings"
 msgstr ""
 
-#: views/admin-page.php:201
+#: views/admin-page.php:202
 msgid "To review"
 msgstr ""
 
-#: views/admin-page.php:202
+#: views/admin-page.php:203
 msgid "Drafts"
 msgstr ""
 
-#: views/admin-page.php:203
+#: views/admin-page.php:204
 msgid "In use"
 msgstr ""
 
-#: views/admin-page.php:204
+#: views/admin-page.php:205
 msgid "Trash"
 msgstr ""
 
-#: views/admin-page.php:208
-msgid "Trash and deletion settings"
+#: views/admin-page.php:209
+msgid "Which images are protected?"
 msgstr ""
 
-#: views/admin-page.php:214
-msgid "Enable Media Trash in PixCensus"
+#: views/admin-page.php:210
+msgid "Mark as used gives an image manual protection against Trash. In the In use tab, filter for manually protected images, select them and choose Remove manual protection."
 msgstr ""
 
-#. translators: %d: site trash retention period in days.
-#: views/admin-page.php:218
-#, php-format
-msgid "WordPress retains trashed images for %d days."
+#: views/admin-page.php:211
+msgid "A detected use is listed under Where used. You can move a referenced image to Trash, but deleting it can break the linked page or draft. Replace or remove it in the content and rescan to clear that use."
 msgstr ""
 
-#: views/admin-page.php:222
-msgid "The site retains trashed items for zero days. A positive retention period is required to offer restoration."
-msgstr ""
-
-#: views/admin-page.php:227
+#: views/admin-page.php:213
 msgid "Image categories"
 msgstr ""
 
-#: views/admin-page.php:257
+#: views/admin-page.php:243
 msgid "Images moved to Trash:"
 msgstr ""
 
-#: views/admin-page.php:260
+#: views/admin-page.php:246
 msgid "Images processed:"
 msgstr ""
 
+#: views/admin-page.php:257
 #: views/admin-page.php:271
-#: views/admin-page.php:285
 msgid "Confirm permanent deletion"
 msgstr ""
 
-#: views/admin-page.php:272
+#: views/admin-page.php:258
 msgid "WordPress will delete these images and their generated sizes. This cannot be undone."
 msgstr ""
 
-#: views/admin-page.php:273
+#: views/admin-page.php:259
 msgid "Images to delete:"
 msgstr ""
 
-#: views/admin-page.php:284
+#: views/admin-page.php:270
 msgid "Cancel"
 msgstr ""
 
-#: views/admin-page.php:294
+#: views/admin-page.php:280
 msgid "Columns"
 msgstr ""
 
-#: views/admin-page.php:296
-#: views/admin-page.php:418
+#: views/admin-page.php:282
+#: views/admin-page.php:410
 msgid "Preview"
 msgstr ""
 
-#: views/admin-page.php:297
-#: views/admin-page.php:419
+#: views/admin-page.php:283
+#: views/admin-page.php:411
 msgid "ID"
 msgstr ""
 
-#: views/admin-page.php:298
-#: views/admin-page.php:420
+#: views/admin-page.php:284
+#: views/admin-page.php:412
 msgid "File"
 msgstr ""
 
-#: views/admin-page.php:299
-#: views/admin-page.php:421
+#: views/admin-page.php:285
+#: views/admin-page.php:413
 msgid "Uploaded"
 msgstr ""
 
-#: views/admin-page.php:300
-#: views/admin-page.php:422
+#: views/admin-page.php:286
+#: views/admin-page.php:414
 msgid "Where used"
 msgstr ""
 
-#: views/admin-page.php:301
-#: views/admin-page.php:423
+#: views/admin-page.php:287
+#: views/admin-page.php:415
 msgid "Locations"
 msgstr ""
 
-#: views/admin-page.php:303
+#: views/admin-page.php:289
 msgid "Reset"
 msgstr ""
 
-#: views/admin-page.php:304
+#: views/admin-page.php:290
 msgid "Saved locally in your browser."
 msgstr ""
 
-#: views/admin-page.php:310
+#: views/admin-page.php:296
 msgid "Search this page by file, ID or publication title"
 msgstr ""
 
-#: views/admin-page.php:310
+#: views/admin-page.php:296
 msgid "Search this page…"
 msgstr ""
 
-#: views/admin-page.php:318
+#: views/admin-page.php:304
 msgid "Filter:"
 msgstr ""
 
-#: views/admin-page.php:320
+#: views/admin-page.php:306
 msgid "All images"
 msgstr ""
 
-#: views/admin-page.php:321
+#: views/admin-page.php:307
 msgid "Manually protected"
 msgstr ""
 
-#: views/admin-page.php:323
+#: views/admin-page.php:309
 msgid "Filter"
 msgstr ""
 
-#: views/admin-page.php:325
+#: views/admin-page.php:311
 msgid "Export CSV"
 msgstr ""
 
-#: views/admin-page.php:330
+#: views/admin-page.php:316
 msgid "Select all visible"
 msgstr ""
 
-#: views/admin-page.php:331
+#: views/admin-page.php:317
 msgid "Selected"
 msgstr ""
 
-#: views/admin-page.php:344
+#: views/admin-page.php:329
 msgid "Move to Trash"
 msgstr ""
 
-#: views/admin-page.php:348
+#: views/admin-page.php:333
 msgid "Restore selected"
 msgstr ""
 
-#: views/admin-page.php:349
+#: views/admin-page.php:334
 msgid "Delete selected permanently…"
 msgstr ""
 
-#: views/admin-page.php:351
+#: views/admin-page.php:336
 msgid "Empty image Trash…"
 msgstr ""
 
-#: views/admin-page.php:360
+#: views/admin-page.php:345
 msgid "Mark as used"
 msgstr ""
 
-#: views/admin-page.php:362
+#: views/admin-page.php:347
 msgid "Remove manual protection"
 msgstr ""
 
-#: views/admin-page.php:364
+#: views/admin-page.php:349
 msgid "Open in Media"
 msgstr ""
 
-#: views/admin-page.php:367
+#: views/admin-page.php:352
 msgid "Only manually protected images can have their protection removed. Open the linked publication to review a detected use."
 msgstr ""
 
-#: views/admin-page.php:370
-msgid "Manage Trash and deletion settings"
+#: views/admin-page.php:355
+msgid "WordPress retention is set to zero days. Moving images to Trash requires a positive retention period on this site."
 msgstr ""
 
+#. translators: %d: WordPress Trash retention in days.
+#: views/admin-page.php:360
+#, php-format
+msgid "WordPress keeps images for %d day, then deletes them at its next scheduled cleanup. You can restore them or confirm permanent deletion here."
+msgid_plural "WordPress keeps images for %d days, then deletes them at its next scheduled cleanup. You can restore them or confirm permanent deletion here."
+msgstr[0] ""
+msgstr[1] ""
+
 #. translators: 1: first visible image, 2: last visible image, 3: total matching images.
-#: views/admin-page.php:377
+#: views/admin-page.php:369
 #, php-format
 msgid "Images %1$d–%2$d of %3$d"
 msgstr ""
 
-#: views/admin-page.php:404
-#: views/admin-page.php:500
+#: views/admin-page.php:396
+#: views/admin-page.php:493
 msgid "« Previous"
 msgstr ""
 
-#: views/admin-page.php:405
-#: views/admin-page.php:501
+#: views/admin-page.php:397
+#: views/admin-page.php:494
 msgid "Next »"
 msgstr ""
 
-#: views/admin-page.php:414
+#: views/admin-page.php:406
 msgid "Image results"
 msgstr ""
 
-#: views/admin-page.php:417
+#: views/admin-page.php:409
 msgid "Select all images on this page"
 msgstr ""
 
-#: views/admin-page.php:451
+#: views/admin-page.php:443
 msgid "(unknown)"
 msgstr ""
 
-#: views/admin-page.php:465
+#: views/admin-page.php:447
 msgid "Manually marked as used"
 msgstr ""
 
-#: views/admin-page.php:467
+#: views/admin-page.php:460
 msgid "No known use"
 msgstr ""
 
-#: views/admin-page.php:475
+#: views/admin-page.php:468
 msgid "No items."
 msgstr ""
 
-#: views/admin-page.php:511
+#: views/admin-page.php:504
 msgid "Support the project"
 msgstr ""
 
-#: views/admin-page.php:512
+#: views/admin-page.php:505
 msgid "If PixCensus — Media Usage Audit has been useful to you, you can support its continued development with an optional donation."
 msgstr ""
 
-#: views/admin-page.php:515
+#: views/admin-page.php:508
 msgid "Support via PayPal"
 msgstr ""

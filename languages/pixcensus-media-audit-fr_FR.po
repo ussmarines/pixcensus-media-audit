@@ -573,3 +573,56 @@ msgstr "Autoriser la suppression définitive depuis « À examiner » après con
 
 msgid "Manage Trash and deletion settings"
 msgstr "Configurer la corbeille et la suppression"
+
+#: views/admin-page.php:208
+msgid "Which images are protected?"
+msgstr "Quelles images sont protégées ?"
+
+#: views/admin-page.php:209
+msgid ""
+"Mark as used gives an image manual protection against Trash. In the In use "
+"tab, filter for manually protected images, select them and choose Remove "
+"manual protection."
+msgstr ""
+"« Marquer comme utilisée » protège une image contre la mise en corbeille. "
+"Dans « Utilisées », affichez les images protégées manuellement, cochez "
+"celles à débloquer et choisissez « Retirer la protection manuelle »."
+
+#: views/admin-page.php:210
+msgid ""
+"A detected use is listed under Where used. You can move a referenced image "
+"to Trash, but deleting it can break the linked page or draft. Replace or "
+"remove it in the content and rescan to clear that use."
+msgstr ""
+"La colonne « Où cette image est utilisée » indique les utilisations "
+"détectées. Vous pouvez mettre une image référencée à la corbeille, mais sa "
+"suppression risque de laisser une image manquante dans une page ou un "
+"brouillon. Pour retirer cette utilisation, remplacez ou retirez l’image du "
+"contenu puis relancez l’analyse."
+
+#: views/admin-page.php:354
+msgid ""
+"WordPress retention is set to zero days. Moving images to Trash requires a "
+"positive retention period on this site."
+msgstr ""
+"WordPress conserve les éléments pendant zéro jour sur ce site. Une durée de "
+"conservation positive est nécessaire pour placer des images dans la "
+"corbeille."
+
+#. translators: %d: WordPress Trash retention in days.
+#: views/admin-page.php:359
+#, php-format
+msgid ""
+"WordPress keeps images for %d day, then deletes them at its next scheduled "
+"cleanup. You can restore them or confirm permanent deletion here."
+msgid_plural ""
+"WordPress keeps images for %d days, then deletes them at its next scheduled "
+"cleanup. You can restore them or confirm permanent deletion here."
+msgstr[0] ""
+"WordPress conserve les images pendant %d jour, puis les supprime lors de son"
+" prochain nettoyage planifié. Vous pouvez les restaurer ou confirmer leur "
+"suppression définitive ici."
+msgstr[1] ""
+"WordPress conserve les images pendant %d jours, puis les supprime lors de "
+"son prochain nettoyage planifié. Vous pouvez les restaurer ou confirmer leur"
+" suppression définitive ici."

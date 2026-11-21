@@ -44,9 +44,10 @@ $pixcensus_used_ids = array_values(
 	)
 );
 
-$pixcensus_trash_ids = $pixcensus_trash_ids ?? array();
-$pixcensus_raw_tab   = filter_input( INPUT_GET, 'pixcensus_tab', FILTER_UNSAFE_RAW );
-$pixcensus_tab       = is_string( $pixcensus_raw_tab ) ? sanitize_key( $pixcensus_raw_tab ) : 'unused';
+$pixcensus_trash_ids      = $pixcensus_trash_ids ?? array();
+$pixcensus_retention_days = defined( 'EMPTY_TRASH_DAYS' ) ? (int) EMPTY_TRASH_DAYS : 0;
+$pixcensus_raw_tab        = filter_input( INPUT_GET, 'pixcensus_tab', FILTER_UNSAFE_RAW );
+$pixcensus_tab            = is_string( $pixcensus_raw_tab ) ? sanitize_key( $pixcensus_raw_tab ) : 'unused';
 
 if ( ! in_array( $pixcensus_tab, array( 'unused', 'draft', 'used', 'trash' ), true ) ) {
 	$pixcensus_tab = 'unused';
@@ -204,25 +205,10 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 		'trash'  => array( __( 'Trash', 'pixcensus-media-audit' ), count( $pixcensus_trash_ids ) ),
 	);
 	?>
-	<details class="pixcensus-settings" id="pixcensus-cleanup-settings">
-		<summary><?php esc_html_e( 'Trash and deletion settings', 'pixcensus-media-audit' ); ?></summary>
-		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<input type="hidden" name="action" value="pixcensus_save_settings" />
-			<input type="hidden" name="pixcensus_section" value="cleanup" />
-			<?php wp_nonce_field( 'pixcensus_save_cleanup_settings', 'pixcensus_settings_nonce' ); ?>
-			<?php if ( defined( 'EMPTY_TRASH_DAYS' ) && EMPTY_TRASH_DAYS > 0 ) : ?>
-				<p><label><input type="checkbox" name="pixcensus_local_trash" value="1" <?php checked( ! empty( $pixcensus_media_trash_enabled ) ); ?> <?php disabled( defined( 'MEDIA_TRASH' ) && MEDIA_TRASH ); ?> /> <?php esc_html_e( 'Enable Media Trash in PixCensus', 'pixcensus-media-audit' ); ?></label></p>
-				<p>
-				<?php
-					/* translators: %d: site trash retention period in days. */
-					echo esc_html( sprintf( __( 'WordPress retains trashed images for %d days.', 'pixcensus-media-audit' ), EMPTY_TRASH_DAYS ) );
-				?>
-				</p>
-			<?php else : ?>
-				<p><?php esc_html_e( 'The site retains trashed items for zero days. A positive retention period is required to offer restoration.', 'pixcensus-media-audit' ); ?></p>
-			<?php endif; ?>
-			<button class="button"><?php esc_html_e( 'Save settings', 'pixcensus-media-audit' ); ?></button>
-		</form>
+	<details class="pixcensus-settings">
+		<summary><?php esc_html_e( 'Which images are protected?', 'pixcensus-media-audit' ); ?></summary>
+		<p><?php esc_html_e( 'Mark as used gives an image manual protection against Trash. In the In use tab, filter for manually protected images, select them and choose Remove manual protection.', 'pixcensus-media-audit' ); ?></p>
+		<p><?php esc_html_e( 'A detected use is listed under Where used. You can move a referenced image to Trash, but deleting it can break the linked page or draft. Replace or remove it in the content and rescan to clear that use.', 'pixcensus-media-audit' ); ?></p>
 	</details>
 	<nav class="nav-tab-wrapper pixcensus-tabs" aria-label="<?php esc_attr_e( 'Image categories', 'pixcensus-media-audit' ); ?>">
 		<?php foreach ( $pixcensus_tabs as $pixcensus_slug => $pixcensus_category ) : ?>
@@ -331,17 +317,16 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 		<output id="pixcensus-selected" aria-live="polite" data-label="<?php esc_attr_e( 'Selected', 'pixcensus-media-audit' ); ?>"></output>
 		<?php
 		$pixcensus_actions = array();
-		if ( 'unused' === $pixcensus_tab ) {
+		if ( 'trash' !== $pixcensus_tab ) {
 			$pixcensus_trash_action = 'trash_reviewed';
-			wp_nonce_field( 'pixcensus_cleanup_' . $pixcensus_trash_action, 'pixcensus_nonce_' . $pixcensus_trash_action, false );
+			wp_nonce_field( 'pixcensus_cleanup_' . $pixcensus_trash_action . '_' . $pixcensus_tab, 'pixcensus_nonce_' . $pixcensus_trash_action, false );
 			?>
-			<button class="button button-primary" name="action" value="<?php echo esc_attr( 'pixcensus_' . $pixcensus_trash_action ); ?>"
+			<input type="hidden" name="pixcensus_tab" value="<?php echo esc_attr( $pixcensus_tab ); ?>" />
+			<button class="button button-primary" name="action" value="pixcensus_trash_reviewed"
 			<?php
-			if ( empty( $pixcensus_media_trash_enabled ) ) {
-				echo 'disabled data-unavailable aria-describedby="pixcensus-trash-help"';
-			}
-			?>
-			><?php esc_html_e( 'Move to Trash', 'pixcensus-media-audit' ); ?></button>
+			if ( $pixcensus_retention_days <= 0 ) :
+				?>
+				disabled data-unavailable aria-describedby="pixcensus-retention"<?php endif; ?>><?php esc_html_e( 'Move to Trash', 'pixcensus-media-audit' ); ?></button>
 			<?php
 		}
 		if ( 'trash' === $pixcensus_tab ) {
@@ -366,8 +351,15 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 	<?php if ( 'used' === $pixcensus_tab ) : ?>
 		<p id="pixcensus-protection-help" hidden><?php esc_html_e( 'Only manually protected images can have their protection removed. Open the linked publication to review a detected use.', 'pixcensus-media-audit' ); ?></p>
 	<?php endif; ?>
-	<?php if ( 'unused' === $pixcensus_tab && empty( $pixcensus_media_trash_enabled ) ) : ?>
-		<p id="pixcensus-trash-help"><a href="#pixcensus-cleanup-settings" id="pixcensus-open-cleanup-settings"><?php esc_html_e( 'Manage Trash and deletion settings', 'pixcensus-media-audit' ); ?></a></p>
+	<?php if ( $pixcensus_retention_days <= 0 ) : ?>
+		<p id="pixcensus-retention"><?php esc_html_e( 'WordPress retention is set to zero days. Moving images to Trash requires a positive retention period on this site.', 'pixcensus-media-audit' ); ?></p>
+	<?php elseif ( 'trash' === $pixcensus_tab ) : ?>
+		<p>
+		<?php
+		/* translators: %d: WordPress Trash retention in days. */
+		echo esc_html( sprintf( _n( 'WordPress keeps images for %d day, then deletes them at its next scheduled cleanup. You can restore them or confirm permanent deletion here.', 'WordPress keeps images for %d days, then deletes them at its next scheduled cleanup. You can restore them or confirm permanent deletion here.', $pixcensus_retention_days, 'pixcensus-media-audit' ), $pixcensus_retention_days ) );
+		?>
+		</p>
 	<?php endif; ?>
 	<p class="pixcensus-page-summary">
 	<?php
@@ -451,6 +443,9 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 						<td data-col="file"><?php echo esc_html( $pixcensus_file_path ? basename( $pixcensus_file_path ) : __( '(unknown)', 'pixcensus-media-audit' ) ); ?></td>
 						<td data-col="uploaded"><?php echo esc_html( get_the_date( 'Y-m-d H:i', $pixcensus_attachment_id ) ); ?></td>
 						<td data-col="provenance">
+							<?php if ( in_array( $pixcensus_attachment_id, $pixcensus_manual_ids, true ) ) : ?>
+								<strong><?php esc_html_e( 'Manually marked as used', 'pixcensus-media-audit' ); ?></strong>
+							<?php endif; ?>
 							<?php if ( $pixcensus_locations ) : ?>
 								<ul class="pixcensus-locations">
 								<?php foreach ( $pixcensus_locations as $pixcensus_location ) : ?>
@@ -461,9 +456,7 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 									<?php endif; ?></li>
 								<?php endforeach; ?>
 								</ul>
-							<?php elseif ( in_array( $pixcensus_attachment_id, $pixcensus_manual_ids, true ) ) : ?>
-								<?php esc_html_e( 'Manually marked as used', 'pixcensus-media-audit' ); ?>
-							<?php else : ?>
+							<?php elseif ( ! in_array( $pixcensus_attachment_id, $pixcensus_manual_ids, true ) ) : ?>
 								<?php esc_html_e( 'No known use', 'pixcensus-media-audit' ); ?>
 							<?php endif; ?>
 						</td>

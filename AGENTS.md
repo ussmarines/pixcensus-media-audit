@@ -4,7 +4,7 @@
 - Use `git diff` to identify changes since the audited commit and inspect the complete diff before delivery.
 - Preserve WordPress 5.9+ and PHP 7.4+ compatibility unless an explicit decision changes them. Project compatibility overrides the installed WordPress skills' newer target baseline.
 - Follow the WordPress Coding Standards.
-- Keep scans read-only. The explicit cleanup action may trash reviewed attachments through WordPress when native or PixCensus Media Trash is enabled and retention is positive. Permanent deletion requires a separately confirmed selection of already-trashed images through WordPress. Never manipulate user files directly.
+- Keep scans read-only. The explicit cleanup action may trash reviewed attachments through WordPress from any review category when site retention is positive and manual protection is absent. Permanent deletion requires a separately confirmed selection of already-trashed images through WordPress. Never manipulate user files directly.
 - Preserve capability checks, nonces, input validation, sanitization, SQL safety, and late output escaping.
 - Do not add a frontend framework or pipeline without a demonstrated need.
 - Do not add a production dependency without justification; use development dependencies for QA tools.
