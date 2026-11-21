@@ -1,15 +1,15 @@
 === PixCensus — Media Usage Audit ===
 Contributors: ussmarines
 Donate link: https://paypal.me/ussmarinesdot
-Tags: media, attachments, audit, images, csv
+Tags: media library, image usage, media cleanup, attachments, trash
 Requires at least: 5.9
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.0.4
+Stable tag: 3.4.9
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Inventory media usage with provenance, CSV export, manual review tools, and CDN rewrite support.
+Find where images are used, protect media you want to keep, and review, restore or delete selected images from Trash.
 
 == Description ==
 
@@ -21,7 +21,7 @@ Features:
 * Mark false negatives manually as used, with reversible actions and a dedicated filter.
 * Export each tab to CSV, including provenance and match count.
 * Support CDN aliases and advanced read-only rewrite rules during scans.
-* Stay non-destructive: the plugin does not delete attachments or modify Media Library behavior.
+* Move checked images to Trash from To review, Drafts or In use. Manual protection blocks the move until removed. WordPress controls retention. In Trash, restore items or review and confirm permanent deletion of selected images or all trashed images.
 
 Supported builders and editors include WordPress core, Elementor, Divi, Beaver Builder, Oxygen, Bricks, SiteOrigin, and WPBakery.
 
@@ -48,7 +48,68 @@ No. Run a new scan to refresh the results.
 
 Typical cases include custom CSS, HTML widgets, theme files, rewritten CDN domains, or third-party integrations. Use the manual mark feature when needed.
 
+= When does Trash empty? =
+
+WordPress runs its scheduled cleanup after the site retention period. With a zero-day period, PixCensus keeps images in Trash until an administrator restores them or confirms deletion.
+
+= What happens if I select protected images? =
+
+PixCensus moves eligible images and reports how many stayed protected. Follow the link in the result to see those images and remove protection if appropriate.
+
+== Screenshots ==
+
+1. Review images, inspect their uses and protection, and apply an action to the selection.
+2. Restore images or review a permanent deletion from Trash. Each row shows its retention deadline.
+
 == Changelog ==
+
+= 3.4.9 =
+* Serialize protection changes with cleanup operations and require POST for administrative changes. Recognize original images and exclude trashed attachments from orphan findings.
+
+= 3.4.8 =
+* Explain when the last protected image in a filtered selection has been unprotected.
+
+= 3.4.7 =
+* Show the total number of protected images in the filtered selection banner.
+
+= 3.4.6 =
+* Identify the filtered protected-image table and provide a link back to all images in use.
+
+= 3.4.5 =
+* Link mixed Trash results to the protected images from that selection.
+
+= 3.4.4 =
+* Report moved and protected images after a mixed Trash selection.
+
+= 3.4.3 =
+* Display protection status for every image in every review table.
+
+= 3.4.2 =
+* Add explicit image protection across review tabs, equalize table columns and simplify retention maintenance.
+
+= 3.4.1 =
+* Show when images entered Trash and their remaining retention. At zero days, keep images until manually restored or deleted.
+
+= 3.4.0 =
+* Enable Trash with the site retention period by default across all review tabs and explain manual protection.
+
+= 3.3.2 =
+* Group actions above the table, use comfortable spacing and limit permanent deletion to Trash.
+
+= 3.3.1 =
+* Use the full available table width and remove the Review later list.
+
+= 3.3.0 =
+* Enable Media Trash in PixCensus with positive site retention, or opt into confirmed permanent deletion of reviewed unused images.
+
+= 3.2.1 =
+* Move images to Trash directly from To review, see how to enable native Media Trash, or save images for later.
+
+= 3.2.0 =
+* Browse consistent image tables with linked publication titles. Restore images or confirm permanent deletion of selected images or the entire image Trash.
+
+= 3.1.0 =
+* Review and manage a shared cleanup selection. Recheck usage, including drafts, before moving checked attachments to the native WordPress Media Trash. Filtering clears hidden selections.
 
 = 3.0.4 =
 * Declared compatibility with WordPress 7.1 after validating the distributable ZIP against WordPress 7.1 RC2.

@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 
-const version = '3.0.4';
+const version = '3.4.9';
 const testedUpTo = '7.1';
 const donationUrl = 'https://paypal.me/ussmarinesdot';
 const main = fs.readFileSync('pixcensus-media-audit.php', 'utf8');
@@ -15,7 +15,7 @@ const expectedFunding = `custom:\n  - "${donationUrl}"`;
 const checks = [
 	[main.includes(`Version: ${version}`), 'plugin header version'],
 	[main.includes(`define( 'PIXCENSUS_VERSION', '${version}' )`), 'PIXCENSUS_VERSION'],
-	[main.includes(`Tested up to: ${testedUpTo}`), 'plugin tested-up-to'],
+	[!/^\s*\*\s*Tested up to:/im.test(main), 'tested-up-to only in readme'],
 	[readme.includes(`Stable tag: ${version}`), 'readme stable tag'],
 	[readme.includes(`Tested up to: ${testedUpTo}`), 'readme tested-up-to'],
 	[donateLinkMatch !== null && donateLinkMatch[1] === donationUrl, 'WordPress.org donate link'],
@@ -51,8 +51,11 @@ if (!shortDescription || shortDescription.length > 150) {
 	throw new Error(`readme.txt short description must be 1-150 characters; found ${shortDescription.length}.`);
 }
 
-if (/^== Screenshots ==$/m.test(readme)) {
-	throw new Error('readme.txt lists screenshots, but no WordPress.org screenshot assets are distributed.');
+const captions = readme.match(/^== Screenshots ==\r?\n([\s\S]*?)(?=^== )/m)?.[1].trim().split(/\r?\n/) || [];
+const screenshots = fs.readdirSync('.wordpress-org').filter(name => /^screenshot-\d+\.png$/.test(name));
+if (!captions.length || captions.length !== screenshots.length || captions.some((line, i) =>
+  !line.startsWith(`${i + 1}. `) || !screenshots.includes(`screenshot-${i + 1}.png`))) {
+  throw new Error('Directory screenshots and numbered readme captions must match.');
 }
 
 console.log(JSON.stringify({ result: 'pass', version, testedUpTo, tags: tags.length, shortDescription: shortDescription.length }));

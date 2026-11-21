@@ -31,38 +31,6 @@
 		}, 3000);
 	}
 
-	function updateTabCounts(deltaUnused, deltaUsed) {
-		function adjust($tab, delta) {
-			var text = $tab.text();
-			var match = text.match(/\((\d+)\)/);
-
-			if (!match) {
-				return;
-			}
-
-			var nextValue = parseInt(match[1], 10) + (delta || 0);
-			if (nextValue < 0) {
-				nextValue = 0;
-			}
-
-			$tab.text(text.replace(/\(\d+\)/, '(' + nextValue + ')'));
-		}
-
-		adjust($('.nav-tab[href*="pixcensus_tab=unused"]'), deltaUnused || 0);
-		adjust($('.nav-tab[href*="pixcensus_tab=used"]'), deltaUsed || 0);
-	}
-
-	function removeRow(id) {
-		if (prefersReducedMotion()) {
-			$('#pixcensus-row-' + id).remove();
-			return;
-		}
-
-		$('#pixcensus-row-' + id).fadeOut(120, function () {
-			$(this).remove();
-		});
-	}
-
 	function getSelected() {
 		var ids = [];
 
@@ -78,22 +46,30 @@
 
 	function syncSelectAllState() {
 		var $visible = $('.pixcensus-select:visible');
-		var $checked = $('.pixcensus-select:visible:checked');
+		var $checked = $visible.filter(':checked');
 		var allChecked = $visible.length > 0 && $visible.length === $checked.length;
 
-		$('.pixcensus-select-all-toggle').prop('checked', allChecked);
+		$('.pixcensus-select-all-toggle').prop('checked', allChecked).prop('indeterminate', $checked.length > 0 && !allChecked);
+		var $status = $('#pixcensus-selected');
+		$status.text($status.data('label') + ': ' + $checked.length);
+		$('#pixcensus-cleanup button').not('[value="pixcensus_review_empty"], [data-unavailable]').prop('disabled', !$checked.length);
+		$('#pixcensus-open-media').prop('disabled', $checked.length !== 1);
+		$('button[value="pixcensus_trash_reviewed"]:not([data-unavailable])').prop('disabled', !$checked.filter('[data-manual="0"]').length);
+		$('#pixcensus-bulk-mark').prop('disabled', !$checked.filter('[data-manual="0"]').length);
+		var hasManualProtection = $checked.filter('[data-manual="1"]').length > 0;
+		$('#pixcensus-bulk-unmark').prop('disabled', !hasManualProtection);
+		$('#pixcensus-protection-help').prop('hidden', !$checked.length || hasManualProtection);
 	}
 
 	function updateQuickCount() {
 		var query = ($('#pixcensus-quick-filter').val() || '').toString().toLowerCase().trim();
-		var shown = $('.pixcensus-row:visible').length;
 
 		if (!query) {
 			$('#pixcensus-quick-count').text('');
 			return;
 		}
 
-		$('#pixcensus-quick-count').text(getString('shown_count', '%d shown').replace('%d', shown));
+		$('#pixcensus-quick-count').text(getString('shown_count', '%d shown').replace('%d', $('.pixcensus-row:visible').length));
 	}
 
 	function applyQuickFilter() {
@@ -102,6 +78,9 @@
 		$('.pixcensus-row').each(function () {
 			var haystack = ($(this).attr('data-pixcensus-haystack') || '').toString();
 			var matches = !query || haystack.indexOf(query) !== -1;
+			if (!matches) {
+				$(this).find('.pixcensus-select').prop('checked', false);
+			}
 			$(this).toggle(matches);
 		});
 
@@ -137,60 +116,14 @@
 			});
 	});
 
-	$(document).on('click', '.pixcensus-mark-used', function (event) {
-		event.preventDefault();
-
-		var id = parseInt($(this).data('id'), 10);
-		if (!id) {
-			return;
+	$(document).on('click', '#pixcensus-open-media', function () {
+		var $selected = $('.pixcensus-select:visible:checked');
+		if ($selected.length === 1) {
+			var id = $selected.val();
+			if (/^[1-9][0-9]*$/.test(id)) {
+				window.location.assign($selected.is('[data-tab="trash"]') ? 'upload.php?mode=list&attachment-filter=trash' : 'post.php?action=edit&post=' + encodeURIComponent(id));
+			}
 		}
-
-		$.post(PixCensusAdmin.ajax_url, {
-			action: 'pixcensus_mark_manual_used',
-			nonce: PixCensusAdmin.nonces.mark_manual,
-			id: id
-		})
-			.done(function (response) {
-				if (response && response.success) {
-					removeRow(id);
-					updateTabCounts(-1, 1);
-					showNotice('success', getString('marked', 'Marked as used (manual).'));
-					return;
-				}
-
-				showNotice('error', getString('error', 'An error occurred.'));
-			})
-			.fail(function () {
-				showNotice('error', getString('error', 'An error occurred.'));
-			});
-	});
-
-	$(document).on('click', '.pixcensus-unmark-used', function (event) {
-		event.preventDefault();
-
-		var id = parseInt($(this).data('id'), 10);
-		if (!id) {
-			return;
-		}
-
-		$.post(PixCensusAdmin.ajax_url, {
-			action: 'pixcensus_unmark_manual_used',
-			nonce: PixCensusAdmin.nonces.unmark_manual,
-			id: id
-		})
-			.done(function (response) {
-				if (response && response.success) {
-					removeRow(id);
-					updateTabCounts(1, -1);
-					showNotice('success', getString('unmarked', 'Unmarked (manual).'));
-					return;
-				}
-
-				showNotice('error', getString('error', 'An error occurred.'));
-			})
-			.fail(function () {
-				showNotice('error', getString('error', 'An error occurred.'));
-			});
 	});
 
 	$(document).on('click', '#pixcensus-bulk-mark', function (event) {
@@ -210,9 +143,7 @@
 		})
 			.done(function (response) {
 				if (response && response.success) {
-					ids.forEach(removeRow);
-					updateTabCounts(-ids.length, ids.length);
-					showNotice('success', getString('bulk_done', 'Bulk action completed.'));
+					window.location.reload();
 					return;
 				}
 
@@ -240,9 +171,7 @@
 		})
 			.done(function (response) {
 				if (response && response.success) {
-					ids.forEach(removeRow);
-					updateTabCounts(ids.length, -ids.length);
-					showNotice('success', getString('bulk_done', 'Bulk action completed.'));
+					window.location.reload();
 					return;
 				}
 
@@ -253,22 +182,6 @@
 			});
 	});
 
-	$(document).on('click', '.pixcensus-toggle-prov', function (event) {
-		event.preventDefault();
-
-		var $button = $(this);
-		var $wrap = $button.closest('.pixcensus-prov-wrap');
-		var $more = $wrap.find('.pixcensus-prov-more');
-
-		if ($more.is(':visible')) {
-			$more.slideUp(120);
-			$button.text(getString('show_more', 'Show more'));
-		} else {
-			$more.slideDown(120);
-			$button.text(getString('show_less', 'Show less'));
-		}
-	});
-
 	var key = 'pixcensus_columns_v1';
 	var defaultColumns = {
 		thumb: true,
@@ -276,6 +189,7 @@
 		file: true,
 		uploaded: true,
 		provenance: true,
+		protection: true,
 		count: true
 	};
 
@@ -286,7 +200,7 @@
 				return $.extend({}, defaultColumns);
 			}
 
-			return $.extend({}, defaultColumns, JSON.parse(raw));
+			return $.extend({}, defaultColumns, JSON.parse(raw), {file: true});
 		} catch (error) {
 			return $.extend({}, defaultColumns);
 		}
@@ -313,6 +227,7 @@
 		$('#pixcensus-col-file').prop('checked', !!columns.file);
 		$('#pixcensus-col-uploaded').prop('checked', !!columns.uploaded);
 		$('#pixcensus-col-provenance').prop('checked', !!columns.provenance);
+		$('#pixcensus-col-protection').prop('checked', !!columns.protection);
 		$('#pixcensus-col-count').prop('checked', !!columns.count);
 	}
 
@@ -368,7 +283,7 @@
 		var checked = $(this).is(':checked');
 
 		$('.pixcensus-select:visible').prop('checked', checked);
-		$('.pixcensus-select-all-toggle').prop('checked', checked);
+		syncSelectAllState();
 	});
 
 	$(document).on('change', '.pixcensus-select', function () {
@@ -379,21 +294,4 @@
 		applyQuickFilter();
 	});
 
-	$(document).on('click', '[data-pixcensus-density]', function (event) {
-		event.preventDefault();
-
-		var mode = $(this).attr('data-pixcensus-density');
-		var $root = $('#pixcensus-admin');
-
-		$('[data-pixcensus-density]').removeClass('button-primary').attr('aria-pressed', 'false');
-
-		if ('compact' === mode) {
-			$root.addClass('pixcensus-compact');
-			$('[data-pixcensus-density="compact"]').addClass('button-primary').attr('aria-pressed', 'true');
-			return;
-		}
-
-		$root.removeClass('pixcensus-compact');
-		$('[data-pixcensus-density="comfortable"]').addClass('button-primary').attr('aria-pressed', 'true');
-	});
 })(jQuery);

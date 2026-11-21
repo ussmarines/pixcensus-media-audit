@@ -3,7 +3,7 @@
  * Plugin Name: PixCensus — Media Usage Audit
  * Plugin URI: https://github.com/ussmarines/pixcensus-media-audit
  * Description: Inventory media usage with provenance, CSV export, manual review tools, and CDN rewrite support.
- * Version: 3.0.4
+ * Version: 3.4.9
  * Author: ussmarines
  * Author URI: https://github.com/ussmarines
  * License: GPL-2.0-or-later
@@ -12,7 +12,6 @@
  * Domain Path: /languages
  * Requires at least: 5.9
  * Requires PHP: 7.4
- * Tested up to: 7.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -20,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'PIXCENSUS_VERSION' ) ) {
-	define( 'PIXCENSUS_VERSION', '3.0.4' );
+	define( 'PIXCENSUS_VERSION', '3.4.9' );
 }
 
 if ( ! defined( 'PIXCENSUS_SLUG' ) ) {
@@ -139,10 +138,32 @@ final class PIXCENSUS_Plugin {
 	 * Constructor.
 	 */
 	private function __construct() {
+		add_action(
+			'init',
+			static function () {
+				// Older WordPress versions discover directory language packs but not bundled catalogs.
+				if ( 'fr_FR' === determine_locale() && get_translations_for_domain( 'pixcensus-media-audit' ) instanceof NOOP_Translations ) {
+					load_textdomain( 'pixcensus-media-audit', PIXCENSUS_PATH . 'languages/pixcensus-media-audit-fr_FR.mo' );
+				}
+			}
+		);
+		add_filter( 'pre_trash_post', array( $this, 'respect_manual_protection' ), 10, 2 );
+		add_filter( 'pre_delete_attachment', array( $this, 'respect_manual_protection' ), 10, 2 );
+		add_action( 'wp_scheduled_delete', array( $this, 'sync_trash_retention' ), 5 );
+		add_action(
+			'untrashed_post',
+			static function ( $id ) {
+				delete_post_meta( $id, '_pixcensus_trash_time' );
+			}
+		);
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin' ) );
 
 		add_action( 'admin_post_pixcensus_save_settings', array( $this, 'handle_save_settings' ) );
+		foreach ( array( 'restore', 'review_delete', 'review_empty', 'confirm_delete' ) as $operation ) {
+			add_action( 'admin_post_pixcensus_' . $operation, array( $this, 'handle_image_trash' ) );
+		}
+		add_action( 'admin_post_pixcensus_trash_reviewed', array( $this, 'handle_cleanup' ) );
 		add_action( 'admin_post_pixcensus_export_csv', array( $this, 'export_csv' ) );
 
 		add_action( 'wp_ajax_pixcensus_run_scan', array( $this, 'ajax_run_scan' ) );
@@ -267,6 +288,8 @@ final class PIXCENSUS_Plugin {
 			wp_die( esc_html__( 'Permission denied.', 'pixcensus-media-audit' ) );
 		}
 
+		$pixcensus_trash_ids = $this->image_trash_ids();
+		$pixcensus_receipt   = $this->protected_receipt();
 		include PIXCENSUS_PATH . 'views/admin-page.php';
 	}
 
@@ -276,6 +299,7 @@ final class PIXCENSUS_Plugin {
 	 * @return void
 	 */
 	public function handle_save_settings(): void {
+		$this->require_admin_post();
 		if ( ! $this->current_user_can_manage() ) {
 			wp_die( esc_html__( 'Permission denied.', 'pixcensus-media-audit' ) );
 		}
@@ -331,6 +355,256 @@ final class PIXCENSUS_Plugin {
 		);
 
 		wp_safe_redirect( $pixcensus_redirect_url );
+		exit;
+	}
+
+	/**
+	 * IDs in this site's native image Trash, most recent attachments first.
+	 */
+	private function image_trash_ids(): array {
+		return get_posts(
+			array(
+				'post_type'      => 'attachment',
+				'post_mime_type' => 'image',
+				'post_status'    => 'trash',
+				'fields'         => 'ids',
+				'posts_per_page' => -1,
+				'orderby'        => 'ID',
+				'order'          => 'DESC',
+			)
+		);
+	}
+
+	/**
+	 * Restore selected images or confirm permanent deletion of a frozen selection.
+	 */
+	public function handle_image_trash(): void {
+		$this->require_admin_post();
+		$operation = substr( current_action(), strlen( 'admin_post_pixcensus_' ) );
+		if ( ! $this->current_user_can_manage() ) {
+			wp_die( esc_html__( 'Access denied.', 'pixcensus-media-audit' ) );
+		}
+		check_admin_referer( 'pixcensus_cleanup_' . $operation, 'pixcensus_nonce_' . $operation );
+		$url = admin_url( 'upload.php?page=pixcensus-audit&pixcensus_tab=trash' );
+		if ( ! $this->acquire_scan_lock() ) {
+			wp_die( esc_html__( 'Another operation is running. Please retry.', 'pixcensus-media-audit' ) );
+		}
+		try {
+			if ( 'confirm_delete' === $operation ) {
+				$token = isset( $_POST['confirmation'] ) ? sanitize_key( wp_unslash( $_POST['confirmation'] ) ) : '';
+				$key   = 'pixcensus_delete_' . get_current_user_id() . '_' . $token;
+				$ids   = get_transient( $key );
+				if ( ! is_array( $ids ) || ! delete_transient( $key ) ) {
+					$this->release_scan_lock();
+					wp_die( esc_html__( 'This confirmation expired. Review the Trash again.', 'pixcensus-media-audit' ) );
+				}
+			} elseif ( 'review_empty' === $operation ) {
+				$ids = $this->image_trash_ids();
+			} else {
+				$selection = $this->get_posted_attachment_ids();
+				$ids       = $selection['valid'] ? $selection['ids'] : array();
+			}
+			$eligible = array();
+			$changed  = 0;
+			foreach ( $ids as $id ) {
+				$post = get_post( $id );
+				if ( ! $post || 'attachment' !== $post->post_type || 'trash' !== $post->post_status || ! wp_attachment_is_image( $id ) || ! current_user_can( 'delete_post', $id ) ) {
+					continue;
+				}
+				if ( 'restore' === $operation ) {
+					if ( wp_untrash_post( $id ) ) {
+						++$changed;
+					}
+				} elseif ( 'confirm_delete' === $operation ) {
+					if ( wp_delete_attachment( $id, true ) ) {
+						++$changed;
+					}
+				} else {
+					$eligible[] = $id;
+				}
+			}
+			if ( 'restore' === $operation && $changed ) {
+				update_option( 'pixcensus_usage_results', ( new PIXCENSUS_Scanner() )->run( true ), false );
+			}
+			if ( $eligible ) {
+				$token = wp_generate_uuid4();
+				set_transient( 'pixcensus_delete_' . get_current_user_id() . '_' . $token, $eligible, 600 );
+				$url = add_query_arg( 'confirmation', $token, $url );
+			} else {
+				$url = add_query_arg( 'pixcensus_changed', $changed, $url );
+			}
+		} finally {
+			$this->release_scan_lock();
+		}
+		wp_safe_redirect( $url );
+		exit;
+	}
+
+	/**
+	 * Respect PixCensus protection in native WordPress media operations too.
+	 *
+	 * @param mixed   $result Previous filter result.
+	 * @param WP_Post $post   Post about to be removed.
+	 * @return mixed
+	 */
+	public function respect_manual_protection( $result, $post ) {
+		if ( 'attachment' === $post->post_type && in_array( (int) $post->ID, array_map( 'intval', (array) get_option( 'pixcensus_manual_used_ids', array() ) ), true ) ) {
+			return false;
+		}
+		return $result;
+	}
+
+	/**
+	 * Transfer timestamps before WordPress runs its daily purge when retention changes.
+	 */
+	public function sync_trash_retention(): void {
+		$keep = ! defined( 'EMPTY_TRASH_DAYS' ) || EMPTY_TRASH_DAYS <= 0;
+		$from = $keep ? '_wp_trash_meta_time' : '_pixcensus_trash_time';
+		$to   = $keep ? '_pixcensus_trash_time' : '_wp_trash_meta_time';
+		$page = 1;
+		do {
+			$posts = get_posts(
+				array(
+					'post_type'              => 'attachment',
+					'post_status'            => 'trash',
+					'post_mime_type'         => 'image',
+					'posts_per_page'         => 100,
+					'paged'                  => $page,
+					'orderby'                => 'ID',
+					'order'                  => 'ASC',
+					'update_post_term_cache' => false,
+				)
+			);
+			foreach ( $posts as $post ) {
+				$id    = $post->ID;
+				$stamp = get_post_meta( $id, $from, true );
+				if ( is_numeric( $stamp ) && (int) $stamp > 0 && 'trash' === get_post_status( $id ) ) {
+					update_post_meta( $id, $to, $stamp );
+					if ( get_post_meta( $id, $to, true ) === $stamp ) {
+						delete_post_meta( $id, $from, $stamp );
+					}
+				}
+			}
+			$batch_size = count( $posts );
+			++$page;
+		} while ( 100 === $batch_size );
+	}
+
+	/**
+	 * At zero retention wp_trash_post() deletes files immediately. Keep the
+	 * attachment in native Trash with a separate timestamp for this case.
+	 */
+	private function trash_image( int $id ): bool {
+		if ( defined( 'EMPTY_TRASH_DAYS' ) && EMPTY_TRASH_DAYS > 0 ) {
+			return wp_trash_post( $id ) && 'trash' === get_post_status( $id );
+		}
+		if ( ! wp_update_post(
+			array(
+				'ID'          => $id,
+				'post_status' => 'trash',
+			)
+		) || 'trash' !== get_post_status( $id ) ) {
+			return false;
+		}
+		update_post_meta( $id, '_wp_trash_meta_status', 'inherit' );
+		update_post_meta( $id, '_pixcensus_trash_time', time() );
+		wp_trash_post_comments( $id );
+		return true;
+	}
+
+	/**
+	 * Resolve a site- and user-specific cleanup receipt. Missing receipts match no images.
+	 */
+	private function protected_receipt(): array {
+		$token = filter_input( INPUT_GET, 'pixcensus_receipt', FILTER_UNSAFE_RAW );
+		if ( is_string( $token ) && wp_is_uuid( $token, 4 ) ) {
+			$ids = get_transient( 'pixcensus_kept_' . get_current_user_id() . '_' . $token );
+			if ( is_array( $ids ) ) {
+				return array(
+					'token' => $token,
+					'ids'   => $ids,
+				);
+			}
+		}
+		return array(
+			'token' => '',
+			'ids'   => array(),
+		);
+	}
+
+	/**
+	 * Apply the requested operation only to the IDs checked on the review screen.
+	 */
+	public function handle_cleanup(): void {
+		$this->require_admin_post();
+		$operation = substr( (string) current_action(), strlen( 'admin_post_pixcensus_' ) );
+		if ( ! $this->current_user_can_manage() || 'trash_reviewed' !== $operation ) {
+			wp_die( esc_html__( 'Access denied.', 'pixcensus-media-audit' ) );
+		}
+		$tab    = isset( $_POST['pixcensus_tab'] ) ? sanitize_key( wp_unslash( $_POST['pixcensus_tab'] ) ) : '';
+		$groups = array(
+			'unused' => 'unused_ids',
+			'draft'  => 'draft_only_ids',
+			'used'   => 'used_ids',
+		);
+		if ( ! isset( $groups[ $tab ] ) ) {
+			wp_die( esc_html__( 'Access denied.', 'pixcensus-media-audit' ) );
+		}
+		check_admin_referer( 'pixcensus_cleanup_' . $operation . '_' . $tab, 'pixcensus_nonce_' . $operation );
+		$selection = $this->get_posted_attachment_ids();
+		if ( ! $selection['valid'] ) {
+			wp_die( esc_html__( 'Choose at least one image.', 'pixcensus-media-audit' ) );
+		}
+		if ( ! $this->acquire_scan_lock() ) {
+			wp_die( esc_html__( 'Another operation is running. Please retry.', 'pixcensus-media-audit' ) );
+		}
+
+		$changed   = 0;
+		$protected = array();
+		try {
+			$this->maybe_raise_resource_limits();
+			$usage = ( new PIXCENSUS_Scanner() )->run( true );
+			foreach ( $selection['ids'] as $id ) {
+				$post = get_post( $id );
+				if ( ! $post || 'attachment' !== $post->post_type || 'inherit' !== $post->post_status || ! wp_attachment_is_image( $id ) || ! current_user_can( 'delete_post', $id ) ) {
+					continue;
+				}
+				if ( in_array( $id, array_map( 'intval', (array) get_option( 'pixcensus_manual_used_ids', array() ) ), true ) ) {
+					$protected[] = $id;
+					continue;
+				}
+				if ( ! in_array( $id, $usage[ $groups[ $tab ] ], true ) ) {
+					continue;
+				}
+				if ( $this->trash_image( $id ) ) {
+					++$changed;
+					$usage[ $groups[ $tab ] ] = array_values( array_diff( $usage[ $groups[ $tab ] ], array( $id ) ) );
+				}
+			}
+			update_option( 'pixcensus_usage_results', $usage, false );
+		} finally {
+			$this->release_scan_lock();
+		}
+		$receipt = null;
+		if ( $protected ) {
+			$token = wp_generate_uuid4();
+			if ( set_transient( 'pixcensus_kept_' . get_current_user_id() . '_' . $token, $protected, 24 * 60 * 60 ) ) {
+				$receipt = $token;
+			}
+		}
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'page'                => 'pixcensus-audit',
+					'pixcensus_tab'       => $changed ? 'trash' : $tab,
+					'pixcensus_result'    => 'trash',
+					'pixcensus_changed'   => $changed,
+					'pixcensus_protected' => count( $protected ),
+					'pixcensus_receipt'   => $receipt,
+				),
+				admin_url( 'upload.php' )
+			)
+		);
 		exit;
 	}
 
@@ -391,19 +665,26 @@ final class PIXCENSUS_Plugin {
 	 * @return array<int, int>
 	 */
 	private function add_manual_ids( array $ids, bool $add = true ): array {
-		$pixcensus_ids    = $this->filter_attachment_ids( $ids );
-		$pixcensus_manual = array_map( 'intval', (array) get_option( 'pixcensus_manual_used_ids', array() ) );
-
-		if ( $add ) {
-			$pixcensus_manual = array_values( array_unique( array_merge( $pixcensus_manual, $pixcensus_ids ) ) );
-		} else {
-			$pixcensus_manual = array_values( array_diff( $pixcensus_manual, $pixcensus_ids ) );
+		if ( ! $this->acquire_scan_lock() ) {
+			wp_send_json_error( array( 'message' => __( 'Another operation is running. Please retry.', 'pixcensus-media-audit' ) ), 409 );
 		}
+		try {
+			$pixcensus_ids    = $this->filter_attachment_ids( $ids );
+			$pixcensus_manual = array_map( 'intval', (array) get_option( 'pixcensus_manual_used_ids', array() ) );
 
-		sort( $pixcensus_manual, SORT_NUMERIC );
-		update_option( 'pixcensus_manual_used_ids', $pixcensus_manual );
+			if ( $add ) {
+				$pixcensus_manual = array_values( array_unique( array_merge( $pixcensus_manual, $pixcensus_ids ) ) );
+			} else {
+				$pixcensus_manual = array_values( array_diff( $pixcensus_manual, $pixcensus_ids ) );
+			}
 
-		return $pixcensus_manual;
+			sort( $pixcensus_manual, SORT_NUMERIC );
+			update_option( 'pixcensus_manual_used_ids', $pixcensus_manual, false );
+
+			return $pixcensus_manual;
+		} finally {
+			$this->release_scan_lock();
+		}
 	}
 
 	/**
@@ -544,11 +825,11 @@ final class PIXCENSUS_Plugin {
 			$pixcensus_filter = sanitize_key( $pixcensus_raw_filter );
 		}
 
-		if ( ! in_array( $pixcensus_tab, array( 'unused', 'draft', 'used' ), true ) ) {
+		if ( ! in_array( $pixcensus_tab, array( 'unused', 'draft', 'used', 'trash' ), true ) ) {
 			$pixcensus_tab = 'unused';
 		}
 
-		if ( ! in_array( $pixcensus_filter, array( '', 'manual' ), true ) ) {
+		if ( ! in_array( $pixcensus_filter, array( '', 'manual', 'selection' ), true ) ) {
 			$pixcensus_filter = '';
 		}
 
@@ -566,16 +847,23 @@ final class PIXCENSUS_Plugin {
 
 		$pixcensus_export_ids = array();
 
-		if ( 'unused' === $pixcensus_tab ) {
+		if ( 'trash' === $pixcensus_tab ) {
+			$pixcensus_export_ids = $this->image_trash_ids();
+		} elseif ( 'unused' === $pixcensus_tab ) {
 			$pixcensus_export_ids = $pixcensus_unused_ids;
 		} elseif ( 'draft' === $pixcensus_tab ) {
 			$pixcensus_export_ids = $pixcensus_draft_ids;
 		} else {
 			$pixcensus_export_ids = $pixcensus_used_ids;
 
-			if ( 'manual' === $pixcensus_filter ) {
-				$pixcensus_export_ids = array_values( array_intersect( $pixcensus_export_ids, $pixcensus_manual ) );
-			}
+		}
+		if ( 'manual' === $pixcensus_filter ) {
+			$pixcensus_export_ids = array_values( array_intersect( $pixcensus_export_ids, $pixcensus_manual ) );
+		}
+
+		if ( 'selection' === $pixcensus_filter ) {
+			$receipt              = $this->protected_receipt();
+			$pixcensus_export_ids = array_values( array_intersect( $pixcensus_export_ids, $pixcensus_manual, $receipt['ids'] ) );
 		}
 
 		nocache_headers();
@@ -723,6 +1011,15 @@ final class PIXCENSUS_Plugin {
 	}
 
 	/**
+	 * Require a form submission for administrative mutations.
+	 */
+	private function require_admin_post(): void {
+		if ( ! isset( $_SERVER['REQUEST_METHOD'] ) || 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
+			wp_die( esc_html__( 'Access denied.', 'pixcensus-media-audit' ), '', array( 'response' => 405 ) );
+		}
+	}
+
+	/**
 	 * Check current capability.
 	 *
 	 * @return bool
@@ -854,8 +1151,6 @@ final class PIXCENSUS_Plugin {
 	 * @return bool
 	 */
 	private function acquire_scan_lock(): bool {
-		global $wpdb;
-
 		$pixcensus_now      = time();
 		$pixcensus_existing = get_option( 'pixcensus_scan_lock', false );
 		$pixcensus_expires  = 0;
@@ -870,24 +1165,8 @@ final class PIXCENSUS_Plugin {
 			return false;
 		}
 
-		if ( false !== $pixcensus_existing ) {
-			$pixcensus_serialized = maybe_serialize( $pixcensus_existing );
-
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Conditional deletion provides compare-and-swap semantics for an expired lock.
-			$pixcensus_deleted = $wpdb->delete(
-				$wpdb->options,
-				array(
-					'option_name'  => 'pixcensus_scan_lock',
-					'option_value' => $pixcensus_serialized,
-				),
-				array( '%s', '%s' )
-			);
-
-			if ( 1 !== $pixcensus_deleted ) {
-				return false;
-			}
-
-			wp_cache_delete( 'pixcensus_scan_lock', 'options' );
+		if ( false !== $pixcensus_existing && ! $this->delete_matching_lock( $pixcensus_existing ) ) {
+			return false;
 		}
 
 		$pixcensus_token = wp_generate_uuid4();
@@ -906,6 +1185,30 @@ final class PIXCENSUS_Plugin {
 	}
 
 	/**
+	 * Delete only the observed lock, even if another request has replaced it.
+	 *
+	 * @param mixed $lock Stored lock value, including the legacy numeric format.
+	 */
+	private function delete_matching_lock( $lock ): bool {
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- The Options API has no compare-and-delete; invalidate its cache after the conditional write.
+		$deleted = $wpdb->delete(
+			$wpdb->options,
+			array(
+				'option_name'  => 'pixcensus_scan_lock',
+				'option_value' => maybe_serialize( $lock ),
+			),
+			array( '%s', '%s' )
+		);
+		if ( 1 === $deleted ) {
+			wp_cache_delete( 'pixcensus_scan_lock', 'options' );
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Release the scan lock.
 	 *
 	 * @return void
@@ -919,7 +1222,7 @@ final class PIXCENSUS_Plugin {
 			isset( $pixcensus_lock['token'] ) &&
 			hash_equals( $this->scan_lock_token, (string) $pixcensus_lock['token'] )
 		) {
-			delete_option( 'pixcensus_scan_lock' );
+			$this->delete_matching_lock( $pixcensus_lock );
 		}
 
 		$this->scan_lock_token = '';

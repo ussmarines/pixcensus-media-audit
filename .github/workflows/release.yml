@@ -148,7 +148,10 @@ jobs:
 
           mkdir -p svn-work/trunk svn-work/tags
           rsync -a --delete --exclude='.svn' release/extracted/pixcensus-media-audit/ svn-work/trunk/
+          cp .wordpress-org/screenshot-{1,2}.png svn-work/assets/
           cd svn-work
+          svn add --force assets/screenshot-{1,2}.png >/dev/null
+          svn propset svn:mime-type image/png assets/screenshot-{1,2}.png >/dev/null
           python3 - <<'PY'
           import subprocess
           import xml.etree.ElementTree as ET
@@ -180,7 +183,7 @@ jobs:
               if status is None or status.attrib.get('item') == 'normal':
                   continue
               changed.append(str(PurePosixPath(entry.attrib['path'].replace('\\', '/'))))
-          unexpected = [path for path in changed if not (path == 'trunk' or path.startswith('trunk/') or path == f'tags/{version}' or path.startswith(f'tags/{version}/'))]
+          unexpected = [path for path in changed if not (path in {'assets/screenshot-1.png', 'assets/screenshot-2.png'} or path == 'trunk' or path.startswith('trunk/') or path == f'tags/{version}' or path.startswith(f'tags/{version}/'))]
           if unexpected:
               raise SystemExit(f'Unexpected SVN changes: {unexpected}')
           if not changed:
@@ -202,7 +205,7 @@ jobs:
           cd svn-work
           svn commit \
             --username ussmarines \
-            --password "$WPORG_SVN_PASSWORD" \
+            --password-from-stdin \
             --non-interactive \
             --no-auth-cache \
             -m "Publish PixCensus — Media Usage Audit $VERSION"

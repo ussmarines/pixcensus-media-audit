@@ -40,7 +40,7 @@ async function fetchAdminState(cookie) {
 	});
 	const html = await response.text();
 	const configMatch = html.match(/var PixCensusAdmin = (\{.*?\});/s);
-	const idMatch = html.match(/class="button button-secondary pixcensus-mark-used" data-id="(\d+)"/);
+	const idMatch = html.match(/class="pixcensus-row" id="pixcensus-row-(\d+)"/);
 	const settingsNonceMatch = html.match(/name="pixcensus_settings_nonce" value="([^"]+)"/);
 	const exportNonceMatch = html.match(/href="[^"]*admin-post\.php[^"]*action=pixcensus_export_csv[^"]*_wpnonce=([^&"]+)/);
 
@@ -231,6 +231,16 @@ for (const role of restrictedRoles) {
 	result = await adminPost(restrictedCookies.get(role), settingsFields);
 	assert(result.response.status >= 400, `${role} settings request unexpectedly succeeded.`);
 	assert(result.text.includes('Permission denied.'), `${role} settings denial did not reach the PixCensus capability guard.`);
+}
+
+for (const operation of ['trash_reviewed', 'restore', 'review_empty', 'review_delete', 'confirm_delete']) {
+	const fields = { action: 'pixcensus_' + operation };
+	for (const role of restrictedRoles) {
+		result = await adminPost(restrictedCookies.get(role), fields);
+		assert(result.response.status >= 400 && result.text.includes('Access denied.'), role + ' cleanup action was not denied.');
+	}
+	result = await adminPost(adminCookie, fields, 'GET', baseUrl + '/wp-admin/admin-post.php?action=' + fields.action);
+	assert(result.response.status === 405, 'Cleanup GET must be rejected.');
 }
 
 result = await adminPost(adminCookie, {

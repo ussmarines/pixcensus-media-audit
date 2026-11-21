@@ -8,6 +8,18 @@ final class PluginSecurityTest extends TestCase {
 
 	protected function setUp(): void {
 		parent::setUp();
+		$GLOBALS['wpdb'] = new class() {
+			public $options = 'wp_options';
+			public function delete( $table, $where, $formats ) {
+				$value = get_option( $where['option_name'], false );
+				if ( false === $value || maybe_serialize( $value ) !== $where['option_value'] ) {
+					return 0;
+				}
+				delete_option( $where['option_name'] );
+				return 1;
+			}
+		};
+
 
 		$GLOBALS['pixcensus_test_options']      = array();
 		$GLOBALS['pixcensus_test_site_options'] = array();
@@ -233,6 +245,16 @@ final class PluginSecurityTest extends TestCase {
 		);
 		$release->invoke( $this->plugin );
 		$this->assertSame( 'replacement-owner', get_option( 'pixcensus_scan_lock' )['token'] );
+	}
+
+	public function test_protection_change_respects_another_operation_lock(): void {
+		$GLOBALS['pixcensus_test_post_types'][11] = 'attachment';
+		update_option( 'pixcensus_scan_lock', array( 'token' => 'other', 'expires_at' => time() + 60 ) );
+		$this->set_request( 'pixcensus_mark_manual_used', 'pixcensus_mark_manual_used-valid' );
+		$_POST['id'] = 11;
+		$this->capture_json( array( $this->plugin, 'ajax_mark_manual_used' ), false, 409 );
+		$this->assertSame( array(), get_option( 'pixcensus_manual_used_ids', array() ) );
+		$this->assertSame( 'other', get_option( 'pixcensus_scan_lock' )['token'] );
 	}
 
 	public function test_network_activation_initializes_each_site_and_restores_context(): void {

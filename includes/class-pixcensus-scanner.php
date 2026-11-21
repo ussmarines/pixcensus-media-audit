@@ -38,10 +38,11 @@ class PIXCENSUS_Scanner {
 	/**
 	 * Run the scan.
 	 *
+	 * @param bool $force_drafts Include drafts during cleanup verification.
 	 * @return array<string, mixed>
 	 */
-	public function run(): array {
-		$pixcensus_include_drafts = '1' === get_option( 'pixcensus_include_drafts', '1' );
+	public function run( bool $force_drafts = false ): array {
+		$pixcensus_include_drafts = $force_drafts || '1' === get_option( 'pixcensus_include_drafts', '1' );
 
 		$this->load_cdn_settings();
 
@@ -112,7 +113,7 @@ class PIXCENSUS_Scanner {
 			'used_ids'       => $pixcensus_used_ids,
 			'draft_only_ids' => $pixcensus_draft_only_ids,
 			'unused_ids'     => $pixcensus_unused_ids,
-			'orphans'        => $this->find_orphans( $pixcensus_attachment_ids, $pixcensus_basedir ),
+			'orphans'        => $this->find_orphans( array_merge( $pixcensus_attachment_ids, $this->get_image_attachment_ids( 'trash' ) ), $pixcensus_basedir ),
 			'scanned_at'     => time(),
 			'include_drafts' => $pixcensus_include_drafts,
 			'provenance'     => $this->get_provenance_output(),
@@ -167,9 +168,10 @@ class PIXCENSUS_Scanner {
 	/**
 	 * Return all image attachment IDs.
 	 *
+	 * @param string $status Attachment status to inventory.
 	 * @return array<int, int>
 	 */
-	private function get_image_attachment_ids(): array {
+	private function get_image_attachment_ids( string $status = 'inherit' ): array {
 		$pixcensus_image_mime_types = array_values(
 			array_unique(
 				array_filter(
@@ -181,6 +183,10 @@ class PIXCENSUS_Scanner {
 			)
 		);
 
+		if ( ! $pixcensus_image_mime_types ) {
+			return array();
+		}
+
 		$pixcensus_attachment_ids = array();
 		$pixcensus_page           = 1;
 
@@ -188,7 +194,7 @@ class PIXCENSUS_Scanner {
 			$pixcensus_batch = get_posts(
 				array(
 					'post_type'              => 'attachment',
-					'post_status'            => 'inherit',
+					'post_status'            => $status,
 					'post_mime_type'         => $pixcensus_image_mime_types,
 					'posts_per_page'         => self::ATTACHMENT_BATCH_SIZE,
 					'paged'                  => $pixcensus_page,
@@ -214,6 +220,33 @@ class PIXCENSUS_Scanner {
 	}
 
 	/**
+	 * Relative paths for the registered image, its original and generated sizes.
+	 *
+	 * @param int $id Attachment ID.
+	 * @return string[]
+	 */
+	private function attachment_paths( int $id ): array {
+		$file = get_post_meta( $id, '_wp_attached_file', true );
+		if ( ! is_string( $file ) || '' === $file ) {
+			return array();
+		}
+		$file   = ltrim( wp_normalize_path( $file ), '/' );
+		$paths  = array( $file );
+		$dir    = dirname( $file );
+		$prefix = '.' === $dir ? '' : trailingslashit( $dir );
+		$meta   = wp_get_attachment_metadata( $id );
+		if ( ! empty( $meta['original_image'] ) && is_string( $meta['original_image'] ) ) {
+			$paths[] = $prefix . $meta['original_image'];
+		}
+		foreach ( (array) ( $meta['sizes'] ?? array() ) as $size ) {
+			if ( ! empty( $size['file'] ) && is_string( $size['file'] ) ) {
+				$paths[] = $prefix . $size['file'];
+			}
+		}
+		return $paths;
+	}
+
+	/**
 	 * Build attachment path map for originals and generated sizes.
 	 *
 	 * @param array<int, int> $attachment_ids Attachment IDs.
@@ -223,26 +256,8 @@ class PIXCENSUS_Scanner {
 		$pixcensus_map = array();
 
 		foreach ( $attachment_ids as $pixcensus_attachment_id ) {
-			$pixcensus_relative_file = get_post_meta( $pixcensus_attachment_id, '_wp_attached_file', true );
-
-			if ( empty( $pixcensus_relative_file ) ) {
-				continue;
-			}
-
-			$pixcensus_relative_file                   = ltrim( (string) $pixcensus_relative_file, '/\\' );
-			$pixcensus_map[ $pixcensus_relative_file ] = $pixcensus_attachment_id;
-
-			$pixcensus_metadata = wp_get_attachment_metadata( $pixcensus_attachment_id );
-
-			if ( ! empty( $pixcensus_metadata['sizes'] ) && is_array( $pixcensus_metadata['sizes'] ) ) {
-				$pixcensus_directory = dirname( $pixcensus_relative_file );
-				$pixcensus_directory = ( '.' === $pixcensus_directory ) ? '' : trailingslashit( $pixcensus_directory );
-
-				foreach ( $pixcensus_metadata['sizes'] as $pixcensus_size ) {
-					if ( ! empty( $pixcensus_size['file'] ) ) {
-						$pixcensus_map[ $pixcensus_directory . $pixcensus_size['file'] ] = $pixcensus_attachment_id;
-					}
-				}
+			foreach ( $this->attachment_paths( $pixcensus_attachment_id ) as $path ) {
+				$pixcensus_map[ $path ] = $pixcensus_attachment_id;
 			}
 		}
 
@@ -1069,43 +1084,10 @@ class PIXCENSUS_Scanner {
 		$pixcensus_files = array();
 
 		foreach ( $attachment_ids as $pixcensus_attachment_id ) {
-			$pixcensus_relative_file = get_post_meta( $pixcensus_attachment_id, '_wp_attached_file', true );
-
-			if ( ! is_scalar( $pixcensus_relative_file ) || '' === (string) $pixcensus_relative_file ) {
-				continue;
-			}
-
-			$pixcensus_relative_file = ltrim( wp_normalize_path( (string) $pixcensus_relative_file ), '/\\' );
-			$pixcensus_original_file = $this->resolve_existing_upload_file( $basedir, $pixcensus_relative_file );
-
-			if ( '' !== $pixcensus_original_file ) {
-				$pixcensus_files[] = $pixcensus_original_file;
-			}
-
-			$pixcensus_metadata = wp_get_attachment_metadata( $pixcensus_attachment_id );
-
-			if ( empty( $pixcensus_metadata['sizes'] ) || ! is_array( $pixcensus_metadata['sizes'] ) ) {
-				continue;
-			}
-
-			$pixcensus_directory = dirname( $pixcensus_relative_file );
-			$pixcensus_directory = ( '.' === $pixcensus_directory ) ? '' : trailingslashit( $pixcensus_directory );
-
-			foreach ( $pixcensus_metadata['sizes'] as $pixcensus_size ) {
-				if ( ! is_array( $pixcensus_size ) || ! isset( $pixcensus_size['file'] ) || ! is_scalar( $pixcensus_size['file'] ) ) {
-					continue;
-				}
-
-				$pixcensus_size_file = ltrim( wp_normalize_path( (string) $pixcensus_size['file'] ), '/\\' );
-
-				if ( '' === $pixcensus_size_file ) {
-					continue;
-				}
-
-				$pixcensus_resized_file = $this->resolve_existing_upload_file( $basedir, $pixcensus_directory . $pixcensus_size_file );
-
-				if ( '' !== $pixcensus_resized_file ) {
-					$pixcensus_files[] = $pixcensus_resized_file;
+			foreach ( $this->attachment_paths( $pixcensus_attachment_id ) as $path ) {
+				$file = $this->resolve_existing_upload_file( $basedir, $path );
+				if ( '' !== $file ) {
+					$pixcensus_files[] = $file;
 				}
 			}
 		}
