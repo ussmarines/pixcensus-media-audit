@@ -52,8 +52,10 @@
 		$('.pixcensus-select-all-toggle').prop('checked', allChecked).prop('indeterminate', $checked.length > 0 && !allChecked);
 		var $status = $('#pixcensus-selected');
 		$status.text($status.data('label') + ': ' + $checked.length);
-		$('#pixcensus-cleanup button').not('[value="pixcensus_review_empty"]').prop('disabled', !$checked.length);
-		$('#pixcensus-bulk-unmark').prop('disabled', !$checked.closest('tr').find('.pixcensus-unmark-used').length);
+		$('#pixcensus-cleanup button').not('[value="pixcensus_review_empty"], [data-unavailable]').prop('disabled', !$checked.length);
+		var hasManualProtection = $checked.closest('tr').find('.pixcensus-unmark-used').length > 0;
+		$('#pixcensus-bulk-unmark').prop('disabled', !hasManualProtection);
+		$('#pixcensus-protection-help').prop('hidden', !$checked.length || hasManualProtection);
 	}
 
 	function updateQuickCount() {
@@ -237,7 +239,7 @@
 				return $.extend({}, defaultColumns);
 			}
 
-			return $.extend({}, defaultColumns, JSON.parse(raw));
+			return $.extend({}, defaultColumns, JSON.parse(raw), {file: true});
 		} catch (error) {
 			return $.extend({}, defaultColumns);
 		}

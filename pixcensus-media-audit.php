@@ -3,7 +3,7 @@
  * Plugin Name: PixCensus — Media Usage Audit
  * Plugin URI: https://github.com/ussmarines/pixcensus-media-audit
  * Description: Inventory media usage with provenance, CSV export, manual review tools, and CDN rewrite support.
- * Version: 3.2.0
+ * Version: 3.2.1
  * Author: ussmarines
  * Author URI: https://github.com/ussmarines
  * License: GPL-2.0-or-later
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'PIXCENSUS_VERSION' ) ) {
-	define( 'PIXCENSUS_VERSION', '3.2.0' );
+	define( 'PIXCENSUS_VERSION', '3.2.1' );
 }
 
 if ( ! defined( 'PIXCENSUS_SLUG' ) ) {
@@ -496,7 +496,8 @@ final class PIXCENSUS_Plugin {
 			add_query_arg(
 				array(
 					'page'              => 'pixcensus-audit',
-					'pixcensus_tab'     => 'cleanup',
+					'pixcensus_tab'     => in_array( $operation, array( 'trash', 'trash_reviewed' ), true ) && $changed ? 'trash' : ( 'queue' === $operation || 'trash_reviewed' === $operation ? 'unused' : 'cleanup' ),
+					'pixcensus_result'  => 'trash_reviewed' === $operation ? 'trash' : $operation,
 					'pixcensus_changed' => $changed,
 				),
 				admin_url( 'upload.php' )

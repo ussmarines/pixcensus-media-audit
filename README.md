@@ -11,7 +11,7 @@ Review image usage and prepare a cleanup selection in the WordPress Media Librar
 [![QA](https://github.com/ussmarines/pixcensus-media-audit/actions/workflows/qa.yml/badge.svg)](https://github.com/ussmarines/pixcensus-media-audit/actions/workflows/qa.yml)
 [![License](https://img.shields.io/badge/license-GPL--2.0--or--later-blue.svg)](LICENSE)
 
-The local 3.2.0 test package adds a shared cleanup selection and guarded Media Trash actions.
+The local 3.2.1 test package adds a shared cleanup selection and guarded Media Trash actions.
 
 ## Official release
 
@@ -51,7 +51,7 @@ It can also report image files found in the uploads directory that are not regis
 
 ## Review and clean up images
 
-In **Media → PixCensus**, scan and open **To review**. Check images and add them to the shared site selection. In **Cleanup selection**, check the items you want to process. When WordPress Media Trash is available, PixCensus scans again including drafts, skips protected and referenced images, and moves eligible attachments to Trash. Restore them in the Media Library before WordPress empties its Trash. External references can escape detection.
+In **Media → PixCensus**, scan and open **To review**. Check images and choose **Move to Trash**, or choose **Save for later** to keep a shared reminder. When Media Trash is disabled, expand the activation instructions beneath the actions. When WordPress Media Trash is available, PixCensus scans again including drafts, skips protected and referenced images, and moves eligible attachments to Trash. Restore them in the Media Library before WordPress empties its Trash. External references can escape detection.
 
 ## Installation
 

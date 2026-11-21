@@ -204,7 +204,7 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 		'unused'  => array( __( 'To review', 'pixcensus-media-audit' ), count( $pixcensus_unused_ids ) ),
 		'draft'   => array( __( 'Drafts', 'pixcensus-media-audit' ), count( $pixcensus_draft_ids ) ),
 		'used'    => array( __( 'In use', 'pixcensus-media-audit' ), count( $pixcensus_used_ids ) ),
-		'cleanup' => array( __( 'Cleanup selection', 'pixcensus-media-audit' ), count( $pixcensus_queue ) ),
+		'cleanup' => array( __( 'Review later', 'pixcensus-media-audit' ), count( $pixcensus_queue ) ),
 		'trash'   => array( __( 'Image Trash', 'pixcensus-media-audit' ), count( $pixcensus_trash_ids ) ),
 	);
 	?>
@@ -235,7 +235,17 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 	$pixcensus_changed = filter_input( INPUT_GET, 'pixcensus_changed', FILTER_VALIDATE_INT );
 	if ( is_int( $pixcensus_changed ) ) :
 		?>
-		<p class="notice notice-info inline" role="status"><?php esc_html_e( 'Images processed:', 'pixcensus-media-audit' ); ?> <?php echo esc_html( (string) $pixcensus_changed ); ?></p>
+		<p class="notice notice-info inline" role="status">
+		<?php
+			$pixcensus_messages = array(
+				'queue'  => __( 'Images added to Review later:', 'pixcensus-media-audit' ),
+				'remove' => __( 'Images removed from the list and kept in the Media Library:', 'pixcensus-media-audit' ),
+				'trash'  => __( 'Images moved to Trash:', 'pixcensus-media-audit' ),
+			);
+			$pixcensus_result   = filter_input( INPUT_GET, 'pixcensus_result', FILTER_UNSAFE_RAW );
+			echo esc_html( $pixcensus_messages[ is_string( $pixcensus_result ) ? $pixcensus_result : '' ] ?? __( 'Images processed:', 'pixcensus-media-audit' ) );
+			?>
+			<?php echo esc_html( (string) $pixcensus_changed ); ?></p>
 	<?php endif; ?>
 	<?php
 	$pixcensus_token = filter_input( INPUT_GET, 'confirmation', FILTER_UNSAFE_RAW );
@@ -268,7 +278,7 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 				<div id="pixcensus-columns-panel" class="pixcensus-columns-panel" role="group" style="display:none;">
 					<label><input type="checkbox" class="pixcensus-col-toggle" id="pixcensus-col-thumb" data-col="thumb" checked /> <?php esc_html_e( 'Preview', 'pixcensus-media-audit' ); ?></label>
 					<label><input type="checkbox" class="pixcensus-col-toggle" id="pixcensus-col-id" data-col="id" checked /> <?php esc_html_e( 'ID', 'pixcensus-media-audit' ); ?></label>
-					<label><input type="checkbox" class="pixcensus-col-toggle" id="pixcensus-col-file" data-col="file" checked /> <?php esc_html_e( 'File', 'pixcensus-media-audit' ); ?></label>
+					<label><input type="checkbox" class="pixcensus-col-toggle" id="pixcensus-col-file" data-col="file" checked disabled /> <?php esc_html_e( 'File', 'pixcensus-media-audit' ); ?></label>
 					<label><input type="checkbox" class="pixcensus-col-toggle" id="pixcensus-col-uploaded" data-col="uploaded" checked /> <?php esc_html_e( 'Uploaded', 'pixcensus-media-audit' ); ?></label>
 					<label><input type="checkbox" class="pixcensus-col-toggle" id="pixcensus-col-provenance" data-col="provenance" checked /> <?php esc_html_e( 'Where used', 'pixcensus-media-audit' ); ?></label>
 					<label><input type="checkbox" class="pixcensus-col-toggle" id="pixcensus-col-count" data-col="count" checked /> <?php esc_html_e( 'Locations', 'pixcensus-media-audit' ); ?></label>
@@ -304,22 +314,37 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 		</div>
 	</div>
 
+	<?php if ( 'cleanup' === $pixcensus_tab ) : ?>
+		<p><?php esc_html_e( 'Images saved for a later review stay in the Media Library. Removing an image from this list only removes the reminder.', 'pixcensus-media-audit' ); ?></p>
+	<?php endif; ?>
 	<form id="pixcensus-cleanup" class="pixcensus-bulk" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 		<label><input type="checkbox" class="pixcensus-select-all-toggle" /> <?php esc_html_e( 'Select all visible', 'pixcensus-media-audit' ); ?></label>
 		<output id="pixcensus-selected" aria-live="polite" data-label="<?php esc_attr_e( 'Selected', 'pixcensus-media-audit' ); ?>"></output>
 		<?php
 		$pixcensus_actions = array();
+		if ( in_array( $pixcensus_tab, array( 'unused', 'cleanup' ), true ) ) {
+			$pixcensus_trash_action = 'unused' === $pixcensus_tab ? 'trash_reviewed' : 'trash';
+			wp_nonce_field( 'pixcensus_cleanup_' . $pixcensus_trash_action, 'pixcensus_nonce_' . $pixcensus_trash_action, false );
+			?>
+			<button class="button button-primary" name="action" value="<?php echo esc_attr( 'pixcensus_' . $pixcensus_trash_action ); ?>"
+			<?php
+			if ( empty( $pixcensus_media_trash_enabled ) ) {
+				echo 'disabled data-unavailable aria-describedby="pixcensus-trash-help"';
+			}
+			?>
+			><?php esc_html_e( 'Move to Trash', 'pixcensus-media-audit' ); ?></button>
+			<?php
+		}
 		if ( 'unused' === $pixcensus_tab ) {
-			$pixcensus_actions['queue'] = __( 'Add to cleanup selection', 'pixcensus-media-audit' );
+			$pixcensus_actions['queue'] = __( 'Save for later', 'pixcensus-media-audit' );
 		} elseif ( 'cleanup' === $pixcensus_tab ) {
-			$pixcensus_actions['remove'] = __( 'Remove from selection', 'pixcensus-media-audit' );
+			$pixcensus_actions['remove'] = __( 'Remove from this list', 'pixcensus-media-audit' );
 		} elseif ( 'trash' === $pixcensus_tab ) {
 			$pixcensus_actions['restore']       = __( 'Restore selected', 'pixcensus-media-audit' );
 			$pixcensus_actions['review_delete'] = __( 'Delete selected permanently…', 'pixcensus-media-audit' );
-			$pixcensus_actions['review_empty']  = __( 'Empty image Trash…', 'pixcensus-media-audit' );
-		}
-		if ( in_array( $pixcensus_tab, array( 'unused', 'cleanup' ), true ) && ! empty( $pixcensus_media_trash_enabled ) ) {
-			$pixcensus_actions[ 'unused' === $pixcensus_tab ? 'trash_reviewed' : 'trash' ] = __( 'Move to Trash', 'pixcensus-media-audit' );
+			if ( $pixcensus_trash_ids ) {
+				$pixcensus_actions['review_empty'] = __( 'Empty image Trash…', 'pixcensus-media-audit' );
+			}
 		}
 		foreach ( $pixcensus_actions as $pixcensus_action => $pixcensus_label ) :
 			wp_nonce_field( 'pixcensus_cleanup_' . $pixcensus_action, 'pixcensus_nonce_' . $pixcensus_action, false );
@@ -329,11 +354,20 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 		<?php if ( 'unused' === $pixcensus_tab || 'draft' === $pixcensus_tab ) : ?>
 			<button type="button" class="button" id="pixcensus-bulk-mark"><?php esc_html_e( 'Mark as used', 'pixcensus-media-audit' ); ?></button>
 		<?php elseif ( 'used' === $pixcensus_tab ) : ?>
-			<button type="button" class="button" id="pixcensus-bulk-unmark"><?php esc_html_e( 'Remove manual protection', 'pixcensus-media-audit' ); ?></button>
+			<button type="button" class="button" id="pixcensus-bulk-unmark" aria-describedby="pixcensus-protection-help"><?php esc_html_e( 'Remove manual protection', 'pixcensus-media-audit' ); ?></button>
 		<?php endif; ?>
 	</form>
+	<?php if ( 'used' === $pixcensus_tab ) : ?>
+		<p id="pixcensus-protection-help" hidden><?php esc_html_e( 'Only manually protected images can have their protection removed. Open the linked publication to review a detected use.', 'pixcensus-media-audit' ); ?></p>
+	<?php endif; ?>
 	<?php if ( in_array( $pixcensus_tab, array( 'unused', 'cleanup' ), true ) && empty( $pixcensus_media_trash_enabled ) ) : ?>
-		<p><?php esc_html_e( 'Media Trash is disabled on this site.', 'pixcensus-media-audit' ); ?></p>
+		<div class="notice notice-warning inline" id="pixcensus-trash-help">
+			<p><strong><?php esc_html_e( 'Media Trash is disabled on this site.', 'pixcensus-media-audit' ); ?></strong></p>
+			<details><summary><?php esc_html_e( 'How to enable Media Trash', 'pixcensus-media-audit' ); ?></summary>
+				<p><?php esc_html_e( 'Ask your site administrator or host to set MEDIA_TRASH to true in wp-config.php, before WordPress loads wp-settings.php. Update the existing definition if present, or add this line:', 'pixcensus-media-audit' ); ?></p>
+				<p><code>define( 'MEDIA_TRASH', true );</code></p>
+				<p><?php esc_html_e( 'If EMPTY_TRASH_DAYS is set to 0, change it to a positive number such as 30. This sets the site-wide retention period in days. Save the configuration and reload this page.', 'pixcensus-media-audit' ); ?></p>
+			</details></div>
 	<?php endif; ?>
 	<p class="pixcensus-page-summary">
 	<?php

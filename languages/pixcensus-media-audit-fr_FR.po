@@ -2,7 +2,7 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: PixCensus — Media Usage Audit 3.2.0\n"
+"Project-Id-Version: PixCensus — Media Usage Audit 3.2.1\n"
 "Report-Msgid-Bugs-To: https://github.com/ussmarines/pixcensus-media-audit/issues\n"
 "Last-Translator: ussmarines\n"
 "Language: fr_FR\n"
@@ -522,3 +522,36 @@ msgstr "Faire un don via PayPal"
 #, php-format
 msgid "Images %1$d–%2$d of %3$d"
 msgstr "Images %1$d à %2$d sur %3$d"
+
+msgid "Review later"
+msgstr "À revoir plus tard"
+
+msgid "Save for later"
+msgstr "Garder pour plus tard"
+
+msgid "Remove from this list"
+msgstr "Retirer de cette liste"
+
+msgid "Images added to Review later:"
+msgstr "Images ajoutées à « À revoir plus tard » :"
+
+msgid "Images removed from the list and kept in the Media Library:"
+msgstr "Images retirées de la liste et conservées dans la médiathèque :"
+
+msgid "Images moved to Trash:"
+msgstr "Images mises à la corbeille :"
+
+msgid "How to enable Media Trash"
+msgstr "Comment activer la corbeille des médias ?"
+
+msgid "Ask your site administrator or host to set MEDIA_TRASH to true in wp-config.php, before WordPress loads wp-settings.php. Update the existing definition if present, or add this line:"
+msgstr "Demandez à l’administrateur du site ou à votre hébergeur de définir MEDIA_TRASH à true dans wp-config.php, avant le chargement de wp-settings.php. Modifiez la définition existante ou, si elle est absente, ajoutez cette ligne :"
+
+msgid "If EMPTY_TRASH_DAYS is set to 0, change it to a positive number such as 30. This sets the site-wide retention period in days. Save the configuration and reload this page."
+msgstr "Si EMPTY_TRASH_DAYS vaut 0, remplacez cette valeur par un nombre positif, par exemple 30. Ce délai de conservation, exprimé en jours, concerne tout le site. Enregistrez la configuration et rechargez cette page."
+
+msgid "Images saved for a later review stay in the Media Library. Removing an image from this list only removes the reminder."
+msgstr "Les images mises de côté restent dans la médiathèque. Les retirer de cette liste efface seulement le rappel."
+
+msgid "Only manually protected images can have their protection removed. Open the linked publication to review a detected use."
+msgstr "Seules les images protégées manuellement peuvent perdre cette protection. Pour vérifier une utilisation détectée, ouvrez la publication indiquée dans le tableau."
