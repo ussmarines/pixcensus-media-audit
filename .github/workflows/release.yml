@@ -205,10 +205,10 @@ jobs:
           cd svn-work
           svn commit \
             --username ussmarines \
-            --password "$WPORG_SVN_PASSWORD" \
+            --password-from-stdin \
             --non-interactive \
             --no-auth-cache \
-            -m "Publish PixCensus — Media Usage Audit $VERSION"
+            -m "Publish PixCensus â€” Media Usage Audit $VERSION"
 
   publish:
     needs:
@@ -243,7 +243,7 @@ jobs:
             --draft \
             --verify-tag \
             --generate-notes \
-            --title "PixCensus — Media Usage Audit ${RELEASE_TAG#v}"
+            --title "PixCensus â€” Media Usage Audit ${RELEASE_TAG#v}"
           gh release upload "$RELEASE_TAG" \
             release/pixcensus-media-audit.zip \
             release/pixcensus-media-audit.zip.sha256 \

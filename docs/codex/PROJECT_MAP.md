@@ -3,9 +3,8 @@
 ## Audit baseline
 
 - Audited source commit: `bb043eb2ef67914272af7c20fa3ae78bf4da0d38` (`main`, defense-in-depth hardening integrated and post-merge QA, CodeQL, and OpenSSF checks verified on 2026-08-11).
-- Release preparation: `3.0.4` on `release/3.0.4-wordpress-7.1`.
-- Local test package: `3.4.9` on `codex/media-cleanup-review`.
-- Declared compatibility: WordPress 5.9+, PHP 7.4+, tested through WordPress 7.1; dedicated compatibility validation uses WordPress 7.1 RC2.
+- Release preparation: `3.4.9` on `codex/media-cleanup-review`.
+- Declared compatibility: WordPress 5.9+, PHP 7.4+, tested through WordPress 7.1; dedicated compatibility validation uses WordPress 7.1.5.
 - Entry point: `pixcensus-media-audit.php`.
 - Text domain: `pixcensus-media-audit`; translations live under `languages/`.
 - Canonical project URL: `https://github.com/ussmarines/pixcensus-media-audit`; WordPress.org slug: `pixcensus-media-audit`.
@@ -32,7 +31,7 @@ Runtime code remains dependency-free. Composer/npm are development-only, WordPre
 
 ## Data flow
 
-1. An administrator with `manage_options` opens **Media → PixCensus — Media Usage Audit**.
+1. An administrator with `manage_options` opens **Media â†’ PixCensus â€” Media Usage Audit**.
 2. WordPress localizes the admin AJAX URL, action-specific nonces, last-scan time, page URLs, and UI strings into `PixCensusAdmin`.
 3. **Run scan** posts to `wp_ajax_pixcensus_run_scan`; the handler verifies nonce and capability, then calls `PIXCENSUS_Scanner::run()`.
 4. The scanner loads settings, enumerates image attachments, maps originals/generated sizes, scans supported sources, classifies IDs, enumerates orphan files within the canonical uploads boundary, and limits provenance to 12 labels per attachment.
