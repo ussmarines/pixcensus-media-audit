@@ -1,0 +1,275 @@
+{
+  "date": "2026-11-21",
+  "scope": "Codex tools and vendored skills only",
+  "sourceBase": "5edd88fcc43f1e06dee1eca64810f5b8b37bcf38",
+  "skills": [
+    {
+      "name": "wp-performance",
+      "path": ".agents/skills/wp-performance",
+      "repository": "https://github.com/WordPress/agent-skills",
+      "commit": "7374e6f1c913b3b02b25465d266d9c0e0a04fc96",
+      "project": true,
+      "changedFiles": 2,
+      "removedObsoleteFiles": 0,
+      "status": "updated",
+      "backupPreservedLocally": true
+    },
+    {
+      "name": "wp-phpstan",
+      "path": ".agents/skills/wp-phpstan",
+      "repository": "https://github.com/WordPress/agent-skills",
+      "commit": "7374e6f1c913b3b02b25465d266d9c0e0a04fc96",
+      "project": true,
+      "changedFiles": 0,
+      "removedObsoleteFiles": 0,
+      "status": "current"
+    },
+    {
+      "name": "wp-playground",
+      "path": ".agents/skills/wp-playground",
+      "repository": "https://github.com/WordPress/agent-skills",
+      "commit": "7374e6f1c913b3b02b25465d266d9c0e0a04fc96",
+      "project": true,
+      "changedFiles": 7,
+      "removedObsoleteFiles": 2,
+      "status": "updated",
+      "backupPreservedLocally": true
+    },
+    {
+      "name": "wp-plugin-development",
+      "path": ".agents/skills/wp-plugin-development",
+      "repository": "https://github.com/WordPress/agent-skills",
+      "commit": "7374e6f1c913b3b02b25465d266d9c0e0a04fc96",
+      "project": true,
+      "changedFiles": 2,
+      "removedObsoleteFiles": 0,
+      "status": "updated",
+      "backupPreservedLocally": true
+    },
+    {
+      "name": "wp-plugin-directory-guidelines",
+      "path": ".agents/skills/wp-plugin-directory-guidelines",
+      "repository": "https://github.com/WordPress/agent-skills",
+      "commit": "7374e6f1c913b3b02b25465d266d9c0e0a04fc96",
+      "project": true,
+      "changedFiles": 2,
+      "removedObsoleteFiles": 0,
+      "status": "updated",
+      "backupPreservedLocally": true
+    },
+    {
+      "name": "wp-project-triage",
+      "path": ".agents/skills/wp-project-triage",
+      "repository": "https://github.com/WordPress/agent-skills",
+      "commit": "7374e6f1c913b3b02b25465d266d9c0e0a04fc96",
+      "project": true,
+      "changedFiles": 1,
+      "removedObsoleteFiles": 0,
+      "status": "updated",
+      "backupPreservedLocally": true
+    },
+    {
+      "name": "wp-wpcli-and-ops",
+      "path": ".agents/skills/wp-wpcli-and-ops",
+      "repository": "https://github.com/WordPress/agent-skills",
+      "commit": "7374e6f1c913b3b02b25465d266d9c0e0a04fc96",
+      "project": true,
+      "changedFiles": 0,
+      "removedObsoleteFiles": 0,
+      "status": "current"
+    },
+    {
+      "name": "wp-i18n-workflow",
+      "path": ".agents/skills/wp-i18n-workflow",
+      "project": true,
+      "repository": "https://github.com/mralaminahamed/wp-dev-skills",
+      "commit": "762b7bc76443c7103623d11322a250910dfd8326",
+      "status": "current"
+    },
+    {
+      "name": "wp-multisite",
+      "path": ".agents/skills/wp-multisite",
+      "project": true,
+      "repository": "https://github.com/mralaminahamed/wp-dev-skills",
+      "commit": "762b7bc76443c7103623d11322a250910dfd8326",
+      "status": "current"
+    }
+  ],
+  "globalToolVersions": [
+    {
+      "name": "Browser Harness",
+      "before": "0.1.10",
+      "after": "0.1.13"
+    },
+    {
+      "name": "Browser Use",
+      "before": "0.13.8",
+      "after": "1.0.7"
+    },
+    {
+      "name": "Graphify",
+      "before": "0.9.57",
+      "after": "0.9.114"
+    },
+    {
+      "name": "Headroom",
+      "before": "0.32.1",
+      "after": "0.44.0"
+    },
+    {
+      "name": "RTK",
+      "after": "1.2.1"
+    },
+    {
+      "name": "Trivy",
+      "before": "0.70.0",
+      "after": "0.76.2"
+    },
+    {
+      "name": "OpenGrep",
+      "before": "1.22.0",
+      "after": "2.0.0"
+    },
+    {
+      "name": "Zizmor",
+      "before": "1.26.1",
+      "after": "1.32.0"
+    },
+    {
+      "name": "uv",
+      "before": "0.12.3",
+      "after": "0.13.9"
+    },
+    {
+      "name": "GitHub CLI",
+      "before": "2.96.0",
+      "after": "2.105.0"
+    },
+    {
+      "name": "GitLab CLI",
+      "before": "1.115.0",
+      "after": "1.131.0"
+    },
+    {
+      "name": "Open Code Review",
+      "before": "1.13.3",
+      "after": "1.14.0"
+    },
+    {
+      "name": "Web-ext",
+      "before": "10.6.0",
+      "after": "10.8.0"
+    },
+    {
+      "name": "Gitleaks",
+      "before": "8.30.1",
+      "after": "8.30.1",
+      "status": "current"
+    }
+  ],
+  "validationLimits": [
+    "Global tool versions are the historical 2026-11-21 inventory, not a current verification.",
+    "Playground runtime, browser WebMCP, MCP and Sites API integrations were reviewed as documentation; they were not executed by this PR.",
+    "Project WordPress 5.9+ and PHP 7.4+ requirements override generic skill compatibility targets."
+  ],
+  "publication": "Prepared for a PR limited to vendored skills, provenance and test evidence; addon remains 3.5.0.",
+  "sourceBranch": "chore/codex-skills-20261121",
+  "branch": "codex/review-skills-ledger-20261125",
+  "reviewDate": "2026-11-25",
+  "reviewBase": "168786267e443afba5fb04e2cabc198ed1ad1cb6",
+  "globalToolVersionsSnapshotDate": "2026-11-21",
+  "localAdaptations": [
+    "Blueprint guidance falls back to a bundled reference when the optional blueprint skill is unavailable.",
+    "Repository compatibility, authorization and differential-test rules explicitly take precedence over generic Playground guidance."
+  ],
+  "sourceVerification": [
+    {
+      "path": ".agents/skills/wp-performance/SKILL.md",
+      "source": "https://raw.githubusercontent.com/WordPress/agent-skills/7374e6f1c913b3b02b25465d266d9c0e0a04fc96/skills/wp-performance/SKILL.md",
+      "status": "matches-pinned-upstream"
+    },
+    {
+      "path": ".agents/skills/wp-performance/references/wp-cli-doctor.md",
+      "source": "https://raw.githubusercontent.com/WordPress/agent-skills/7374e6f1c913b3b02b25465d266d9c0e0a04fc96/skills/wp-performance/references/wp-cli-doctor.md",
+      "status": "matches-pinned-upstream"
+    },
+    {
+      "path": ".agents/skills/wp-playground/SKILL.md",
+      "source": "https://raw.githubusercontent.com/WordPress/agent-skills/7374e6f1c913b3b02b25465d266d9c0e0a04fc96/skills/wp-playground/SKILL.md",
+      "status": "local-adaptation"
+    },
+    {
+      "path": ".agents/skills/wp-playground/references/blueprints.md",
+      "source": "https://developer.wordpress.org/playground/blueprints/",
+      "status": "local-fallback",
+      "note": "New local fallback; this reference is absent from the pinned upstream revision."
+    },
+    {
+      "path": ".agents/skills/wp-playground/references/cli.md",
+      "source": "https://raw.githubusercontent.com/WordPress/agent-skills/7374e6f1c913b3b02b25465d266d9c0e0a04fc96/skills/wp-playground/references/cli.md",
+      "status": "local-adaptation"
+    },
+    {
+      "path": ".agents/skills/wp-playground/references/debugging.md",
+      "source": "https://raw.githubusercontent.com/WordPress/agent-skills/7374e6f1c913b3b02b25465d266d9c0e0a04fc96/skills/wp-playground/references/debugging.md",
+      "status": "matches-pinned-upstream"
+    },
+    {
+      "path": ".agents/skills/wp-playground/references/mcp.md",
+      "source": "https://raw.githubusercontent.com/WordPress/agent-skills/7374e6f1c913b3b02b25465d266d9c0e0a04fc96/skills/wp-playground/references/mcp.md",
+      "status": "matches-pinned-upstream"
+    },
+    {
+      "path": ".agents/skills/wp-playground/references/sites-api.md",
+      "source": "https://raw.githubusercontent.com/WordPress/agent-skills/7374e6f1c913b3b02b25465d266d9c0e0a04fc96/skills/wp-playground/references/sites-api.md",
+      "status": "matches-pinned-upstream"
+    },
+    {
+      "path": ".agents/skills/wp-playground/references/webmcp.md",
+      "source": "https://raw.githubusercontent.com/WordPress/agent-skills/7374e6f1c913b3b02b25465d266d9c0e0a04fc96/skills/wp-playground/references/webmcp.md",
+      "status": "matches-pinned-upstream"
+    },
+    {
+      "path": ".agents/skills/wp-playground/references/website.md",
+      "source": "https://raw.githubusercontent.com/WordPress/agent-skills/7374e6f1c913b3b02b25465d266d9c0e0a04fc96/skills/wp-playground/references/website.md",
+      "status": "local-adaptation"
+    },
+    {
+      "path": ".agents/skills/wp-plugin-development/references/security.md",
+      "source": "https://raw.githubusercontent.com/WordPress/agent-skills/7374e6f1c913b3b02b25465d266d9c0e0a04fc96/skills/wp-plugin-development/references/security.md",
+      "status": "matches-pinned-upstream"
+    },
+    {
+      "path": ".agents/skills/wp-plugin-development/scripts/detect_plugins.mjs",
+      "source": "https://raw.githubusercontent.com/WordPress/agent-skills/7374e6f1c913b3b02b25465d266d9c0e0a04fc96/skills/wp-plugin-development/scripts/detect_plugins.mjs",
+      "status": "matches-pinned-upstream"
+    },
+    {
+      "path": ".agents/skills/wp-plugin-directory-guidelines/SKILL.md",
+      "source": "https://raw.githubusercontent.com/WordPress/agent-skills/7374e6f1c913b3b02b25465d266d9c0e0a04fc96/skills/wp-plugin-directory-guidelines/SKILL.md",
+      "status": "matches-pinned-upstream"
+    },
+    {
+      "path": ".agents/skills/wp-plugin-directory-guidelines/references/plugin-check.md",
+      "source": "https://raw.githubusercontent.com/WordPress/agent-skills/7374e6f1c913b3b02b25465d266d9c0e0a04fc96/skills/wp-plugin-directory-guidelines/references/plugin-check.md",
+      "status": "matches-pinned-upstream"
+    },
+    {
+      "path": ".agents/skills/wp-project-triage/scripts/detect_wp_project.mjs",
+      "source": "https://raw.githubusercontent.com/WordPress/agent-skills/7374e6f1c913b3b02b25465d266d9c0e0a04fc96/skills/wp-project-triage/scripts/detect_wp_project.mjs",
+      "status": "matches-pinned-upstream"
+    }
+  ],
+  "reviewSummary": {
+    "sourceFiles": 15,
+    "provenance": {
+      "matches-pinned-upstream": 11,
+      "local-adaptation": 3,
+      "local-fallback": 1
+    },
+    "detectorFunctionalTests": 5,
+    "relativeLinksChecked": 20,
+    "addonRuntimeChanged": false,
+    "addonVersion": "3.5.0"
+  }
+}

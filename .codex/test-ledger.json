@@ -4553,6 +4553,142 @@
       "coverage": "Tracked release tree secrets and public identity",
       "configuration": "Repository QA configuration",
       "environment_signature": "Windows native PowerShell PHP83 local checkout"
+    },
+    {
+      "name": "syntax-wp-project-triage",
+      "command": "$env:USERPROFILE\\AppData\\Roaming\\fnm\\node-versions\\v24.22.0\\installation\\node.exe --check D:\\Documents\\GitHub\\pixcensus-media-audit\\.agents\\skills\\wp-project-triage\\scripts\\detect_wp_project.mjs",
+      "tool_version": "Node.js v24.22.0",
+      "date": "2026-11-21",
+      "commit_tested": "5edd88fcc43f1e06dee1eca64810f5b8b37bcf38+codex-skills-worktree",
+      "result": "pass",
+      "duration_ms": 60,
+      "coverage": [
+        ".agents/skills/wp-project-triage/scripts/detect_wp_project.mjs"
+      ],
+      "configuration": [
+        "AGENTS.md"
+      ],
+      "environment_signature": "Windows|Node-v24.22.0|syntax-only-no-WordPress-runtime",
+      "original_command_sha256": "cb06f2b5f52a38163424a4a55ee279f84a58a100db8467ffcdf8cb842e632a01",
+      "command_redaction": "User profile and backup paths are redacted for publication; the original exact command is retained in the local backup."
+    },
+    {
+      "name": "syntax-wp-plugin-development",
+      "command": "$env:USERPROFILE\\AppData\\Roaming\\fnm\\node-versions\\v24.22.0\\installation\\node.exe --check D:\\Documents\\GitHub\\pixcensus-media-audit\\.agents\\skills\\wp-plugin-development\\scripts\\detect_plugins.mjs",
+      "tool_version": "Node.js v24.22.0",
+      "date": "2026-11-21",
+      "commit_tested": "5edd88fcc43f1e06dee1eca64810f5b8b37bcf38+codex-skills-worktree",
+      "result": "pass",
+      "duration_ms": 60,
+      "coverage": [
+        ".agents/skills/wp-plugin-development/scripts/detect_plugins.mjs"
+      ],
+      "configuration": [
+        "AGENTS.md"
+      ],
+      "environment_signature": "Windows|Node-v24.22.0|syntax-only-no-WordPress-runtime",
+      "original_command_sha256": "7fa96be23183ba7eb782856d3de4c2f4699d2de337411ee599c4b321cec6840a",
+      "command_redaction": "User profile and backup paths are redacted for publication; the original exact command is retained in the local backup."
+    },
+    {
+      "name": "Browser seven improvements journey",
+      "command": "python $env:USERPROFILE/.agents/skills/webapp-testing/scripts/with_server.py --server \"php -d extension=pdo_sqlite -d extension=sqlite3 -S 127.0.0.1:8925 -t $env:USERPROFILE/AppData/Local/Temp/pixcensus-qa-20261125/wordpress\" --port 8925 -- node $env:USERPROFILE/AppData/Local/Temp/pixcensus-qa-20261125/ui.cjs",
+      "tool_version": "PHP 8.3.33 / Node 24.22.0 / locked Composer tools",
+      "date": "2026-11-25",
+      "commit_tested": "5edd88fcc43f1e06dee1eca64810f5b8b37bcf38+seven-improvements-worktree",
+      "result": "fail",
+      "duration_ms": 33148,
+      "coverage": "Real Chromium desktop and mobile admin, AJAX, filter, evidence, selection bytes and hidden checkboxes",
+      "configuration": "Repository QA configuration",
+      "environment_signature": "Windows native PowerShell PHP83 local checkout",
+      "original_command_sha256": "c587ac1acfd98a8e4e4f9a4e8e0f67d8dd58824cff803b774180abc77ee30401",
+      "command_redaction": "User profile and backup paths are redacted for publication; the original exact command is retained in the local backup."
+    },
+    {
+      "name": "Main 3.5.0 synchronization and preservation",
+      "command": "python \"<local-backup>/verify-sync.py\"",
+      "tool_version": "git version 2.56.1.windows.1",
+      "date": "2026-11-25",
+      "commit_tested": "168786267e443afba5fb04e2cabc198ed1ad1cb6",
+      "result": "pass",
+      "duration_ms": 454,
+      "coverage": "HEAD/main/origin/main/tag identity; one branch/worktree; exact restored-file hashes; all original ledger entries; ZIP and stash preservation; runtime unchanged",
+      "configuration": "Local main with unpublished skills and test evidence retained",
+      "environment_signature": "Windows PowerShell, local Git working tree",
+      "original_command_sha256": "c87ebca43e4b436a55dc2871408ea10666a2e7f2619288b4ed7efc8dfed3407d",
+      "command_redaction": "User profile and backup paths are redacted for publication; the original exact command is retained in the local backup."
+    },
+    {
+      "name": "Vendored skill detectors functional regression",
+      "command": "node --test tests/tooling/skill-detectors.test.mjs",
+      "tool_version": "Node v24.22.0; Git 2.56.1.windows.1; Python 3.14.6",
+      "date": "2026-11-25",
+      "commit_tested": "168786267e443afba5fb04e2cabc198ed1ad1cb6+skills-ledger-worktree",
+      "result": "pass",
+      "duration_ms": 972,
+      "coverage": "Plain/PHPDoc plugin and theme headers, plugin metadata, project classification, non-plugin negative fixture",
+      "configuration": "Project-local skill scripts; synthetic disposable fixtures; no WordPress runtime changes",
+      "environment_signature": "Windows PowerShell; Node v24.22.0; repository QA configuration"
+    },
+    {
+      "name": "Skill references public evidence and unchanged addon scope",
+      "command": "python tests/tooling/verify-skill-updates.py",
+      "tool_version": "Node v24.22.0; Git 2.56.1.windows.1; Python 3.14.6",
+      "date": "2026-11-25",
+      "commit_tested": "168786267e443afba5fb04e2cabc198ed1ad1cb6+skills-ledger-worktree",
+      "result": "pass",
+      "duration_ms": 307,
+      "coverage": "Local reference targets, dated provenance, public-path redaction, all historical test outcomes retained, unchanged 3.5.0 addon",
+      "configuration": "Project-local skill scripts; synthetic disposable fixtures; no WordPress runtime changes",
+      "environment_signature": "Windows PowerShell; Node v24.22.0; repository QA configuration"
+    },
+    {
+      "name": "3.5.0 runtime and detector syntax evidence reuse for skills PR",
+      "command": "Reuse unchanged 3.5.0 release checks and Node 24.22.0 detector syntax baselines; see recorded exact commands",
+      "tool_version": "Verified historical release toolchain and Node 24.22.0",
+      "date": "2026-11-25",
+      "commit_tested": "168786267e443afba5fb04e2cabc198ed1ad1cb6",
+      "result": "PASS_REUSED",
+      "duration_ms": 0,
+      "coverage": "Addon unit/compatibility/Plugin Check/packaging baselines and both detector syntax checks",
+      "configuration": "No runtime, version, production dependency or workflow change; detector source matches the previously tested upstream revision",
+      "environment_signature": "Unchanged published addon baseline; syntax reuse restricted to recorded Node 24.22.0 environment"
+    },
+    {
+      "name": "Staged skill update identity and secrets guard",
+      "command": "python .github/scripts/security_guard.py",
+      "tool_version": "Node v24.22.0; Git 2.56.1.windows.1; Python 3.14.6",
+      "date": "2026-11-25",
+      "commit_tested": "168786267e443afba5fb04e2cabc198ed1ad1cb6+skills-ledger-worktree",
+      "result": "pass",
+      "duration_ms": 934,
+      "coverage": "Tracked skill and public evidence delta, public identity and secrets",
+      "configuration": "Project-local skill scripts; synthetic disposable fixtures; no WordPress runtime changes",
+      "environment_signature": "Windows PowerShell; Node v24.22.0; repository QA configuration"
+    },
+    {
+      "name": "Skill maintenance complete whitespace check",
+      "command": "git -c core.safecrlf=false diff --cached --check",
+      "tool_version": "Node v24.22.0; Git 2.56.1.windows.1; Python 3.14.6",
+      "date": "2026-11-25",
+      "commit_tested": "168786267e443afba5fb04e2cabc198ed1ad1cb6+skills-ledger-worktree",
+      "result": "pass",
+      "duration_ms": 75,
+      "coverage": "Complete staged skills documentation helpers ledger and review artifacts",
+      "configuration": "Project-local skill scripts; synthetic disposable fixtures; no WordPress runtime changes",
+      "environment_signature": "Windows PowerShell; Node v24.22.0; repository QA configuration"
+    },
+    {
+      "name": "Final skill maintenance scope and evidence verification",
+      "command": "python tests/tooling/verify-skill-updates.py",
+      "tool_version": "Node v24.22.0; Git 2.56.1.windows.1; Python 3.14.6",
+      "date": "2026-11-25",
+      "commit_tested": "168786267e443afba5fb04e2cabc198ed1ad1cb6+skills-ledger-worktree",
+      "result": "pass",
+      "duration_ms": 299,
+      "coverage": "All staged/unstaged references against pinned review baseline; public evidence; unchanged 3.5.0 addon",
+      "configuration": "Project-local skill scripts; synthetic disposable fixtures; no WordPress runtime changes",
+      "environment_signature": "Windows PowerShell; Node v24.22.0; repository QA configuration"
     }
   ]
 }
