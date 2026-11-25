@@ -5,7 +5,7 @@ Tags: media library, image usage, media cleanup, attachments, trash
 Requires at least: 5.9
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 3.4.9
+Stable tag: 3.5.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,15 @@ PixCensus moves eligible images and reports how many stayed protected. Follow th
 2. Restore images or review a permanent deletion from Trash. Each row shows its retention deadline.
 
 == Changelog ==
+
+= 3.5.0 =
+* Add local image sizes, dimensions and deduplicated selection totals, with incomplete estimates identified.
+* Warn when saved results are stale and explain detected usage references.
+* Add whole-tab weight, dimensions, date and format filters and sorting.
+* Recognize additional image references in native WordPress editor blocks.
+* Process scans in resumable batches with progress while preserving the last complete results.
+* Add bounded local image-action history and native WordPress personal-data export and erasure support.
+* Preserve WordPress 5.9+, PHP 7.4+, image protection and confirmed WordPress Trash actions.
 
 = 3.4.9 =
 * Serialize protection changes with cleanup operations and require POST for administrative changes. Recognize original images and exclude trashed attachments from orphan findings.
@@ -223,7 +232,7 @@ Corrects attachment-ID sanitization warnings, strengthens AJAX input tests, and 
 
 == Privacy ==
 
-This plugin does not collect, track, or transmit personal data. It makes no remote requests and loads no remote executable code.
+This plugin makes no remote requests and loads no remote executable code. Image-action history stores WordPress user IDs, image IDs, actions and timestamps locally. Up to 500 events are retained; events older than 90 days are pruned on the next history write or view. Account-specific history supports the native WordPress personal-data export and erasure tools.
 
 It stores plugin settings, manual image decisions, scan timestamps, attachment classifications, orphan upload paths, and short provenance labels in WordPress options. Administrators can export the current snapshot as CSV. Uninstalling the plugin removes only these plugin-owned options; it never deletes or modifies media, posts, metadata, terms, or files.
 

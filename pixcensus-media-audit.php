@@ -3,7 +3,7 @@
  * Plugin Name: PixCensus — Media Usage Audit
  * Plugin URI: https://github.com/ussmarines/pixcensus-media-audit
  * Description: Inventory media usage with provenance, CSV export, manual review tools, and CDN rewrite support.
- * Version: 3.4.9
+ * Version: 3.5.0
  * Author: ussmarines
  * Author URI: https://github.com/ussmarines
  * License: GPL-2.0-or-later
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'PIXCENSUS_VERSION' ) ) {
-	define( 'PIXCENSUS_VERSION', '3.4.9' );
+	define( 'PIXCENSUS_VERSION', '3.5.0' );
 }
 
 if ( ! defined( 'PIXCENSUS_SLUG' ) ) {
@@ -138,6 +138,7 @@ final class PIXCENSUS_Plugin {
 	 * Constructor.
 	 */
 	private function __construct() {
+		PIXCENSUS_Review::boot();
 		add_action(
 			'init',
 			static function () {
@@ -260,19 +261,20 @@ final class PIXCENSUS_Plugin {
 					'unused' => admin_url( 'upload.php?page=pixcensus-audit&pixcensus_tab=unused' ),
 				),
 				'i18n'      => array(
-					'marked'         => __( 'Marked as used (manual).', 'pixcensus-media-audit' ),
-					'unmarked'       => __( 'Unmarked (manual).', 'pixcensus-media-audit' ),
-					'bulk_done'      => __( 'Bulk action completed.', 'pixcensus-media-audit' ),
-					'error'          => __( 'An error occurred.', 'pixcensus-media-audit' ),
-					'run_scan'       => __( 'Run scan', 'pixcensus-media-audit' ),
-					'run_scan_again' => __( 'Run scan again', 'pixcensus-media-audit' ),
-					'scanning'       => __( 'Scanning…', 'pixcensus-media-audit' ),
-					'scan_error'     => __( 'Scan error.', 'pixcensus-media-audit' ),
-					'none_selected'  => __( 'No items selected.', 'pixcensus-media-audit' ),
-					'show_more'      => __( 'Show more', 'pixcensus-media-audit' ),
-					'show_less'      => __( 'Show less', 'pixcensus-media-audit' ),
+					'marked'          => __( 'Marked as used (manual).', 'pixcensus-media-audit' ),
+					'unmarked'        => __( 'Unmarked (manual).', 'pixcensus-media-audit' ),
+					'bulk_done'       => __( 'Bulk action completed.', 'pixcensus-media-audit' ),
+					'error'           => __( 'An error occurred.', 'pixcensus-media-audit' ),
+					'run_scan'        => __( 'Run scan', 'pixcensus-media-audit' ),
+					'run_scan_again'  => __( 'Run scan again', 'pixcensus-media-audit' ),
+					'scanning'        => __( 'Scanning…', 'pixcensus-media-audit' ),
+					'scan_error'      => __( 'Scan error.', 'pixcensus-media-audit' ),
+					'none_selected'   => __( 'No items selected.', 'pixcensus-media-audit' ),
+					'size_incomplete' => __( '(incomplete)', 'pixcensus-media-audit' ),
+					'show_more'       => __( 'Show more', 'pixcensus-media-audit' ),
+					'show_less'       => __( 'Show less', 'pixcensus-media-audit' ),
 					/* translators: %d: number of rows currently shown after filtering. */
-					'shown_count'    => __( '%d shown', 'pixcensus-media-audit' ),
+					'shown_count'     => __( '%d shown', 'pixcensus-media-audit' ),
 				),
 			)
 		);
@@ -625,36 +627,44 @@ final class PIXCENSUS_Plugin {
 			);
 		}
 
-		$this->maybe_raise_resource_limits();
-		$pixcensus_results = array();
-		$pixcensus_failed  = false;
-
+		$pixcensus_failed = false;
+		$reply            = array();
 		try {
-			$pixcensus_scanner = new PIXCENSUS_Scanner();
-			$pixcensus_results = $pixcensus_scanner->run();
-
-			update_option( 'pixcensus_usage_results', $pixcensus_results, false );
+			$scanner = new PIXCENSUS_Scanner();
+			$state   = get_option( 'pixcensus_scan_state', array() );
+			if ( ! is_array( $state ) || empty( $state['updated'] ) || $state['updated'] < time() - 24 * 60 * 60 || ( $state['version'] ?? '' ) !== PIXCENSUS_VERSION ) {
+				$state = array(
+					'stage'          => 0,
+					'page'           => 1,
+					'updated'        => time(),
+					'version'        => PIXCENSUS_VERSION,
+					'include_drafts' => '1' === get_option( 'pixcensus_include_drafts', '1' ),
+					'revision'       => get_option( 'pixcensus_revision', '' ),
+				);
+			}
+			$state = $scanner->step( $state );
+			$done  = $state['stage'] >= 14;
+			if ( $done ) {
+				update_option( 'pixcensus_usage_results', $scanner->finish( $state ), false );
+				delete_option( 'pixcensus_scan_state' );
+			} else {
+				update_option( 'pixcensus_scan_state', $state, false );
+			}
+			$reply = array(
+				'done'    => $done,
+				'stage'   => $state['stage'],
+				'page'    => $state['page'],
+				'message' => $done ? __( 'Scan complete.', 'pixcensus-media-audit' ) : __( 'Scanning in batches. You can close this page and resume within 24 hours.', 'pixcensus-media-audit' ),
+			);
 		} catch ( Throwable $pixcensus_exception ) {
 			$pixcensus_failed = true;
 		} finally {
 			$this->release_scan_lock();
 		}
-
 		if ( $pixcensus_failed ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'The scan stopped before completion. The previous complete results were preserved.', 'pixcensus-media-audit' ),
-				),
-				500
-			);
+			wp_send_json_error( array( 'message' => __( 'The scan paused. Previous complete results were preserved. Click Run scan to retry the last batch.', 'pixcensus-media-audit' ) ), 500 );
 		}
-
-		wp_send_json_success(
-			array(
-				'message' => __( 'Scan complete.', 'pixcensus-media-audit' ),
-				'results' => $pixcensus_results,
-			)
-		);
+		wp_send_json_success( $reply );
 	}
 
 	/**
@@ -679,6 +689,9 @@ final class PIXCENSUS_Plugin {
 			}
 
 			sort( $pixcensus_manual, SORT_NUMERIC );
+			foreach ( $add ? array_diff( $pixcensus_manual, (array) get_option( 'pixcensus_manual_used_ids', array() ) ) : array_diff( (array) get_option( 'pixcensus_manual_used_ids', array() ), $pixcensus_manual ) as $id ) {
+				PIXCENSUS_Review::record( $add ? 'protect' : 'unprotect', (int) $id );
+			}
 			update_option( 'pixcensus_manual_used_ids', $pixcensus_manual, false );
 
 			return $pixcensus_manual;

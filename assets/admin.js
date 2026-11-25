@@ -52,6 +52,18 @@
 		$('.pixcensus-select-all-toggle').prop('checked', allChecked).prop('indeterminate', $checked.length > 0 && !allChecked);
 		var $status = $('#pixcensus-selected');
 		$status.text($status.data('label') + ': ' + $checked.length);
+		var total = 0;
+		var incomplete = false;
+		var files = {};
+		$checked.each(function () {
+			var measured = $(this).closest('tr').data('files') || {};
+			incomplete = incomplete || $(this).closest('tr').attr('data-incomplete') === '1';
+			Object.keys(measured).forEach(function (path) { files[path] = Number(measured[path]) || 0; });
+		});
+		Object.keys(files).forEach(function (path) { total += files[path]; });
+		var unit = total < 1024 ? 0 : Math.min(3, Math.floor(Math.log(total) / Math.log(1024)));
+		var formatted = (total / Math.pow(1024, unit)).toLocaleString(undefined, {maximumFractionDigits: 2}) + ' ' + ['B', 'KiB', 'MiB', 'GiB'][unit];
+		$('#pixcensus-selected-bytes').text(formatted + (incomplete ? ' ' + getString('size_incomplete', '(incomplete)') : ''));
 		$('#pixcensus-cleanup button').not('[value="pixcensus_review_empty"], [data-unavailable]').prop('disabled', !$checked.length);
 		$('#pixcensus-open-media').prop('disabled', $checked.length !== 1);
 		$('button[value="pixcensus_trash_reviewed"]:not([data-unavailable])').prop('disabled', !$checked.filter('[data-manual="0"]').length);
@@ -95,25 +107,32 @@
 
 		$button.prop('disabled', true).text(getString('scanning', 'Scanning…'));
 
-		$.post(PixCensusAdmin.ajax_url, {
-			action: 'pixcensus_run_scan',
-			nonce: PixCensusAdmin.nonces.run_scan
-		})
-			.done(function (response) {
-				if (response && response.success) {
+		$('#pixcensus-scan-meter').prop('hidden', false);
+		function batch() {
+			$.post(PixCensusAdmin.ajax_url, {
+				action: 'pixcensus_run_scan',
+				nonce: PixCensusAdmin.nonces.run_scan
+			}).done(function (response) {
+				if (!response || !response.success) {
+					failed(response && response.data && response.data.message);
+					return;
+				}
+				if (response.data.done) {
 					window.location.reload();
 					return;
 				}
-
-				showNotice('error', getString('scan_error', 'Scan error.'));
-			})
-			.fail(function () {
-				showNotice('error', getString('scan_error', 'Scan error.'));
-			})
-			.always(function () {
-				var label = PixCensusAdmin.last_scan ? getString('run_scan_again', 'Run scan again') : getString('run_scan', 'Run scan');
-				$button.prop('disabled', false).text(label);
+				$('#pixcensus-scan-progress').text(response.data.message);
+				$('#pixcensus-scan-meter').val(response.data.stage);
+				window.setTimeout(batch, 100);
+			}).fail(function (xhr) {
+				failed(xhr.responseJSON && xhr.responseJSON.data && xhr.responseJSON.data.message);
 			});
+		}
+		function failed(message) {
+			showNotice('error', message || getString('scan_error', 'Scan error.'));
+			$button.prop('disabled', false).text(getString('run_scan_again', 'Run scan again'));
+		}
+		batch();
 	});
 
 	$(document).on('click', '#pixcensus-open-media', function () {

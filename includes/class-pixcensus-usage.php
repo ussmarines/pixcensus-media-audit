@@ -9,6 +9,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 final class PIXCENSUS_Usage {
 
 	/**
+	 * Explain stored evidence without suggesting certainty of safe deletion.
+	 *
+	 * @param string $label Scan provenance.
+	 * @return string
+	 */
+	public static function evidence( string $label ): string {
+		if ( false !== strpos( $label, '_thumbnail_id' ) ) {
+			$type = __( 'Featured image', 'pixcensus-media-audit' );
+		} elseif ( false !== strpos( $label, ':block:' ) || false !== strpos( $label, ':wp-image' ) ) {
+			$type = __( 'Editor image identifier', 'pixcensus-media-audit' );
+		} elseif ( false !== strpos( $label, 'builder' ) || false !== strpos( $label, ':id' ) ) {
+			$type = __( 'Structured identifier; review its context', 'pixcensus-media-audit' );
+		} elseif ( false !== strpos( $label, ':url' ) ) {
+			$type = __( 'Image path or URL', 'pixcensus-media-audit' );
+		} else {
+			$type = __( 'Stored reference', 'pixcensus-media-audit' );
+		}
+		return $type . ' · ' . $label;
+	}
+
+	/**
 	 * Resolve titles and links at display time, including older scan results.
 	 *
 	 * @param array $labels Stored evidence labels.

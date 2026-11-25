@@ -284,3 +284,10 @@
 
 #pixcensus-admin .pixcensus-filter-notice { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; padding: 10px 14px; margin: 12px 0; }
 #pixcensus-admin .pixcensus-filter-notice p { margin: 0; }
+
+/* Keep expanded evidence readable within the native horizontally scrollable table. */
+#pixcensus-admin th[data-col="provenance"] { width: 26%; }
+#pixcensus-admin td[data-col="provenance"] details { margin-top: 8px; }
+#pixcensus-admin td[data-col="provenance"] summary { cursor: pointer; }
+#pixcensus-admin .pixcensus-toolbar input[type="number"] { width: 8rem; max-width: 100%; }
+#pixcensus-admin #pixcensus-scan-meter { width: min(100%, 24rem); margin-top: 12px; }
