@@ -4621,7 +4621,7 @@
     {
       "name": "Vendored skill detectors functional regression",
       "command": "node --test tests/tooling/skill-detectors.test.mjs",
-      "tool_version": "Node v24.22.0; Git 2.56.1.windows.1; Python 3",
+      "tool_version": "Node v24.22.0; Git 2.56.1.windows.1; Python 3.14.6",
       "date": "2026-11-25",
       "commit_tested": "168786267e443afba5fb04e2cabc198ed1ad1cb6+skills-ledger-worktree",
       "result": "pass",
@@ -4633,7 +4633,7 @@
     {
       "name": "Skill references public evidence and unchanged addon scope",
       "command": "python tests/tooling/verify-skill-updates.py",
-      "tool_version": "Node v24.22.0; Git 2.56.1.windows.1; Python 3",
+      "tool_version": "Node v24.22.0; Git 2.56.1.windows.1; Python 3.14.6",
       "date": "2026-11-25",
       "commit_tested": "168786267e443afba5fb04e2cabc198ed1ad1cb6+skills-ledger-worktree",
       "result": "pass",
@@ -4657,7 +4657,7 @@
     {
       "name": "Staged skill update identity and secrets guard",
       "command": "python .github/scripts/security_guard.py",
-      "tool_version": "Node v24.22.0; Git 2.56.1.windows.1; Python 3",
+      "tool_version": "Node v24.22.0; Git 2.56.1.windows.1; Python 3.14.6",
       "date": "2026-11-25",
       "commit_tested": "168786267e443afba5fb04e2cabc198ed1ad1cb6+skills-ledger-worktree",
       "result": "pass",
@@ -4669,7 +4669,7 @@
     {
       "name": "Skill maintenance complete whitespace check",
       "command": "git -c core.safecrlf=false diff --cached --check",
-      "tool_version": "Node v24.22.0; Git 2.56.1.windows.1; Python 3",
+      "tool_version": "Node v24.22.0; Git 2.56.1.windows.1; Python 3.14.6",
       "date": "2026-11-25",
       "commit_tested": "168786267e443afba5fb04e2cabc198ed1ad1cb6+skills-ledger-worktree",
       "result": "pass",
@@ -4681,7 +4681,7 @@
     {
       "name": "Final skill maintenance scope and evidence verification",
       "command": "python tests/tooling/verify-skill-updates.py",
-      "tool_version": "Node v24.22.0; Git 2.56.1.windows.1; Python 3",
+      "tool_version": "Node v24.22.0; Git 2.56.1.windows.1; Python 3.14.6",
       "date": "2026-11-25",
       "commit_tested": "168786267e443afba5fb04e2cabc198ed1ad1cb6+skills-ledger-worktree",
       "result": "pass",
