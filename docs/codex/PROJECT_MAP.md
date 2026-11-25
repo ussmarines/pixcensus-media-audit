@@ -3,7 +3,7 @@
 ## Audit baseline
 
 - Audited source commit: `bb043eb2ef67914272af7c20fa3ae78bf4da0d38` (`main`, defense-in-depth hardening integrated and post-merge QA, CodeQL, and OpenSSF checks verified on 2026-08-11).
-- Release preparation: `3.4.9` on `codex/media-cleanup-review`.
+- Release preparation: `3.5.0` on `codex/release-3.5.0`.
 - Declared compatibility: WordPress 5.9+, PHP 7.4+, tested through WordPress 7.1; dedicated compatibility validation uses WordPress 7.1.5.
 - Entry point: `pixcensus-media-audit.php`.
 - Text domain: `pixcensus-media-audit`; translations live under `languages/`.
@@ -103,5 +103,14 @@ Runtime code remains dependency-free. Composer/npm are development-only, WordPre
 
 ## Next implementation steps
 
-1. Keep the synchronous scale limit explicit and evaluate an asynchronous design only from measured production evidence.
+1. Measure large-site behavior of the resumable scan, keeping the path-map memory and synchronous cleanup-verification limits explicit.
 2. Add new heuristic fixtures whenever a supported builder or reference format is introduced.
+
+
+## Version 3.5.0 additions — 2026-11-25
+
+- `includes/class-pixcensus-review.php`: native freshness hooks, bounded site-local image history, and WordPress personal-data export/erase integration.
+- `PIXCENSUS_Scanner::step()` / `finish()`: resumable AJAX source batches, canonical local image measurements, and native editor-block ID coverage. `run()` remains the synchronous cleanup/restore verification path.
+- `pixcensus_scan_state`, `pixcensus_revision`, `pixcensus_history`: non-autoloaded site-local options, deleted on uninstall on each site.
+- Admin review: phase progress, stale-snapshot warning, whole-tab size/date/format/dimensions filters and sorting, selection byte totals, evidence explanations and recent actions.
+- Scope, official WordPress sources, limits and qualification: `docs/feature-improvements-2026-11-25.md`.

@@ -38,6 +38,7 @@ $runtimeFiles = @(
 	'includes/class-pixcensus-csv.php',
 	'includes/class-pixcensus-scanner.php',
 	'includes/class-pixcensus-usage.php',
+	'includes/class-pixcensus-review.php',
 	'languages/pixcensus-media-audit-fr_FR.mo',
 	'languages/pixcensus-media-audit-fr_FR.po',
 	'languages/pixcensus-media-audit.pot',

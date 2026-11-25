@@ -13,16 +13,20 @@ Find where WordPress uses each image, protect files you want to keep, and manage
 
 ## Official release
 
-**PixCensus — Media Usage Audit 3.4.9 is the current source release.**
+**PixCensus — Media Usage Audit 3.5.0 is the current source release.**
 
 - **WordPress.org:** https://wordpress.org/plugins/pixcensus-media-audit/
-- **GitHub release:** https://github.com/ussmarines/pixcensus-media-audit/releases/tag/v3.4.9
-- **Current version:** `3.4.9`
+- **GitHub release:** https://github.com/ussmarines/pixcensus-media-audit/releases/tag/v3.5.0
+- **Current version:** `3.5.0`
 - **WordPress:** `5.9+`, tested through `7.1`
 - **PHP:** `7.4+`
 - **License:** GPL-2.0-or-later
 
 For normal WordPress installations, the WordPress.org package is the recommended distribution channel. GitHub remains the source repository and provides release artifacts, checksums, attestations, development history, and issue tracking.
+
+## New in 3.5.0
+
+Version 3.5.0 adds measured image sizes and selection totals, snapshot freshness warnings, classification explanations, whole-tab filters/sorting, additional native editor-block detection, resumable scan batches, and local action history with WordPress privacy-tool integration. See [behavior, WordPress sources and limits](docs/feature-improvements-2026-11-25.md).
 
 ## What PixCensus does
 
@@ -123,7 +127,7 @@ See the [3.4.9 audit and database test results](docs/security-audit/2026-11-21-p
 
 ## Privacy and security
 
-Scanning runs locally inside WordPress. PixCensus makes no remote requests, loads no remote executable code, and does not collect or transmit personal data.
+Scanning runs locally inside WordPress. PixCensus makes no remote requests and loads no remote executable code. The action history stores WordPress user IDs, image IDs, action types and timestamps locally, with a limit of 500 recent events. Expired events are pruned on the next history write or view after 90 days. This history participates in the native WordPress personal-data export and erasure tools.
 
 Administrative screens and state-changing actions require the `manage_options` capability and protected requests. CSV formula-leading values are neutralized before export.
 

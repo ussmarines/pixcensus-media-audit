@@ -21,6 +21,203 @@ class PIXCENSUS_Scanner {
 	 */
 	private $provenance = array();
 
+	/** @var bool Whether to process only one source batch. */
+	private $incremental = false;
+	/** @var int Current source page. */
+	private $batch_page = 1;
+	/** @var int Last processed batch size. */
+	private $batch_count = 0;
+	/** @var int Options keyset cursor. */
+	private $option_cursor = 0;
+
+	/**
+	 * Read local file sizes without opening remote streams or changing media.
+	 *
+	 * @param int $id Attachment ID.
+	 * @return array
+	 */
+	public function image_details( int $id ): array {
+		$uploads = wp_get_upload_dir();
+		$meta    = wp_get_attachment_metadata( $id );
+		$files   = array();
+		$missing = 0;
+		foreach ( $this->attachment_paths( $id ) as $path ) {
+			$file = $this->resolve_existing_upload_file( (string) ( $uploads['basedir'] ?? '' ), $path );
+			if ( '' === $file ) {
+				++$missing;
+				continue;
+			}
+			$bytes = filesize( $file );
+			if ( false === $bytes ) {
+				++$missing;
+			} else {
+				$files[ hash( 'sha256', $file ) ] = $bytes;
+			}
+		}
+		return array(
+			'bytes'      => array_sum( $files ),
+			'files'      => $files,
+			'incomplete' => $missing > 0 || ! $files,
+			'width'      => (int) ( $meta['width'] ?? 0 ),
+			'height'     => (int) ( $meta['height'] ?? 0 ),
+			'mime'       => (string) get_post_mime_type( $id ),
+			'date'       => (string) get_post_field( 'post_date', $id ),
+		);
+	}
+
+	/**
+	 * Process one durable scan batch. The caller serializes access with the scan lock.
+	 *
+	 * @param array $state Server-owned checkpoint, never accepted from the client.
+	 * @return array
+	 */
+	public function step( array $state ): array {
+		$this->incremental   = true;
+		$this->batch_page    = (int) ( $state['page'] ?? 1 );
+		$this->provenance    = $state['provenance'] ?? array();
+		$this->batch_count   = 0;
+		$this->option_cursor = (int) ( $state['cursor'] ?? 0 );
+		$this->load_cdn_settings();
+		$stage   = (int) ( $state['stage'] ?? 0 );
+		$state  += array(
+			'ids'     => array(),
+			'map'     => array(),
+			'known'   => array(),
+			'used'    => array(),
+			'draft'   => array(),
+			'details' => array(),
+			'orphans' => array(),
+		);
+		$uploads = wp_get_upload_dir();
+		$base    = (string) ( $uploads['basedir'] ?? '' );
+		$limit   = self::POST_BATCH_SIZE;
+		if ( $stage < 2 ) {
+			$ids = $this->get_image_attachment_ids( 0 === $stage ? 'inherit' : 'trash' );
+			foreach ( $ids as $id ) {
+				foreach ( $this->attachment_paths( $id ) as $path ) {
+					$file = $this->resolve_existing_upload_file( $base, $path );
+					if ( '' !== $file ) {
+						$state['known'][ $file ] = true;
+					}
+					if ( 0 === $stage ) {
+						$state['map'][ $path ] = $id;
+					}
+				}
+				$state['details'][ $id ] = $this->image_details( $id );
+				if ( 0 === $stage ) {
+					$state['ids'][] = $id;
+				}
+			}
+		} elseif ( $stage < 10 ) {
+			$methods = array( 'scan_post_contents', 'scan_meta_references', 'scan_builder_metas', 'scan_any_meta_uploads' );
+			$draft   = $stage >= 6;
+			$method  = $methods[ ( $stage - 2 ) % 4 ];
+			$bucket  = $draft ? 'draft' : 'used';
+			if ( ! $draft || $state['include_drafts'] ) {
+				$statuses = $draft ? array( 'draft', 'pending', 'future' ) : array( 'publish', 'private' );
+				if ( 'scan_meta_references' === $method ) {
+					$this->scan_meta_references( $state[ $bucket ], $statuses );
+				} else {
+					$this->$method( $state[ $bucket ], $statuses, $state['map'] );
+				}
+			}
+		} elseif ( 10 === $stage ) {
+			$this->scan_terms( $state['used'], $state['map'] );
+		} elseif ( 11 === $stage ) {
+			$this->scan_options_for_uploads( $state['used'], $state['map'] );
+			$state['cursor'] = $this->option_cursor;
+			$limit           = self::OPTION_BATCH_SIZE;
+		} elseif ( 12 === $stage ) {
+			$this->scan_site_identity( $state['used'] );
+		} elseif ( 13 === $stage ) {
+			$this->orphan_step( $state, $base );
+			$this->batch_count = empty( $state['directories'] ) ? 0 : $limit;
+		}
+		$state['provenance'] = $this->get_provenance_output();
+		$state['page']       = $this->batch_page + 1;
+		if ( $this->batch_count < $limit ) {
+			++$stage;
+			$state['page'] = 1;
+		}
+		$state['stage']   = $stage;
+		$state['updated'] = time();
+		return $state;
+	}
+
+	/**
+	 * Enumerate at most 200 directory entries, without following directory symlinks.
+	 *
+	 * @param array  $state Scan checkpoint.
+	 * @param string $base Uploads directory.
+	 * @return void
+	 */
+	private function orphan_step( array &$state, string $base ): void {
+		$real = realpath( $base );
+		if ( false === $real ) {
+			$state['directories'] = array();
+			return;
+		}
+		$real = wp_normalize_path( $real );
+		if ( ! isset( $state['directories'] ) ) {
+			$state['directories'] = array( array( $real, 0 ) );
+		}
+		$budget = 200;
+		while ( $budget > 0 && $state['directories'] ) {
+			$entry = array_shift( $state['directories'] );
+			$dir   = realpath( $entry[0] );
+			if ( false === $dir || ( wp_normalize_path( $dir ) !== $real && ! $this->path_is_within_uploads( $dir, $real ) ) || is_link( $entry[0] ) ) {
+				continue;
+			}
+			$iterator = new DirectoryIterator( $dir );
+			$iterator->seek( $entry[1] );
+			while ( $iterator->valid() && $budget > 0 ) {
+				--$budget;
+				if ( ! $iterator->isDot() && ! $iterator->isLink() ) {
+					$path = wp_normalize_path( $iterator->getPathname() );
+					if ( $iterator->isDir() ) {
+						$state['directories'][] = array( $path, 0 );
+					} elseif ( $iterator->isFile() && ! isset( $state['known'][ $path ] ) && in_array( strtolower( $iterator->getExtension() ), array( 'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'avif' ), true ) ) {
+						$resolved = realpath( $path );
+						if ( false !== $resolved && $this->path_is_within_uploads( $resolved, $real ) ) {
+							$state['orphans'][] = substr( wp_normalize_path( $resolved ), strlen( trailingslashit( $real ) ) );
+						}
+					}
+				}
+				$iterator->next();
+			}
+			if ( $iterator->valid() ) {
+				array_unshift( $state['directories'], array( $dir, $iterator->key() ) );
+			}
+		}
+	}
+
+	/**
+	 * Classify only a completed checkpoint.
+	 *
+	 * @param array $state Completed scan state.
+	 * @return array
+	 */
+	public function finish( array $state ): array {
+		if ( (int) ( $state['stage'] ?? 0 ) < 14 ) {
+			throw new LogicException( 'Only completed scans can be published.' );
+		}
+		$ids    = array_values( array_unique( $state['ids'] ) );
+		$manual = array_intersect( $ids, (array) get_option( 'pixcensus_manual_used_ids', array() ) );
+		$used   = array_values( array_intersect( $ids, array_unique( array_merge( array_keys( $state['used'] ), $manual ) ) ) );
+		$draft  = array_values( array_diff( array_intersect( $ids, array_keys( $state['draft'] ) ), $used ) );
+		return array(
+			'used_ids'       => $used,
+			'draft_only_ids' => $draft,
+			'unused_ids'     => array_values( array_diff( $ids, $used, $draft ) ),
+			'orphans'        => array_values( array_unique( $state['orphans'] ) ),
+			'provenance'     => $state['provenance'],
+			'details'        => $state['details'],
+			'include_drafts' => $state['include_drafts'],
+			'scanned_at'     => time(),
+			'revision'       => $state['revision'],
+		);
+	}
+
 	/**
 	 * CDN rewrite rules.
 	 *
@@ -42,6 +239,8 @@ class PIXCENSUS_Scanner {
 	 * @return array<string, mixed>
 	 */
 	public function run( bool $force_drafts = false ): array {
+		$this->incremental        = false;
+		$this->provenance         = array();
 		$pixcensus_include_drafts = $force_drafts || '1' === get_option( 'pixcensus_include_drafts', '1' );
 
 		$this->load_cdn_settings();
@@ -188,7 +387,7 @@ class PIXCENSUS_Scanner {
 		}
 
 		$pixcensus_attachment_ids = array();
-		$pixcensus_page           = 1;
+		$pixcensus_page           = $this->incremental ? $this->batch_page : 1;
 
 		do {
 			$pixcensus_batch = get_posts(
@@ -213,8 +412,9 @@ class PIXCENSUS_Scanner {
 
 			$pixcensus_attachment_ids = array_merge( $pixcensus_attachment_ids, array_map( 'intval', $pixcensus_batch ) );
 			$pixcensus_batch_count    = count( $pixcensus_batch );
+			$this->batch_count        = $pixcensus_batch_count;
 			++$pixcensus_page;
-		} while ( self::ATTACHMENT_BATCH_SIZE === $pixcensus_batch_count );
+		} while ( ! $this->incremental && self::ATTACHMENT_BATCH_SIZE === $pixcensus_batch_count );
 
 		return array_values( array_unique( $pixcensus_attachment_ids ) );
 	}
@@ -273,7 +473,7 @@ class PIXCENSUS_Scanner {
 	 * @return void
 	 */
 	private function scan_post_contents( array &$used_map, array $statuses, array $path_map ): void {
-		$pixcensus_page = 1;
+		$pixcensus_page = $this->incremental ? $this->batch_page : 1;
 
 		do {
 			$pixcensus_posts = $this->get_scannable_posts(
@@ -308,8 +508,9 @@ class PIXCENSUS_Scanner {
 			}
 
 			$pixcensus_batch_count = count( $pixcensus_posts );
+			$this->batch_count     = $pixcensus_batch_count;
 			++$pixcensus_page;
-		} while ( self::POST_BATCH_SIZE === $pixcensus_batch_count );
+		} while ( ! $this->incremental && self::POST_BATCH_SIZE === $pixcensus_batch_count );
 	}
 
 	/**
@@ -320,7 +521,7 @@ class PIXCENSUS_Scanner {
 	 * @return void
 	 */
 	private function scan_meta_references( array &$used_map, array $statuses ): void {
-		$pixcensus_page = 1;
+		$pixcensus_page = $this->incremental ? $this->batch_page : 1;
 
 		do {
 			$pixcensus_post_ids = $this->get_scannable_posts(
@@ -355,8 +556,9 @@ class PIXCENSUS_Scanner {
 			}
 
 			$pixcensus_batch_count = count( $pixcensus_post_ids );
+			$this->batch_count     = $pixcensus_batch_count;
 			++$pixcensus_page;
-		} while ( self::POST_BATCH_SIZE === $pixcensus_batch_count );
+		} while ( ! $this->incremental && self::POST_BATCH_SIZE === $pixcensus_batch_count );
 	}
 
 	/**
@@ -386,7 +588,7 @@ class PIXCENSUS_Scanner {
 			'_et_pb_shortcodes',
 		);
 
-		$pixcensus_page = 1;
+		$pixcensus_page = $this->incremental ? $this->batch_page : 1;
 
 		do {
 			$pixcensus_post_ids = $this->get_scannable_posts(
@@ -418,8 +620,9 @@ class PIXCENSUS_Scanner {
 			}
 
 			$pixcensus_batch_count = count( $pixcensus_post_ids );
+			$this->batch_count     = $pixcensus_batch_count;
 			++$pixcensus_page;
-		} while ( self::POST_BATCH_SIZE === $pixcensus_batch_count );
+		} while ( ! $this->incremental && self::POST_BATCH_SIZE === $pixcensus_batch_count );
 	}
 
 	/**
@@ -431,7 +634,7 @@ class PIXCENSUS_Scanner {
 	 * @return void
 	 */
 	private function scan_any_meta_uploads( array &$used_map, array $statuses, array $path_map ): void {
-		$pixcensus_page = 1;
+		$pixcensus_page = $this->incremental ? $this->batch_page : 1;
 
 		do {
 			$pixcensus_post_ids = $this->get_scannable_posts(
@@ -467,8 +670,9 @@ class PIXCENSUS_Scanner {
 			}
 
 			$pixcensus_batch_count = count( $pixcensus_post_ids );
+			$this->batch_count     = $pixcensus_batch_count;
 			++$pixcensus_page;
-		} while ( self::POST_BATCH_SIZE === $pixcensus_batch_count );
+		} while ( ! $this->incremental && self::POST_BATCH_SIZE === $pixcensus_batch_count );
 	}
 
 	/**
@@ -480,7 +684,7 @@ class PIXCENSUS_Scanner {
 	 */
 	private function scan_options_for_uploads( array &$used_map, array $path_map ): void {
 		global $wpdb;
-		$pixcensus_last_option_id = 0;
+		$pixcensus_last_option_id = $this->incremental ? $this->option_cursor : 0;
 		$pixcensus_excluded       = array(
 			'pixcensus_usage_results',
 			'pixcensus_include_drafts',
@@ -508,7 +712,7 @@ class PIXCENSUS_Scanner {
 				$pixcensus_option_name    = isset( $pixcensus_row->option_name ) ? (string) $pixcensus_row->option_name : '';
 				$pixcensus_option_value   = isset( $pixcensus_row->option_value ) ? (string) $pixcensus_row->option_value : '';
 
-				if ( '' === $pixcensus_option_name || in_array( $pixcensus_option_name, $pixcensus_excluded, true ) || ! $this->text_might_reference_uploads( $pixcensus_option_value ) ) {
+				if ( '' === $pixcensus_option_name || 0 === strpos( $pixcensus_option_name, 'pixcensus_' ) || in_array( $pixcensus_option_name, $pixcensus_excluded, true ) || ! $this->text_might_reference_uploads( $pixcensus_option_value ) ) {
 					continue;
 				}
 
@@ -516,7 +720,9 @@ class PIXCENSUS_Scanner {
 			}
 
 			$pixcensus_row_count = count( $pixcensus_rows );
-		} while ( self::OPTION_BATCH_SIZE === $pixcensus_row_count );
+			$this->batch_count   = $pixcensus_row_count;
+			$this->option_cursor = $pixcensus_last_option_id;
+		} while ( ! $this->incremental && self::OPTION_BATCH_SIZE === $pixcensus_row_count );
 	}
 
 	/**
@@ -527,7 +733,7 @@ class PIXCENSUS_Scanner {
 	 * @return void
 	 */
 	private function scan_terms( array &$used_map, array $path_map ): void {
-		$pixcensus_offset = 0;
+		$pixcensus_offset = $this->incremental ? ( $this->batch_page - 1 ) * self::TERM_BATCH_SIZE : 0;
 
 		do {
 			$pixcensus_terms = get_terms(
@@ -552,8 +758,9 @@ class PIXCENSUS_Scanner {
 			}
 
 			$pixcensus_term_count = count( $pixcensus_terms );
+			$this->batch_count    = $pixcensus_term_count;
 			$pixcensus_offset    += $pixcensus_term_count;
-		} while ( self::TERM_BATCH_SIZE === $pixcensus_term_count );
+		} while ( ! $this->incremental && self::TERM_BATCH_SIZE === $pixcensus_term_count );
 	}
 
 	/**
@@ -641,6 +848,33 @@ class PIXCENSUS_Scanner {
 	 * @return void
 	 */
 	private function scan_text_for_attachment_ids( string $text, array &$used_map, string $context ): void {
+		if ( function_exists( 'parse_blocks' ) ) {
+			$queue = parse_blocks( $text );
+			$nodes = 0;
+			while ( $queue && ++$nodes <= self::MAX_WALK_NODES ) {
+				$block = array_pop( $queue );
+				$attrs = $block['attrs'] ?? array();
+				$keys  = array(
+					'core/image'      => 'id',
+					'core/cover'      => 'id',
+					'core/media-text' => 'mediaId',
+					'core/gallery'    => 'ids',
+					'core/site-logo'  => 'id',
+				);
+				$name  = $block['blockName'] ?? '';
+				if ( isset( $keys[ $name ] ) && ( 'core/cover' !== $name || 'video' !== ( $attrs['backgroundType'] ?? '' ) ) && ( 'core/media-text' !== $name || 'video' !== ( $attrs['mediaType'] ?? '' ) ) ) {
+					foreach ( (array) ( $attrs[ $keys[ $name ] ] ?? array() ) as $id ) {
+						if ( is_numeric( $id ) && (int) $id > 0 ) {
+							$used_map[ (int) $id ] = true;
+							$this->add_provenance( (int) $id, $context . ':block:' . $name );
+						}
+					}
+				}
+				foreach ( $block['innerBlocks'] ?? array() as $child ) {
+					$queue[] = $child;
+				}
+			}
+		}
 		$pixcensus_patterns = array(
 			'block:image' => '/<!--\s+wp:image\s+\{[^}]*"id"\s*:\s*(\d+)/i',
 			'shortcode'   => '/\[[^\]]+\b(?:ids?|image_id|attachment_id)\s*=\s*["\']?([0-9,\s]+)/i',

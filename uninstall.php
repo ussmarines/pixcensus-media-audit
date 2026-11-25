@@ -10,6 +10,9 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
  */
 function pixcensus_delete_plugin_options(): void {
 	delete_option( 'pixcensus_usage_results' );
+	delete_option( 'pixcensus_scan_state' );
+	delete_option( 'pixcensus_revision' );
+	delete_option( 'pixcensus_history' );
 	delete_option( 'pixcensus_include_drafts' );
 	delete_option( 'pixcensus_manual_used_ids' );
 	delete_option( 'pixcensus_cdn_aliases' );

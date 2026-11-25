@@ -83,6 +83,46 @@ $pixcensus_receipt = $pixcensus_receipt ?? array(
 if ( 'selection' === $pixcensus_filter ) {
 	$pixcensus_all_ids = array_values( array_intersect( $pixcensus_all_ids, $pixcensus_manual_ids, $pixcensus_receipt['ids'] ) );
 }
+// Apply these filters to the whole saved tab before pagination.
+$pixcensus_sort_raw   = filter_input( INPUT_GET, 'pixcensus_sort', FILTER_UNSAFE_RAW );
+$pixcensus_sort       = is_string( $pixcensus_sort_raw ) && in_array( $pixcensus_sort_raw, array( 'id', 'weight', 'oldest', 'newest', 'pixels' ), true ) ? $pixcensus_sort_raw : 'id';
+$pixcensus_format_raw = filter_input( INPUT_GET, 'pixcensus_format', FILTER_UNSAFE_RAW );
+$pixcensus_format     = is_string( $pixcensus_format_raw ) ? sanitize_mime_type( $pixcensus_format_raw ) : '';
+$pixcensus_min_bytes  = max( 0, (int) filter_input( INPUT_GET, 'pixcensus_min_bytes', FILTER_VALIDATE_INT ) );
+$pixcensus_min_width  = max( 0, (int) filter_input( INPUT_GET, 'pixcensus_min_width', FILTER_VALIDATE_INT ) );
+$pixcensus_before_raw = filter_input( INPUT_GET, 'pixcensus_before', FILTER_UNSAFE_RAW );
+$pixcensus_before     = is_string( $pixcensus_before_raw ) && preg_match( '/^\d{4}-\d{2}-\d{2}$/D', $pixcensus_before_raw ) ? $pixcensus_before_raw : '';
+$pixcensus_details    = (array) ( $pixcensus_usage['details'] ?? array() );
+$pixcensus_scanner    = new PIXCENSUS_Scanner();
+$pixcensus_all_ids    = array_values(
+	array_filter(
+		$pixcensus_all_ids,
+		static function ( $id ) use ( $pixcensus_details, $pixcensus_format, $pixcensus_min_bytes, $pixcensus_min_width, $pixcensus_before ) {
+			$detail = $pixcensus_details[ $id ] ?? array();
+			return ( '' === $pixcensus_format || ( $detail['mime'] ?? '' ) === $pixcensus_format )
+			&& (int) ( $detail['bytes'] ?? 0 ) >= $pixcensus_min_bytes
+			&& (int) ( $detail['width'] ?? 0 ) >= $pixcensus_min_width
+			&& ( '' === $pixcensus_before || ( ! empty( $detail['date'] ) && substr( $detail['date'], 0, 10 ) <= $pixcensus_before ) );
+		}
+	)
+);
+usort(
+	$pixcensus_all_ids,
+	static function ( $a, $b ) use ( $pixcensus_sort, $pixcensus_details ) {
+		$left  = $pixcensus_details[ $a ] ?? array();
+		$right = $pixcensus_details[ $b ] ?? array();
+		if ( 'weight' === $pixcensus_sort ) {
+			$result = ( $right['bytes'] ?? 0 ) <=> ( $left['bytes'] ?? 0 );
+		} elseif ( 'pixels' === $pixcensus_sort ) {
+			$result = ( ( $right['width'] ?? 0 ) * ( $right['height'] ?? 0 ) ) <=> ( ( $left['width'] ?? 0 ) * ( $left['height'] ?? 0 ) );
+		} elseif ( 'oldest' === $pixcensus_sort || 'newest' === $pixcensus_sort ) {
+			$result = strcmp( (string) ( $left['date'] ?? '' ), (string) ( $right['date'] ?? '' ) ) * ( 'newest' === $pixcensus_sort ? -1 : 1 );
+		} else {
+			$result = 0;
+		}
+		return $result ? $result : $a <=> $b;
+	}
+);
 $pixcensus_per_page = 50;
 $pixcensus_total    = count( $pixcensus_all_ids );
 
@@ -134,6 +174,38 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 	<div class="pixcensus-scan-bar"><button type="button" class="button button-primary" id="pixcensus-run-scan">
 						<?php echo esc_html( ! empty( $pixcensus_usage['scanned_at'] ) ? __( 'Run scan again', 'pixcensus-media-audit' ) : __( 'Run scan', 'pixcensus-media-audit' ) ); ?>
 					</button> <span><?php esc_html_e( 'Last scan', 'pixcensus-media-audit' ); ?> · <?php echo esc_html( $pixcensus_scanned_at ); ?></span></div>
+	<progress id="pixcensus-scan-meter" max="14" value="0" aria-label="<?php esc_attr_e( 'Scan progress', 'pixcensus-media-audit' ); ?>" hidden></progress>
+	<p id="pixcensus-scan-progress" role="status" aria-live="polite">
+	<?php
+	if ( get_option( 'pixcensus_scan_state', array() ) ) {
+		esc_html_e( 'An incomplete scan can be resumed with Run scan.', 'pixcensus-media-audit' ); }
+	?>
+	</p>
+	<?php if ( ! empty( $pixcensus_usage['scanned_at'] ) && ( ! array_key_exists( 'revision', $pixcensus_usage ) || get_option( 'pixcensus_revision', '' ) !== $pixcensus_usage['revision'] ) ) : ?>
+		<div class="notice notice-warning inline"><p><?php esc_html_e( 'Site content or settings changed after this scan began. Run a new scan before reviewing these results.', 'pixcensus-media-audit' ); ?></p></div>
+	<?php endif; ?>
+	<details class="pixcensus-settings"><summary><?php esc_html_e( 'Recent image actions', 'pixcensus-media-audit' ); ?></summary>
+	<p><?php esc_html_e( 'Local history retains up to 500 actions for 90 days. User 0 means an automated action. Older actions are not reconstructed. This is an activity aid, not a tamper-proof audit log.', 'pixcensus-media-audit' ); ?></p>
+	<ul>
+	<?php
+	$pixcensus_history_labels = array(
+		'protect'   => __( 'Protected', 'pixcensus-media-audit' ),
+		'unprotect' => __( 'Protection removed', 'pixcensus-media-audit' ),
+		'trash'     => __( 'Moved to Trash', 'pixcensus-media-audit' ),
+		'restore'   => __( 'Restored', 'pixcensus-media-audit' ),
+		'delete'    => __( 'Permanently deleted', 'pixcensus-media-audit' ),
+	);
+	foreach ( array_reverse( PIXCENSUS_Review::history() ) as $pixcensus_event ) :
+		if ( (int) $pixcensus_event['time'] < time() - 90 * 24 * 60 * 60 ) {
+			continue; }
+		?>
+		<li>
+		<?php
+		/* translators: 1: date, 2: action, 3: attachment ID, 4: user ID. */
+		echo esc_html( sprintf( __( '%1$s — %2$s — Image #%3$d — User #%4$d', 'pixcensus-media-audit' ), wp_date( 'Y-m-d H:i', $pixcensus_event['time'] ), $pixcensus_history_labels[ $pixcensus_event['action'] ] ?? '', $pixcensus_event['id'], $pixcensus_event['actor'] ) );
+		?>
+		</li>
+	<?php endforeach; ?></ul></details>
 	<details class="pixcensus-settings"><summary><?php esc_html_e( 'Scan and CDN settings', 'pixcensus-media-audit' ); ?></summary>
 	<div class="pixcensus-grid">
 		<div class="pixcensus-card">
@@ -361,13 +433,42 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 						</select>
 					</label> <button class="button"><?php esc_html_e( 'Filter', 'pixcensus-media-audit' ); ?></button>
 				</form>
-			<a class="button" href="<?php echo esc_url( $pixcensus_export_url ); ?>"><?php esc_html_e( 'Export CSV', 'pixcensus-media-audit' ); ?></a>
+			<a class="button" href="<?php echo esc_url( $pixcensus_export_url ); ?>"><?php esc_html_e( 'Export entire tab CSV', 'pixcensus-media-audit' ); ?></a>
 		</div>
 	</div>
 
+	<form method="get" class="pixcensus-toolbar">
+		<input type="hidden" name="page" value="pixcensus-audit" />
+		<input type="hidden" name="pixcensus_tab" value="<?php echo esc_attr( $pixcensus_tab ); ?>" />
+		<input type="hidden" name="pixcensus_filter" value="<?php echo esc_attr( $pixcensus_filter ); ?>" />
+		<input type="hidden" name="pixcensus_receipt" value="<?php echo esc_attr( $pixcensus_receipt['token'] ); ?>" />
+		<label><?php esc_html_e( 'Sort', 'pixcensus-media-audit' ); ?> <select name="pixcensus_sort">
+		<?php
+		foreach ( array(
+			'id'     => __( 'ID', 'pixcensus-media-audit' ),
+			'weight' => __( 'Largest files first', 'pixcensus-media-audit' ),
+			'pixels' => __( 'Largest dimensions first', 'pixcensus-media-audit' ),
+			'oldest' => __( 'Oldest first', 'pixcensus-media-audit' ),
+			'newest' => __( 'Newest first', 'pixcensus-media-audit' ),
+		) as $pixcensus_key => $pixcensus_label ) :
+			?>
+			<option value="<?php echo esc_attr( $pixcensus_key ); ?>" <?php selected( $pixcensus_sort, $pixcensus_key ); ?>><?php echo esc_html( $pixcensus_label ); ?></option>
+		<?php endforeach; ?></select></label>
+		<label><?php esc_html_e( 'Format', 'pixcensus-media-audit' ); ?> <select name="pixcensus_format"><option value=""><?php esc_html_e( 'All images', 'pixcensus-media-audit' ); ?></option>
+		<?php foreach ( array_unique( array_column( $pixcensus_details, 'mime' ) ) as $pixcensus_mime ) : ?>
+			<option value="<?php echo esc_attr( $pixcensus_mime ); ?>" <?php selected( $pixcensus_format, $pixcensus_mime ); ?>><?php echo esc_html( $pixcensus_mime ); ?></option>
+		<?php endforeach; ?></select></label>
+		<label><?php esc_html_e( 'Minimum bytes', 'pixcensus-media-audit' ); ?> <input type="number" min="0" name="pixcensus_min_bytes" value="<?php echo esc_attr( $pixcensus_min_bytes ); ?>" /></label>
+		<label><?php esc_html_e( 'Minimum width', 'pixcensus-media-audit' ); ?> <input type="number" min="0" name="pixcensus_min_width" value="<?php echo esc_attr( $pixcensus_min_width ); ?>" /></label>
+		<label><?php esc_html_e( 'Uploaded on or before', 'pixcensus-media-audit' ); ?> <input type="date" name="pixcensus_before" value="<?php echo esc_attr( $pixcensus_before ); ?>" /></label>
+		<button class="button"><?php esc_html_e( 'Apply', 'pixcensus-media-audit' ); ?></button>
+	</form>
+	<p class="description"><?php esc_html_e( 'Sizes include existing local originals and generated sizes measured at scan time. Missing or offloaded files make the estimate incomplete. Trash does not free disk space. Shared files may reduce the space actually reclaimed.', 'pixcensus-media-audit' ); ?></p>
 	<form id="pixcensus-cleanup" class="pixcensus-bulk" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 		<label><input type="checkbox" class="pixcensus-select-all-toggle" /> <?php esc_html_e( 'Select all visible', 'pixcensus-media-audit' ); ?></label>
 		<output id="pixcensus-selected" aria-live="polite" data-label="<?php esc_attr_e( 'Selected', 'pixcensus-media-audit' ); ?>"></output>
+		<span><?php esc_html_e( 'Measured selection size:', 'pixcensus-media-audit' ); ?> <output id="pixcensus-selected-bytes" aria-live="polite">0 B</output></span>
+
 		<?php
 		$pixcensus_actions = array();
 		if ( 'trash' !== $pixcensus_tab ) {
@@ -433,11 +534,16 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 						array(
 							'base'      => add_query_arg(
 								array(
-									'page'              => 'pixcensus-audit',
-									'pixcensus_tab'     => $pixcensus_tab,
-									'pixcensus_filter'  => $pixcensus_filter,
-									'pixcensus_page'    => '%#%',
-									'pixcensus_receipt' => 'selection' === $pixcensus_filter ? $pixcensus_receipt['token'] : null,
+									'page'                => 'pixcensus-audit',
+									'pixcensus_tab'       => $pixcensus_tab,
+									'pixcensus_filter'    => $pixcensus_filter,
+									'pixcensus_page'      => '%#%',
+									'pixcensus_sort'      => $pixcensus_sort,
+									'pixcensus_format'    => $pixcensus_format,
+									'pixcensus_min_bytes' => $pixcensus_min_bytes,
+									'pixcensus_min_width' => $pixcensus_min_width,
+									'pixcensus_before'    => $pixcensus_before,
+									'pixcensus_receipt'   => 'selection' === $pixcensus_filter ? $pixcensus_receipt['token'] : null,
 								),
 								admin_url( 'upload.php' )
 							),
@@ -465,6 +571,7 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 				<th scope="col" data-col="thumb"><?php esc_html_e( 'Preview', 'pixcensus-media-audit' ); ?></th>
 				<th scope="col" data-col="id"><?php esc_html_e( 'ID', 'pixcensus-media-audit' ); ?></th>
 				<th scope="col" data-col="file"><?php esc_html_e( 'File', 'pixcensus-media-audit' ); ?></th>
+				<th scope="col"><?php esc_html_e( 'Size / dimensions', 'pixcensus-media-audit' ); ?></th>
 				<th scope="col" data-col="protection"><?php esc_html_e( 'Protection', 'pixcensus-media-audit' ); ?></th>
 				<th scope="col" data-col="uploaded"><?php esc_html_e( 'Uploaded', 'pixcensus-media-audit' ); ?></th>
 				<?php if ( 'trash' === $pixcensus_tab ) : ?>
@@ -479,6 +586,7 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 			<?php if ( ! empty( $pixcensus_ids ) ) : ?>
 				<?php foreach ( $pixcensus_ids as $pixcensus_attachment_id ) : ?>
 					<?php
+					$pixcensus_detail     = $pixcensus_details[ $pixcensus_attachment_id ] ?? $pixcensus_scanner->image_details( (int) $pixcensus_attachment_id );
 					$pixcensus_protected  = in_array( $pixcensus_attachment_id, $pixcensus_manual_ids, true );
 					$pixcensus_file_path  = get_attached_file( $pixcensus_attachment_id );
 					$pixcensus_thumb_html = wp_get_attachment_image( $pixcensus_attachment_id, array( 60, 60 ), true, array( 'style' => 'max-width:60px;height:auto' ) );
@@ -496,11 +604,16 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 						)
 					);
 					?>
-					<tr class="pixcensus-row" id="pixcensus-row-<?php echo esc_attr( $pixcensus_attachment_id ); ?>" data-pixcensus-haystack="<?php echo esc_attr( $pixcensus_haystack ); ?>">
+					<tr data-incomplete="<?php echo $pixcensus_detail['incomplete'] ? '1' : '0'; ?>" data-files="<?php echo esc_attr( wp_json_encode( $pixcensus_detail['files'] ) ); ?>" class="pixcensus-row" id="pixcensus-row-<?php echo esc_attr( $pixcensus_attachment_id ); ?>" data-pixcensus-haystack="<?php echo esc_attr( $pixcensus_haystack ); ?>">
 						<td><input type="checkbox" class="pixcensus-select" data-tab="<?php echo esc_attr( $pixcensus_tab ); ?>" data-manual="<?php echo $pixcensus_protected ? '1' : '0'; ?>" aria-label="<?php echo esc_attr( get_the_title( $pixcensus_attachment_id ) . ' (#' . $pixcensus_attachment_id . ')' ); ?>" name="ids[]" form="pixcensus-cleanup" value="<?php echo esc_attr( $pixcensus_attachment_id ); ?>" /></td>
 						<td data-col="thumb" class="pixcensus-thumb"><?php echo $pixcensus_thumb_html ? wp_kses_post( $pixcensus_thumb_html ) : '&nbsp;'; ?></td>
 						<td data-col="id"><?php echo esc_html( (string) $pixcensus_attachment_id ); ?></td>
 						<td data-col="file"><?php echo esc_html( $pixcensus_file_path ? basename( $pixcensus_file_path ) : __( '(unknown)', 'pixcensus-media-audit' ) ); ?></td>
+						<td><?php echo esc_html( size_format( $pixcensus_detail['bytes'], 2 ) . ' · ' . $pixcensus_detail['width'] . ' × ' . $pixcensus_detail['height'] ); ?>
+						<?php
+						if ( $pixcensus_detail['incomplete'] ) :
+							?>
+							<span><?php esc_html_e( '(incomplete)', 'pixcensus-media-audit' ); ?></span><?php endif; ?></td>
 						<td data-col="protection"><?php if ( $pixcensus_protected ) : ?>
 							<strong><?php esc_html_e( 'Protected', 'pixcensus-media-audit' ); ?></strong>
 						<?php else : ?>
@@ -540,13 +653,21 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 							<?php else : ?>
 								<?php esc_html_e( 'No known use', 'pixcensus-media-audit' ); ?>
 							<?php endif; ?>
+							<details><summary><?php esc_html_e( 'Why this classification?', 'pixcensus-media-audit' ); ?></summary>
+							<p><?php echo esc_html( $pixcensus_protected ? __( 'Manual protection is enabled.', 'pixcensus-media-audit' ) : __( 'Classification is based on the detected references below. No detected reference does not guarantee that an image is unused.', 'pixcensus-media-audit' ) ); ?></p>
+							<ul>
+							<?php
+							foreach ( $pixcensus_provenance as $pixcensus_evidence ) :
+								?>
+								<li><?php echo esc_html( PIXCENSUS_Usage::evidence( $pixcensus_evidence ) ); ?></li><?php endforeach; ?></ul>
+							<p><?php esc_html_e( 'Evidence is limited to 12 labels per image. Theme files, external data and unsupported integrations may require manual review.', 'pixcensus-media-audit' ); ?></p></details>
 						</td>
 						<td data-col="count"><?php echo esc_html( (string) $pixcensus_count ); ?></td>
 					</tr>
 				<?php endforeach; ?>
 			<?php else : ?>
 				<tr>
-					<td colspan="<?php echo 'trash' === $pixcensus_tab ? '10' : '8'; ?>"><?php esc_html_e( 'No items.', 'pixcensus-media-audit' ); ?></td>
+					<td colspan="<?php echo 'trash' === $pixcensus_tab ? '11' : '9'; ?>"><?php esc_html_e( 'No items.', 'pixcensus-media-audit' ); ?></td>
 				</tr>
 			<?php endif; ?>
 		</tbody>
@@ -561,11 +682,16 @@ $pixcensus_notice     = is_string( $pixcensus_raw_notice ) ? sanitize_key( $pixc
 						array(
 							'base'      => add_query_arg(
 								array(
-									'page'              => 'pixcensus-audit',
-									'pixcensus_tab'     => $pixcensus_tab,
-									'pixcensus_filter'  => $pixcensus_filter,
-									'pixcensus_page'    => '%#%',
-									'pixcensus_receipt' => 'selection' === $pixcensus_filter ? $pixcensus_receipt['token'] : null,
+									'page'                => 'pixcensus-audit',
+									'pixcensus_tab'       => $pixcensus_tab,
+									'pixcensus_filter'    => $pixcensus_filter,
+									'pixcensus_page'      => '%#%',
+									'pixcensus_sort'      => $pixcensus_sort,
+									'pixcensus_format'    => $pixcensus_format,
+									'pixcensus_min_bytes' => $pixcensus_min_bytes,
+									'pixcensus_min_width' => $pixcensus_min_width,
+									'pixcensus_before'    => $pixcensus_before,
+									'pixcensus_receipt'   => 'selection' === $pixcensus_filter ? $pixcensus_receipt['token'] : null,
 								),
 								admin_url( 'upload.php' )
 							),

@@ -239,3 +239,10 @@ require_once dirname( __DIR__ ) . '/includes/class-pixcensus-scanner.php';
 require_once dirname( __DIR__ ) . '/includes/class-pixcensus-csv.php';
 require_once dirname( __DIR__ ) . '/includes/class-pixcensus-cdn-settings.php';
 require_once dirname( __DIR__ ) . '/pixcensus-media-audit.php';
+
+if ( ! defined( 'DAY_IN_SECONDS' ) ) {
+	define( 'DAY_IN_SECONDS', 86400 );
+}
+function get_current_user_id() {
+	return 1;
+}
