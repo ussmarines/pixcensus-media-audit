@@ -33,7 +33,7 @@ const artifacts = process.env.PIXCENSUS_QA_ARTIFACTS || require('node:os').tmpdi
  assert.equal(await page.locator('.pixcensus-row').count(),0);
  await page.locator('[name="pixcensus_min_width"]').fill('0');
  await page.getByRole('button',{name:'Apply',exact:true}).click();await page.waitForLoadState('networkidle');
- const selects=page.locator('.pixcensus-select');assert(await selects.count()>1);
+ const selects=page.locator('.pixcensus-row').filter({hasText:'shared.png'}).locator('.pixcensus-select');assert(await selects.count()>1);
  await selects.nth(0).check();await selects.nth(1).check();
  const total=await page.locator('#pixcensus-selected-bytes').innerText();assert.equal(total,'68 B');
  await page.locator('#pixcensus-quick-filter').fill('not-present-qa-filter');

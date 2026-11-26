@@ -4,7 +4,7 @@
 
 - Audited source commit: `bb043eb2ef67914272af7c20fa3ae78bf4da0d38` (`main`, defense-in-depth hardening integrated and post-merge QA, CodeQL, and OpenSSF checks verified on 2026-08-11).
 - Release preparation: `3.5.0` on `codex/release-3.5.0`.
-- Declared compatibility: WordPress 5.9+, PHP 7.4+, tested through WordPress 7.1; dedicated compatibility validation uses WordPress 7.1.5.
+- Declared compatibility: WordPress 5.9+, PHP 7.4+, tested through WordPress 7.2; local 7.2 RC3 qualification is documented in `docs/codex/WORDPRESS_7_2_COMPATIBILITY.md`. Existing dedicated CI still targets WordPress 7.1.5.
 - Entry point: `pixcensus-media-audit.php`.
 - Text domain: `pixcensus-media-audit`; translations live under `languages/`.
 - Canonical project URL: `https://github.com/ussmarines/pixcensus-media-audit`; WordPress.org slug: `pixcensus-media-audit`.

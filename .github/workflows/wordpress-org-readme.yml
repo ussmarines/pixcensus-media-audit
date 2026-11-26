@@ -1,0 +1,93 @@
+name: WordPress.org readme update
+
+on:
+  workflow_dispatch:
+    inputs:
+      expected_sha:
+        description: Exact reviewed main commit to publish
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wordpress-org-readme
+  cancel-in-progress: false
+
+jobs:
+  readme:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Verify reviewed revision
+        env:
+          EXPECTED_SHA: ${{ inputs.expected_sha }}
+        run: |
+          set -euo pipefail
+          [[ "$EXPECTED_SHA" =~ ^[0-9a-f]{40}$ ]]
+          test "$EXPECTED_SHA" = "$GITHUB_SHA"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Validate readme and stable version
+        id: metadata
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+          from pathlib import Path
+          main = Path('pixcensus-media-audit.php').read_text(encoding='utf-8')
+          readme = Path('readme.txt').read_text(encoding='utf-8')
+          version = re.search(r'^Stable tag: (\d+\.\d+\.\d+)$', readme, re.M).group(1)
+          if not re.search(r'^\s*\* Version: ' + re.escape(version) + r'\s*$', main, re.M):
+              raise SystemExit('Plugin and stable versions differ.')
+          if not re.search(r'^Tested up to: 7\.2$', readme, re.M):
+              raise SystemExit('Expected reviewed WordPress 7.2 compatibility.')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write(f'version={version}\n')
+          PY
+      - name: Install Subversion
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes subversion
+      - name: Prepare readme-only SVN change
+        id: prepare
+        env:
+          VERSION: ${{ steps.metadata.outputs.version }}
+        run: |
+          set -euo pipefail
+          svn checkout --quiet --depth empty https://plugins.svn.wordpress.org/pixcensus-media-audit svn-work
+          (cd svn-work && svn update --quiet --parents trunk/readme.txt "tags/$VERSION/readme.txt")
+          for target in trunk/readme.txt "tags/$VERSION/readme.txt"; do
+            test -f "svn-work/$target"
+            grep -Fx "Stable tag: $VERSION" "svn-work/$target"
+            cp readme.txt "svn-work/$target"
+          done
+          python3 - <<'PY'
+          import os
+          import subprocess
+          import xml.etree.ElementTree as ET
+          root = ET.fromstring(subprocess.check_output(['svn', 'status', '--xml'], cwd='svn-work'))
+          changed = {entry.attrib['path'] for entry in root.findall('.//entry') if entry.find('wc-status').attrib['item'] != 'normal'}
+          allowed = {'trunk/readme.txt', f'tags/{os.environ["VERSION"]}/readme.txt'}
+          if not changed <= allowed:
+              raise SystemExit('Unexpected SVN paths; refusing publication.')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write(f'changed={str(bool(changed)).lower()}\n')
+          print('Approved paths:', ', '.join(sorted(changed)))
+          PY
+          (cd svn-work && svn diff -- trunk/readme.txt "tags/$VERSION/readme.txt")
+      - name: Publish reviewed readmes
+        if: steps.prepare.outputs.changed == 'true'
+        env:
+          VERSION: ${{ steps.metadata.outputs.version }}
+          WPORG_SVN_PASSWORD: ${{ secrets.WPORG_SVN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          test -n "$WPORG_SVN_PASSWORD"
+          cd svn-work
+          svn commit trunk/readme.txt "tags/$VERSION/readme.txt" \
+            --username ussmarines --password-from-stdin --non-interactive --no-auth-cache \
+            -m "Update PixCensus $VERSION WordPress 7.2 compatibility and presentation" <<< "$WPORG_SVN_PASSWORD"

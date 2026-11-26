@@ -6,6 +6,8 @@
 
 Find where WordPress uses each image, protect files you want to keep, and manage Trash from the Media menu.
 
+WordPress 7.2 compatibility has been qualified locally on RC3 with PHP 8.3: scanner integration, authenticated AJAX, desktop/mobile review and Plugin Check. [Evidence and remaining limits](docs/codex/WORDPRESS_7_2_COMPATIBILITY.md).
+
 [![WordPress.org](https://img.shields.io/badge/WordPress.org-PixCensus-21759B?logo=wordpress)](https://wordpress.org/plugins/pixcensus-media-audit/)
 [![Latest release](https://img.shields.io/github/v/release/ussmarines/pixcensus-media-audit)](https://github.com/ussmarines/pixcensus-media-audit/releases/latest)
 [![QA](https://github.com/ussmarines/pixcensus-media-audit/actions/workflows/qa.yml/badge.svg)](https://github.com/ussmarines/pixcensus-media-audit/actions/workflows/qa.yml)
@@ -18,7 +20,7 @@ Find where WordPress uses each image, protect files you want to keep, and manage
 - **WordPress.org:** https://wordpress.org/plugins/pixcensus-media-audit/
 - **GitHub release:** https://github.com/ussmarines/pixcensus-media-audit/releases/tag/v3.5.0
 - **Current version:** `3.5.0`
-- **WordPress:** `5.9+`, tested through `7.1`
+- **WordPress:** `5.9+`, tested through `7.2` (local qualification on 7.2 RC3; see [compatibility evidence](docs/codex/WORDPRESS_7_2_COMPATIBILITY.md))
 - **PHP:** `7.4+`
 - **License:** GPL-2.0-or-later
 

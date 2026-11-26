@@ -80,7 +80,7 @@ for (const token of requiredMain) {
   if (!main.includes(token)) throw new Error(`Required main-plugin control is missing: ${token}`);
 }
 if (!readme.includes('Stable tag: 3.5.0')) throw new Error('The WordPress.org stable tag is not 3.5.0.');
-if (!readme.includes('Tested up to: 7.1')) throw new Error('The WordPress.org tested-up-to value is not 7.1.');
+if (!readme.includes('Tested up to: 7.2')) throw new Error('The WordPress.org tested-up-to value is not 7.2.');
 if (!githubReadme.includes('.wordpress-org/banner-1544x500.png')) {
   throw new Error('The GitHub README does not use the PixCensus banner.');
 }

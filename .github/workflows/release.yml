@@ -143,8 +143,10 @@ jobs:
               raise SystemExit('Plugin header version does not match the tag.')
           if not re.search(rf'^Stable tag:\s*{re.escape(version)}\s*$', readme, re.M):
               raise SystemExit('Stable tag does not match the release tag.')
-          if not re.search(r'^Tested up to:\s*7\.1\s*$', readme, re.M):
-              raise SystemExit('WordPress.org Tested up to is not 7.1.')
+          source_readme = Path('readme.txt').read_text(encoding='utf-8')
+          source_tested = re.search(r'^Tested up to:\s*(\d+\.\d+(?:\.\d+)?)\s*$', source_readme, re.M)
+          if not source_tested or not re.search(r'^Tested up to:\s*' + re.escape(source_tested.group(1)) + r'\s*$', readme, re.M):
+              raise SystemExit('WordPress.org Tested up to differs from the exact release source.')
           PY
       - name: Install Subversion client
         shell: bash
