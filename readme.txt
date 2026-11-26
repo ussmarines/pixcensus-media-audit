@@ -3,7 +3,7 @@ Contributors: ussmarines
 Donate link: https://paypal.me/ussmarinesdot
 Tags: media library, image usage, media cleanup, attachments, trash
 Requires at least: 5.9
-Tested up to: 7.1
+Tested up to: 7.2
 Requires PHP: 7.4
 Stable tag: 3.5.0
 License: GPL-2.0-or-later
@@ -24,6 +24,8 @@ Features:
 * Move checked images to Trash from To review, Drafts or In use. Manual protection blocks the move until removed. WordPress controls retention. In Trash, restore items or review and confirm permanent deletion of selected images or all trashed images.
 
 Supported builders and editors include WordPress core, Elementor, Divi, Beaver Builder, Oxygen, Bricks, SiteOrigin, and WPBakery.
+
+Compatibility: WordPress 5.9+ and PHP 7.4+. PixCensus 3.5.0 was tested locally with WordPress 7.2 RC3 and PHP 8.3. Scans read existing Media Library records without changing image files. Browser-side upload processing and PHP 8.6 have not been qualified.
 
 = Support the project =
 
