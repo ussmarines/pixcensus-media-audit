@@ -5072,6 +5072,85 @@
       "coverage": "Tracked complete publication patch",
       "configuration": "Publication branch based on origin/main; installed dev tooling from existing checkout",
       "environment_signature": "Windows native PowerShell; no runtime change since RC3 qualification"
+    },
+    {
+      "tool_version": "Python 3.14.6; Git 2.56.1.windows.1; GitHub CLI 2.105.0",
+      "date": "2026-11-26",
+      "commit_tested": "c5a305661bf8195bd980cdeeed81e981cdbbd022",
+      "configuration": "Public WordPress.org SVN/API/downloads and immutable GitHub v3.5.0 assets; no credentials",
+      "environment_signature": "Windows native PowerShell 7.6.9; public HTTPS",
+      "name": "WordPress 7.2 public ZIP container comparison attempt",
+      "command": "python $env:TEMP/pixcensus-wp72-20261126/verify-public.py",
+      "result": "fail",
+      "duration_ms": 5941,
+      "duration_scope": "Full verification/status shell batch",
+      "coverage": "Initial public ZIP file-set comparison",
+      "notes": "WordPress.org archive includes directory entries unlike GitHub archive; assertion compared container names. Exclude directory entries and compare all actual files. No deployed runtime defect."
+    },
+    {
+      "tool_version": "Python 3.14.6; Git 2.56.1.windows.1; GitHub CLI 2.105.0",
+      "date": "2026-11-26",
+      "commit_tested": "c5a305661bf8195bd980cdeeed81e981cdbbd022",
+      "configuration": "Public WordPress.org SVN/API/downloads and immutable GitHub v3.5.0 assets; no credentials",
+      "environment_signature": "Windows native PowerShell 7.6.9; public HTTPS",
+      "name": "WordPress 7.2 published readmes listing and artifact equivalence",
+      "command": "python $env:TEMP/pixcensus-wp72-20261126/verify-public.py; git status --short; git rev-parse HEAD; git rev-parse origin/main",
+      "result": "pass",
+      "duration_ms": 2425,
+      "duration_scope": "Full verification/status shell batch",
+      "coverage": "Both SVN readmes match source; directory version 3.5.0/tested 7.2/minimums; description indexed; downloaded readme; 16 actual files in each archive; only readme differs; local HEAD/origin main agreement",
+      "notes": "Public verification result and archive hashes documented in docs/codex/WORDPRESS_7_2_COMPATIBILITY.md. Runtime bytes identical to immutable GitHub 3.5.0."
+    },
+    {
+      "tool_version": "Python 3.14.6; Git 2.56.1.windows.1; GitHub CLI 2.105.0",
+      "date": "2026-11-26",
+      "commit_tested": "c5a305661bf8195bd980cdeeed81e981cdbbd022",
+      "configuration": "Public WordPress.org SVN/API/downloads and immutable GitHub v3.5.0 assets; no credentials",
+      "environment_signature": "Windows native PowerShell 7.6.9; public HTTPS",
+      "name": "WordPress 7.2 GitHub CI and readme publication",
+      "command": "gh pr checks 93 --repo ussmarines/pixcensus-media-audit --watch --interval 15; gh run watch 45848370988 --repo ussmarines/pixcensus-media-audit --exit-status --interval 10",
+      "result": "pass",
+      "duration_ms": 0,
+      "duration_scope": "Remote job durations linked in notes; watcher elapsed time not retained",
+      "coverage": "All PR checks; main QA and compatibility; exact-main readme-only publication; SVN revision 3827444",
+      "notes": "PR93 QA45847940994 compatibility45847941157 CodeQL45847941080 dependency45847941060 succeeded; main QA45848347437 compatibility45848347561 CodeQL45848347454 Scorecard45848347486 succeeded. Publication45848370988 readme job took21s. Watch commands represent separate sequential invocations."
+    },
+    {
+      "tool_version": "Python 3.14.6; Git 2.56.1.windows.1; GitHub CLI 2.105.0",
+      "date": "2026-11-26",
+      "commit_tested": "c5a305661bf8195bd980cdeeed81e981cdbbd022",
+      "configuration": "Public WordPress.org SVN/API/downloads and immutable GitHub v3.5.0 assets; no credentials",
+      "environment_signature": "Windows native PowerShell 7.6.9; public HTTPS",
+      "name": "WordPress 7.2 publication evidence documentation checks reuse",
+      "command": "Reuse publication metadata, branding, actionlint, guard and RC3 runtime results recorded above",
+      "result": "PASS_REUSED",
+      "duration_ms": 0,
+      "coverage": "Documentation/evidence follow-up does not change plugin/runtime/readme/workflows/dependencies",
+      "notes": "Only compatibility report and ledger change after the verified publication."
+    },
+    {
+      "tool_version": "Python 3.14.6; Git 2.56.1.windows.1; GitHub CLI 2.105.0",
+      "date": "2026-11-26",
+      "commit_tested": "c5a305661bf8195bd980cdeeed81e981cdbbd022",
+      "configuration": "Public WordPress.org SVN/API/downloads and immutable GitHub v3.5.0 assets; no credentials",
+      "environment_signature": "Windows native PowerShell 7.6.9; public HTTPS",
+      "name": "Publication evidence identity guard",
+      "command": "python .github/scripts/security_guard.py",
+      "result": "pass",
+      "duration_ms": 635,
+      "coverage": "Staged publication report and evidence ledger"
+    },
+    {
+      "tool_version": "Python 3.14.6; Git 2.56.1.windows.1; GitHub CLI 2.105.0",
+      "date": "2026-11-26",
+      "commit_tested": "c5a305661bf8195bd980cdeeed81e981cdbbd022",
+      "configuration": "Public WordPress.org SVN/API/downloads and immutable GitHub v3.5.0 assets; no credentials",
+      "environment_signature": "Windows native PowerShell 7.6.9; public HTTPS",
+      "name": "Publication evidence whitespace",
+      "command": "git -c core.safecrlf=false diff --cached --check",
+      "result": "pass",
+      "duration_ms": 39,
+      "coverage": "Staged publication report and evidence ledger"
     }
   ]
 }

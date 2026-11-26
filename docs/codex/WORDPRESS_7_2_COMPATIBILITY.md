@@ -30,3 +30,17 @@ Unchanged runtime WPCS, PHPStan, unit tests, PHP 7.4 / WordPress 5.9 minimum-ver
 ## Limits
 
 The release candidate is not the final WordPress 7.2 release. Native MySQL/MariaDB, multisite on RC3, PHP 8.6 and actual client-side media processing are not covered by this local qualification. Chromium exercised the PixCensus interface, not a browser upload/format-conversion journey. The qualification itself changed no remote state; subsequent publication is a separate owner-authorized operation described in the [publication procedure](../wordpress-org/svn-publication.md).
+
+## Published evidence — 2026-11-26
+
+- Publication branch: `codex/wordpress-72-publication`; source commit `a10a8ffbe52350a13fa1c1e21dc94760d46319ab`.
+- [PR #93](https://github.com/ussmarines/pixcensus-media-audit/pull/93) merged through GitHub into `main` at `c5a305661bf8195bd980cdeeed81e981cdbbd022`. No direct push to `main` was used. Separate skill-maintenance commits were excluded.
+- All PR checks passed: [QA](https://github.com/ussmarines/pixcensus-media-audit/actions/runs/45847940994), [WordPress compatibility](https://github.com/ussmarines/pixcensus-media-audit/actions/runs/45847941157), [CodeQL](https://github.com/ussmarines/pixcensus-media-audit/actions/runs/45847941080) and [Dependency Review](https://github.com/ussmarines/pixcensus-media-audit/actions/runs/45847941060).
+- [Readme publication run](https://github.com/ussmarines/pixcensus-media-audit/actions/runs/45848370988) succeeded against the exact merge SHA, committing SVN revision **3827444**. Only `trunk/readme.txt` and `tags/3.5.0/readme.txt` were changed.
+- Both public SVN readmes match the reviewed source. The directory API reports version `3.5.0`, tested `7.2`, WordPress minimum `5.9` and PHP minimum `7.4`; its description contains the RC3 qualification statement.
+- The downloaded WordPress.org ZIP and immutable GitHub v3.5.0 ZIP each contain 16 files. Only `pixcensus-media-audit/readme.txt` differs; the other 15 files are byte-identical. The WordPress.org readme matches the published source. Directory entries in ZIP containers are excluded from the file comparison.
+- WordPress.org archive SHA-256: `87395d46cc166d795c7636918a362024941719249d6705de177b9e067753b3f6`.
+- Immutable GitHub archive SHA-256: `67196fd911281d59e13da6509e00cb95f7a538edae3d1cf03eb1f83f806f318f`.
+- The GitHub repository description now presents resumable scans, provenance, manual protection, CSV export, reviewed Trash actions and qualification on WordPress 7.2 RC3.
+
+These are publication/indexing and artifact-equivalence checks, not additional browser-upload or PHP 8.6 qualification. No new plugin version or replacement GitHub release was created.
